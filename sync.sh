@@ -52,10 +52,13 @@ if [ "$ACTION" = "push" ]; then
 
   cd "$SYNC_DIR"
 
-  # 检查是否有变更
-  if git diff --quiet && git diff --cached --quiet; then
-    echo "  📦 没有新的变更，无需推送。"
-    exit 0
+  # 检查是否有变更（兼容首次提交的情况）
+  HAS_COMMITS=$(git rev-parse HEAD 2>/dev/null && echo "yes" || echo "no")
+  if [ "$HAS_COMMITS" = "yes" ]; then
+    if git diff --quiet && git diff --cached --quiet; then
+      echo "  📦 没有新的变更，无需推送。"
+      exit 0
+    fi
   fi
 
   echo "[3/4] 提交变更..."
