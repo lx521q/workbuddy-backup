@@ -1,0 +1,45 @@
+{
+  "sandbox": {
+    "extraAllowWrite": [
+      "~/.tencent-cloudq",
+      "~/.andonq",
+      "~/.xiaoe-cloud",
+      "~/.config/wecom/",
+      "~/.lark-cli",
+      "~/.lark-channel/",
+      "~/.dws",
+      "/tmp/dws-cache",
+      "~/.tmeet",
+      "~/Library/Application Support/tmeet"
+    ]
+  },
+  "enabledPlugins": {
+    "weixinpay@workbuddy-builtin": true,
+    "tencent-docs-plugin@workbuddy-builtin": true,
+    "tencent-pptx@workbuddy-builtin": true
+  },
+  "claw": {
+    "channels": {},
+    "users": {
+      "176fb40b-ad53-4b53-93dd-c744cab86c43": {
+        "channels": {
+          "wechatmp": {
+            "enabled": true,
+            "connectionMode": "webhook",
+            "artifactUploadEnabled": true
+          },
+          "weixinClawBot": {
+            "enabled": true,
+            "channelId": "d0cdaf659203@im.bot",
+            "botToken": "d0cdaf659203@im.bot:0600007c5b55371ae7dc6e8361ddd42822debf",
+            "baseUrl": "https://ilinkai.weixin.qq.com",
+            "accountId": "d0cdaf659203@im.bot",
+            "userId": "o9cq806znlNwZwdSgNyv4NHu56zE@im.wechat",
+            "connectionMode": "polling"
+          }
+        }
+      }
+    },
+    "legacyOwnerUid": "176fb40b-ad53-4b53-93dd-c744cab86c43"
+  }
+}
