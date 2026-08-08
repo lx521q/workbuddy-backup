@@ -1,0 +1,41 @@
+# WorkBuddy 同步 — 排除不需要同步的文件
+
+# WAL/SHM 临时文件（运行时生成，不同步）
+workbuddy.db-shm
+workbuddy.db-wal
+edge-sync-mapping.db
+edge-sync-mapping.db-shm
+edge-sync-mapping.db-wal
+
+# 运行时数据（设备相关，不同步）
+logs/
+traces/
+tasks/
+app/
+pending-telemetry/
+audit-log/
+shell-snapshots/
+local_storage/
+project-resources/
+projects/
+claw-state/
+
+# 缓存和临时文件
+binaries/
+plugins/
+plugin-marketplace-state-new/
+connectors-marketplace/
+vendor/
+connectors/
+
+# 自动生成/敏感文件
+*.port
+desktop_conversation_migrated
+session_fragment_repair_done*
+mcp-approvals.json
+ioa-im-override.json
+last-launch.json
+usage-log.json
+user-state.json
+workspace-state.json
+eap-*

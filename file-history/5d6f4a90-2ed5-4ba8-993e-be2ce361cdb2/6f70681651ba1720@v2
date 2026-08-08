@@ -1,0 +1,9 @@
+const puppeteer = require('puppeteer');
+(async () => {
+  const browser = await puppeteer.launch({ headless: true, executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe' });
+  const page = await browser.newPage();
+  await page.goto('file:///C:/Users/62628/WorkBuddy/2026-08-08-10-50-39/%E5%AD%99%E5%A8%84%E4%B8%9C%E6%9D%91%E6%99%BA%E8%83%BD%E5%AE%B6%E5%B1%85%E9%A1%B9%E7%9B%AE%E6%96%B9%E6%A1%88.html', { waitUntil: 'networkidle0' });
+  await page.pdf({ path: 'C:/Users/62628/WorkBuddy/2026-08-08-10-50-39/%E5%AD%99%E5%A8%84%E4%B8%9C%E6%9D%91%E6%99%BA%E8%83%BD%E5%AE%B6%E5%B1%85%E9%A1%B9%E7%9B%AE%E6%96%B9%E6%A1%88.pdf', format: 'A4', printBackground: true });
+  await browser.close();
+  console.log('PDF created successfully');
+})();

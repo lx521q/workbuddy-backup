@@ -1,0 +1,16 @@
+{
+  "pid": 8140,
+  "lastHeartbeat": 1786152924879,
+  "sessionId": "f1c7a0c5-b42f-43a2-b32b-1dc653087a91",
+  "cwd": "C:\\Users\\62628\\WorkBuddy\\automation-2026-08-05-10-35-08",
+  "startedAt": 1786152024540,
+  "kind": "interactive",
+  "url": "http://127.0.0.1:50945",
+  "endpoint": "http://127.0.0.1:50945",
+  "mode": "local",
+  "version": "2.115.0",
+  "os": "win32",
+  "arch": "x64",
+  "hostname": "Lx-3600",
+  "updatedAt": 1786152924880
+}
