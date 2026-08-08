@@ -1,0 +1,7 @@
+# 2026-08-06 工作日志
+
+## PT签到自动打开自动化任务
+- 用户需求：每天早上8:00自动打开 Edge 浏览器中 收藏夹栏 > 集锦 > PT签到 文件夹下的全部网址（新窗口打开）
+- 解析了 Edge 书签文件 (`C:\Users\62628\AppData\Local\Microsoft\Edge\User Data\Default\Bookmarks`)，找到 PT签到 文件夹下共 12 个 PT 站点签到链接
+- 创建了 Python 脚本：`C:\Users\62628\.workbuddy\scripts\open_pt_signin.py`，动态读取书签文件并打开所有签到网址
+- 创建了定时自动化任务（ID: automation-1785976041985），每天 8:00 执行，RRULE: `FREQ=DAILY;BYHOUR=8;BYMINUTE=0`

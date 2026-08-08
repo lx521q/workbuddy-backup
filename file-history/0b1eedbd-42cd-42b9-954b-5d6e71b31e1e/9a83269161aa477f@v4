@@ -1,0 +1,15 @@
+# 2026-08-07 工作日志
+
+## WorkBuddy 多设备配置同步方案搭建
+- 创建 `~/.workbuddy-sync/` 同步仓库，用于在多台电脑间同步 WorkBuddy 配置
+- 同步内容：skills/、scripts/、SOUL.md、IDENTITY.md、USER.md、BOOTSTRAP.md、settings.json、.mcp.json、MEMORY.md
+- 不同步：workbuddy.db（SQLite，跨版本兼容风险）、plugins/（自动下载）、logs/、sessions/ 等运行时数据
+- 创建 `sync.sh` 脚本，支持 push（本机→仓库）和 pull（仓库→本机）两种模式
+- Git 仓库已初始化，完成首次提交
+- 创建定时自动化任务 (automation-1786069231416)：每个工作日自动推送配置到远程仓库
+## WorkBuddy 身份档案初始化
+- 完成 BOOTSTRAP 流程，确定身份设定
+- 名称：WorkBuddy，定位：数字搭档（AI 助手 + 工作搭子）
+- 风格：务实利落 + 沉稳冷静，Emoji：🛠️
+- 用户：Lx，山东淄博，车间运行技术员（循环水/烟气处理/废油蒸馏）
+- SOUL.md、IDENTITY.md、USER.md 已更新，BOOTSTRAP.md 已删除

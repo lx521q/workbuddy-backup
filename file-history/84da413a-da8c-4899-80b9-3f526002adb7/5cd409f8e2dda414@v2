@@ -1,0 +1,35 @@
+# -*- coding: utf-8 -*-
+"""Final comprehensive verification"""
+from docx import Document
+
+doc = Document(r'D:\Lx电脑文件\J检修相关\2026.3检修安全作业方案\施工方案管理制度AQ001-2026.3.04\修改后施工方案\YXCJ-2026-015废油蒸馏8月技改、停车检修施工方案.docx')
+table = doc.tables[0]
+
+checks = {
+    '项目概况': (0, 1),
+    '施工单位': (2, 1),
+    '施工人员': (3, 3),
+    '特殊作业': (4, 3),
+    '风险辨识': (10, 1),
+    '安全隔离措施': (11, 1),
+    '施工步骤': (12, 1),
+    '触电风险': (14, 0),
+    '灼烫风险': (15, 0),
+    '火灾爆炸风险': (16, 0),
+    '中毒窒息风险': (17, 0),
+    '起重伤害风险': (18, 0),
+    '高处坠落风险': (19, 0),
+}
+
+all_ok = True
+for name, (row, col) in checks.items():
+    cell = table.cell(row, col)
+    text = cell.text.strip()
+    if len(text) > 100:
+        text = text[:100] + '...'
+    status = 'OK' if len(text) > 10 else 'EMPTY!'
+    if status != 'OK':
+        all_ok = False
+    print(f'[{status}] {name}: {text}')
+
+print(f'\nAll checks passed: {all_ok}')

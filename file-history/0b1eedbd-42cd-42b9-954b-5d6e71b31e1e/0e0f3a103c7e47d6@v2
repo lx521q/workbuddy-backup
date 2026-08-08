@@ -1,23 +1,28 @@
 # WorkBuddy 同步 — 排除不需要同步的文件
-
-# WAL/SHM 临时文件（运行时生成，不同步）
+workbuddy.db
 workbuddy.db-shm
 workbuddy.db-wal
+*.db
+*.db-shm
+*.db-wal
 edge-sync-mapping.db
 edge-sync-mapping.db-shm
 edge-sync-mapping.db-wal
 
-# 运行时数据（设备相关，不同步）
+# 运行时数据
 logs/
 traces/
+sessions/
 tasks/
 app/
 pending-telemetry/
 audit-log/
+file-history/
 shell-snapshots/
 local_storage/
 project-resources/
 projects/
+artifact-index/
 claw-state/
 
 # 缓存和临时文件

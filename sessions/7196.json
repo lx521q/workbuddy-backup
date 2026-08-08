@@ -1,0 +1,16 @@
+{
+  "pid": 7196,
+  "lastHeartbeat": 1785977606959,
+  "sessionId": "adfddc89-eb43-4678-a38f-321293e074b1",
+  "cwd": "C:\\Users\\62628\\WorkBuddy\\2026-08-06-08-32-20",
+  "startedAt": 1785976346541,
+  "kind": "interactive",
+  "url": "http://127.0.0.1:55153",
+  "endpoint": "http://127.0.0.1:55153",
+  "mode": "local",
+  "version": "2.115.0",
+  "os": "win32",
+  "arch": "x64",
+  "hostname": "Lx-3600",
+  "updatedAt": 1785977606960
+}

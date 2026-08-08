@@ -1,0 +1,19 @@
+# -*- coding: utf-8 -*-
+from docx import Document
+doc = Document(r'D:\Lx电脑文件\J检修相关\2026.3检修安全作业方案\施工方案管理制度AQ001-2026.3.04\修改后施工方案\YXCJ-2026-015废油蒸馏8月技改、停车检修施工方案.docx')
+table = doc.tables[0]
+cell = table.cell(12, 1)
+print(f'Cell has {len(cell.paragraphs)} paragraphs')
+for i, p in enumerate(cell.paragraphs):
+    t = p.text.strip()
+    if t:
+        print(f'  P{i}: [{t[:100]}]')
+    if i > 15:
+        print(f'  ... ({len(cell.paragraphs)-i-1} more paragraphs)')
+        break
+
+# Also check if the merged cell issue
+print(f'\nCell text total: {len(cell.text)} chars')
+# Print first few chars
+print(f'First 300 chars of cell text:')
+print(cell.text[:300])

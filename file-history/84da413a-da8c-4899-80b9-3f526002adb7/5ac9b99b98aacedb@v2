@@ -1,0 +1,14 @@
+from docx import Document
+
+doc = Document(r'D:\Lx电脑文件\J检修相关\2026.3检修安全作业方案\施工方案管理制度AQ001-2026.3.04\修改后施工方案\YXCJ-2026-015废油蒸馏8月技改、停车检修施工方案.docx')
+table = doc.tables[0]
+print(f'Table rows: {len(table.rows)}, cols: {len(table.rows[0].cells)}')
+
+# Print key cells
+for r_idx in [0, 1, 2, 3, 4, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]:
+    cells = table.rows[r_idx].cells
+    print(f'\n=== Row{r_idx} ===')
+    for ci in range(len(cells)):
+        t = cells[ci].text.strip()
+        if t:
+            print(f'  Cell{ci}: {t[:200]}...' if len(t) > 200 else f'  Cell{ci}: {t}')
