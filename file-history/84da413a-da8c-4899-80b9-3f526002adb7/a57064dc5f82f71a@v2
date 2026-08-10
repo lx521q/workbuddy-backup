@@ -1,0 +1,73 @@
+; Plot to PDF with correct settings - use -PLOT with detailed config
+
+(setvar "FILEDIA" 0)
+(setvar "CMDDIA" 0)
+
+(vl-load-com)
+(setq f (open "C:\\Users\\62628\\WorkBuddy\\2026-08-05-10-25-06\\plot3_log.txt" "w"))
+
+; Zoom extents first
+(command "_.ZOOM" "_E")
+(write-line "Zoomed to extents" f)
+
+; Get layout and set plot type to Extents
+(setq acad (vlax-get-acad-object))
+(setq doc (vla-get-ActiveDocument acad))
+(setq lay (vla-get-ActiveLayout doc))
+
+; Set plot type to Extents (5)
+(setq r1 (vl-catch-all-apply 'vla-put-PlotType (list lay 5)))
+(if (vl-catch-all-error-p r1)
+  (write-line (strcat "PlotType error: " (vl-catch-all-error-message r1)) f)
+  (write-line (strcat "PlotType set to: " (itoa (vla-get-PlotType lay))) f)
+)
+
+; Set standard scale to Fit (0)
+(vl-catch-all-apply 'vla-put-StandardScale (list lay 0))
+(write-line (strcat "StandardScale: " (itoa (vla-get-StandardScale lay))) f)
+
+; Center plot
+(vl-catch-all-apply 'vla-put-CenterPlot (list lay :vlax-true))
+(write-line (strcat "CenterPlot: " (vl-princ-to-string (vla-get-CenterPlot lay))) f)
+
+; Disable plot styles for color
+(vl-catch-all-apply 'vla-put-PlotWithPlotStyles (list lay :vlax-false))
+(write-line (strcat "PlotWithPlotStyles: " (vl-princ-to-string (vla-get-PlotWithPlotStyles lay))) f)
+
+; Refresh plot device
+(vl-catch-all-apply 'vla-RefreshPlotDeviceInfo (list lay))
+(write-line "PlotDeviceInfo refreshed" f)
+
+; Now plot using -PLOT command with detailed config = Y
+; This gives us full control over all settings
+(setq pdfPath "C:\\Users\\62628\\WorkBuddy\\2026-08-05-10-25-06\\color_output.pdf")
+(write-line (strcat "Starting -PLOT to: " pdfPath) f)
+
+; Use command function with detailed plot configuration
+(command "-PLOT"
+  "Y"            ; Detailed plot configuration? Yes
+  ""             ; Layout name (Enter = Model)
+  "DWG To PDF.pc3"   ; Output device
+  "ISO A3 (420.00 x 297.00 MM)"  ; Paper size (display name)
+  "M"            ; Millimeters
+  "L"            ; Landscape
+  "N"            ; Not upside down
+  "E"            ; Extents
+  "F"            ; Fit to paper
+  "C"            ; Center
+  "N"            ; No plot styles (preserve colors)
+  "."            ; No plot style table
+  "N"            ; No lineweights
+  "N"            ; No scale lineweights
+  ""             ; Shaded viewport = As displayed
+  pdfPath        ; File name
+  "N"            ; Don't save page setup
+)
+(write-line "-PLOT command completed" f)
+
+(close f)
+
+; Save and quit
+(command "_.QSAVE")
+(command "_.QUIT" "N")
+(princ)

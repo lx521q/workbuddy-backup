@@ -1,0 +1,39 @@
+; AutoCAD script using AutoLISP for reliable PDF plotting
+; Use COM API to configure and plot
+
+(vl-load-com)
+(setq acad (vlax-get-acad-object))
+(setq doc (vla-get-ActiveDocument acad))
+(setq lay (vla-get-ActiveLayout doc))
+
+; Set output device to DWG To PDF
+(vla-put-ConfigName lay "DWG To PDF.pc3")
+
+; Set paper size to A3
+(vla-put-CanonicalMediaName lay "ISO_A3_(420.00_x_297.00_MM)")
+
+; Set plot type to extents (5 = acExtents)
+(vla-put-PlotType lay 5)
+
+; Set scale to fit (0 = acScaleToFit)
+(vla-put-StandardScale lay 0)
+
+; Center the plot
+(vla-put-CenterPlot lay :vlax-true)
+
+; Disable plot styles to preserve colors
+(vla-put-PlotWithPlotStyles lay :vlax-false)
+
+; Set plot rotation to 0 degrees
+(vla-put-PlotRotation lay 0)
+
+; Set plot origin to 0,0
+(vla-SetPlotOrigin lay (vlax-make-safearray vlax-vbDouble '(0 . 1) '(0.0 0.0)))
+
+; Get the plot object and plot to file
+(setq plt (vla-get-Plot doc))
+(vla-PlotToFile plt "D:\\Lx电脑文件\\S实验\\2026.3回收油处理项目\\废油蒸馏8月技改\\废油蒸馏8月技改（彩印）.pdf")
+
+; Save and exit
+(command "_.QSAVE")
+(command "_.QUIT")

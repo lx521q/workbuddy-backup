@@ -1,0 +1,54 @@
+; Debug script - check DWG content and try -EXPORTPDF
+
+(setvar "FILEDIA" 0)
+(setvar "CMDDIA" 0)
+
+(vl-load-com)
+(setq f (open "C:\\Users\\62628\\WorkBuddy\\2026-08-05-10-25-06\\debug_log.txt" "w"))
+
+(setq acad (vlax-get-acad-object))
+(setq doc (vla-get-ActiveDocument acad))
+
+; Check model space
+(setq ms (vla-get-ModelSpace doc))
+(setq msCount (vla-get-Count ms))
+(write-line (strcat "ModelSpace objects: " (itoa msCount)) f)
+
+; Check paper space layouts
+(setq layouts (vla-get-Layouts doc))
+(vlax-for lay layouts
+  (setq blk (vla-get-Block lay))
+  (setq cnt (vla-get-Count blk))
+  (write-line (strcat "Layout: " (vla-get-Name lay) " - Objects: " (itoa cnt)) f)
+)
+
+; Check active layout
+(setq activeLay (vla-get-ActiveLayout doc))
+(write-line (strcat "Active layout: " (vla-get-Name activeLay)) f)
+(write-line (strcat "Active layout ConfigName: " (vla-get-ConfigName activeLay)) f)
+(write-line (strcat "Active layout CanonicalMediaName: " (vla-get-CanonicalMediaName activeLay)) f)
+(write-line (strcat "Active layout PlotType: " (itoa (vla-get-PlotType activeLay))) f)
+
+; Get extents
+(setq extMin (vla-get-ExtMin ms))
+(setq extMax (vla-get-ExtMax ms))
+(write-line (strcat "ExtMin: " (vl-princ-to-string (vlax-safearray->list (vlax-variant-value extMin)))) f)
+(write-line (strcat "ExtMax: " (vl-princ-to-string (vlax-safearray->list (vlax-variant-value extMax)))) f)
+
+; Zoom extents
+(command "_.ZOOM" "_E")
+(write-line "Zoomed to extents" f)
+
+; Try EXPORTPDF
+(write-line "Trying -EXPORTPDF..." f)
+(setq pdfPath "C:\\Users\\62628\\WorkBuddy\\2026-08-05-10-25-06\\export.pdf")
+(setq result (vl-catch-all-apply 'command (list "-EXPORTPDF" pdfPath)))
+(if (vl-catch-all-error-p result)
+  (write-line (strcat "EXPORTPDF error: " (vl-catch-all-error-message result)) f)
+  (write-line "EXPORTPDF done" f)
+)
+
+(close f)
+
+(command "_.QUIT" "N")
+(princ)

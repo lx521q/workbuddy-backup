@@ -1,0 +1,35 @@
+import os
+
+script_path = r'C:\Users\62628\WorkBuddy\2026-08-05-10-25-06\plot_cmd.scr'
+
+# Use -PLOT command line approach (no COM needed)
+# Each line is a response to the -PLOT command prompts
+lines = [
+    'FILEDIA 0',
+    'CMDDIA 0',
+    'BACKGROUNDPLOT 0',
+    'ZOOM E',
+    '-PLOT',
+    'Y',
+    '',
+    'DWG To PDF.pc3',
+    'A3',
+    'M',
+    'L',
+    'N',
+    'E',
+    'F',
+    'C',
+    'N',
+    '.',
+    'N',
+    'N',
+    'C:\\Users\\62628\\WorkBuddy\\2026-08-05-10-25-06\\color_output.pdf',
+    'N',
+]
+
+with open(script_path, 'w', encoding='ascii') as f:
+    for line in lines:
+        f.write(line + '\n')
+
+print(f'Plot script written to {script_path}')

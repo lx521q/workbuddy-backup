@@ -1,0 +1,30 @@
+import os
+
+script_path = r'C:\Users\62628\WorkBuddy\2026-08-05-10-25-06\plot_list.scr'
+
+# List available paper sizes for DWG To PDF.pc3
+lines = [
+    'FILEDIA 0',
+    'CMDDIA 0',
+    'BACKGROUNDPLOT 0',
+    '-PLOT',
+    'Y',
+    '',
+    'DWG To PDF.pc3',
+    '?',
+    'N',
+    'N',
+    'N',
+    'N',
+    'N',
+    'N',
+    'N',
+    'N',
+    'N',
+]
+
+with open(script_path, 'w', encoding='ascii') as f:
+    for line in lines:
+        f.write(line + '\n')
+
+print(f'List script written to {script_path}')

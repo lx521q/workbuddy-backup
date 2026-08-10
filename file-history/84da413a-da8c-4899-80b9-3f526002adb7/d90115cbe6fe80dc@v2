@@ -1,0 +1,62 @@
+; Plot to PDF with correct PlotType=1 (acExtents)
+
+(setvar "FILEDIA" 0)
+(setvar "CMDDIA" 0)
+
+(vl-load-com)
+(setq f (open "C:\\Users\\62628\\WorkBuddy\\2026-08-05-10-25-06\\plot4_log.txt" "w"))
+
+; Zoom extents first
+(command "_.ZOOM" "_E")
+(write-line "Zoomed to extents" f)
+
+(setq acad (vlax-get-acad-object))
+(setq doc (vla-get-ActiveDocument acad))
+(setq lay (vla-get-ActiveLayout doc))
+
+; Set plot type to Extents (1 = acExtents, NOT 5 which is acLayout)
+(setq r1 (vl-catch-all-apply 'vla-put-PlotType (list lay 1)))
+(if (vl-catch-all-error-p r1)
+  (write-line (strcat "PlotType error: " (vl-catch-all-error-message r1)) f)
+  (write-line (strcat "PlotType set to: " (itoa (vla-get-PlotType lay))) f)
+)
+
+; Set standard scale to Fit (0 = acScaleToFit)
+(vl-catch-all-apply 'vla-put-StandardScale (list lay 0))
+(write-line (strcat "StandardScale: " (itoa (vla-get-StandardScale lay))) f)
+
+; Center plot
+(vl-catch-all-apply 'vla-put-CenterPlot (list lay :vlax-true))
+(write-line (strcat "CenterPlot: " (vl-princ-to-string (vla-get-CenterPlot lay))) f)
+
+; Disable plot styles for color output
+(vl-catch-all-apply 'vla-put-PlotWithPlotStyles (list lay :vlax-false))
+(write-line (strcat "PlotWithPlotStyles: " (vl-princ-to-string (vla-get-PlotWithPlotStyles lay))) f)
+
+; Set plot rotation to 0
+(vl-catch-all-apply 'vla-put-PlotRotation (list lay 0))
+(write-line (strcat "PlotRotation: " (itoa (vla-get-PlotRotation lay))) f)
+
+; Refresh plot device
+(vl-catch-all-apply 'vla-RefreshPlotDeviceInfo (list lay))
+(write-line "PlotDeviceInfo refreshed" f)
+
+; Plot to file using COM API
+(setq plt (vla-get-Plot doc))
+(setq pdfPath "C:\\Users\\62628\\WorkBuddy\\2026-08-05-10-25-06\\color_output.pdf")
+(write-line (strcat "Plotting to: " pdfPath) f)
+
+(setq plotResult (vl-catch-all-apply 'vla-PlotToFile (list plt pdfPath)))
+(if (vl-catch-all-error-p plotResult)
+  (write-line (strcat "PlotToFile ERROR: " (vl-catch-all-error-message plotResult)) f)
+  (write-line "PlotToFile completed successfully" f)
+)
+
+; Verify file
+(setq fileSize (vl-file-size pdfPath))
+(write-line (strcat "PDF file size: " (itoa fileSize) " bytes") f)
+
+(close f)
+
+(command "_.QUIT" "N")
+(princ)

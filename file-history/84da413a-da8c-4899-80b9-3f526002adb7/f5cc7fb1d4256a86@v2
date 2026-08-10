@@ -1,0 +1,87 @@
+; Simple AutoCAD script to plot DWG to color PDF
+; Uses LISP COM API with error handling and logging
+
+(vl-load-com)
+
+(setq logfile (open "C:\\Users\\62628\\WorkBuddy\\2026-08-05-10-25-06\\plot_log.txt" "w"))
+
+(defun logwrite (msg)
+  (write-line msg logfile)
+)
+
+(logwrite "Script started")
+
+(setq acad (vlax-get-acad-object))
+(setq doc (vla-get-ActiveDocument acad))
+(setq lay (vla-get-ActiveLayout doc))
+
+(logwrite (strcat "Document: " (vla-get-Name doc)))
+(logwrite (strcat "Current ConfigName: " (vla-get-ConfigName lay)))
+(logwrite (strcat "Current CanonicalMediaName: " (vla-get-CanonicalMediaName lay)))
+
+; Try to set config name
+(vl-catch-all-apply 'vla-put-ConfigName (list lay "DWG To PDF.pc3"))
+(logwrite (strcat "After set ConfigName: " (vla-get-ConfigName lay)))
+
+; Try to set paper size - try multiple possible names
+(setq mediaSet nil)
+(foreach mediaName '("ISO_A3_(420.00_x_297.00_MM)"
+                      "ISO A3 (420.00 x 297.00 MM)"
+                      "A3"
+                      "User1674")
+  (setq result (vl-catch-all-apply 'vla-put-CanonicalMediaName (list lay mediaName)))
+  (if (not (vl-catch-all-error-p result))
+    (progn
+      (setq mediaSet mediaName)
+      (logwrite (strcat "Media set to: " mediaName))
+    )
+  )
+)
+(if (not mediaSet)
+  (logwrite "WARNING: Could not set media name, using default")
+)
+
+; Set plot type to extents (5 = acExtents)
+(vl-catch-all-apply 'vla-put-PlotType (list lay 5))
+(logwrite "PlotType set to Extents")
+
+; Set scale to fit (0 = acScaleToFit)
+(vl-catch-all-apply 'vla-put-StandardScale (list lay 0))
+(logwrite "StandardScale set to Fit")
+
+; Center plot
+(vl-catch-all-apply 'vla-put-CenterPlot (list lay :vlax-true))
+(logwrite "CenterPlot set to true")
+
+; Disable plot styles to preserve colors
+(vl-catch-all-apply 'vla-put-PlotWithPlotStyles (list lay :vlax-false))
+(logwrite "PlotWithPlotStyles set to false (color preserved)")
+
+; Set plot rotation to 0
+(vl-catch-all-apply 'vla-put-PlotRotation (list lay 0))
+(logwrite "PlotRotation set to 0")
+
+; Set number of copies
+(vl-catch-all-apply 'vla-put-NumCopies (list lay 1))
+
+; Refresh plot settings
+(vla-RefreshPlotDeviceInfo lay)
+
+; Plot to file
+(setq plt (vla-get-Plot doc))
+(setq pdfPath "C:\\Users\\62628\\WorkBuddy\\2026-08-05-10-25-06\\output.pdf")
+(logwrite (strcat "Plotting to: " pdfPath))
+
+(setq plotResult (vl-catch-all-apply 'vla-PlotToFile (list plt pdfPath)))
+(if (vl-catch-all-error-p plotResult)
+  (logwrite (strcat "PlotToFile ERROR: " (vl-catch-all-error-message plotResult)))
+  (logwrite "PlotToFile completed successfully")
+)
+
+; Close log
+(close logfile)
+
+; Save and quit
+(command "_.QSAVE")
+(command "_.QUIT")
+(princ)

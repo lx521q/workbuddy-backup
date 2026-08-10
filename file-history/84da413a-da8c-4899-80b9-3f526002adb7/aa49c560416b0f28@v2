@@ -1,0 +1,20 @@
+; AutoCAD script - use -PLOT command for reliable PDF output
+; The DWG already has DWG To PDF.pc3 and A3 configured
+
+(setvar "FILEDIA" 0)
+(setvar "CMDDIA" 0)
+
+; Use -PLOT with no detailed config (use existing settings)
+; Plot to file
+(command "-PLOT" "N" "" "Y" "C:\\Users\\62628\\WorkBuddy\\2026-08-05-10-25-06\\output2.pdf" "N")
+
+(setvar "FILEDIA" 1)
+(setvar "CMDDIA" 1)
+
+; Write completion marker
+(setq f (open "C:\\Users\\62628\\WorkBuddy\\2026-08-05-10-25-06\\plot_done.txt" "w"))
+(write-line "PLOT COMMAND DONE" f)
+(close f)
+
+(command "_.QUIT" "Y")
+(princ)

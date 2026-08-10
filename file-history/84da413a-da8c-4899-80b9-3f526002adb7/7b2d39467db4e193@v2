@@ -1,0 +1,105 @@
+$ErrorActionPreference = "Stop"
+
+$dwgPath = "D:\Lx电脑文件\S实验\2026.3回收油处理项目\废油蒸馏8月技改\废油蒸馏8月技改（彩印）.dwg"
+$pdfPath = "D:\Lx电脑文件\S实验\2026.3回收油处理项目\废油蒸馏8月技改\废油蒸馏8月技改（彩印）.pdf"
+
+Write-Host "Opening AutoCAD..."
+$acad = New-Object -ComObject AutoCAD.Application
+
+Write-Host "AutoCAD version: $($acad.Version)"
+$acad.Visible = $true
+
+Write-Host "Opening DWG: $dwgPath"
+$doc = $acad.Documents.Open($dwgPath, $false)
+Start-Sleep -Seconds 3
+
+Write-Host "Configuring plot..."
+$layout = $doc.ModelSpace.Layout
+$plot = $doc.Plot
+
+# Set plot configuration
+$layout.ConfigName = "DWG To PDF.pc3"
+Write-Host "  Printer: DWG To PDF.pc3"
+
+# Set paper size to A3
+$layout.CanonicalMediaName = "ISO_A3_(420.00_x_297.00_MM)"
+Write-Host "  Paper: A3"
+
+# Set plot rotation
+$layout.PlotRotation = 0  # ac0degrees
+Write-Host "  Rotation: 0 degrees"
+
+# Set plot type to extents
+$layout.PlotType = 5  # acExtents
+Write-Host "  Plot area: Extents"
+
+# Set plot offset to 0
+$layout.PlotOrigin = New-Object -ComObject AutoCAD.AcadPoint -ErrorAction SilentlyContinue
+# Use array approach
+$origin = @(0.0, 0.0)
+$layout.SetPlotOrigin($origin)
+
+# Set scale to fit
+$layout.UseStandardScale = $true
+$layout.StandardScale = 0  # acScaleToFit
+Write-Host "  Scale: Fit to paper"
+
+# Set color plot style - important for color output
+# Set plot style table to None to preserve colors
+try {
+    $layout.PlotWithPlotStyles = $true
+    $layout.PlotStyleName = "None"
+    Write-Host "  Plot style: None (color preserved)"
+} catch {
+    Write-Host "  Plot style setting: $($_.Exception.Message)"
+}
+
+# Set number of copies
+$layout.NumCopies = 1
+
+# Center the plot
+$layout.CenterPlot = $true
+Write-Host "  Center plot: Yes"
+
+# Save the layout settings
+$doc.Save()
+
+Start-Sleep -Seconds 2
+
+Write-Host "Plotting to PDF: $pdfPath"
+# Plot to file
+$result = $plot.PlotToFile($pdfPath, "DWG To PDF.pc3")
+
+if ($result) {
+    Write-Host "SUCCESS: PDF generated at $pdfPath"
+} else {
+    Write-Host "PlotToFile returned false, trying alternative method..."
+    # Try using SetLayoutsToPlot and Plot
+    $layoutsToPlot = "Model"
+    $plot.SetLayoutsToPlot($layoutsToPlot)
+    $plot.QuietErrorMode = $true
+    $result2 = $plot.PlotToFile($pdfPath)
+    if ($result2) {
+        Write-Host "SUCCESS: PDF generated at $pdfPath"
+    } else {
+        Write-Host "FAILED: Could not generate PDF"
+    }
+}
+
+Start-Sleep -Seconds 3
+
+# Close document without saving changes
+$doc.Close($false)
+Write-Host "Document closed."
+
+# Quit AutoCAD
+$acad.Quit()
+Write-Host "AutoCAD closed."
+
+# Verify PDF exists
+if (Test-Path $pdfPath) {
+    $size = (Get-Item $pdfPath).Length
+    Write-Host "PDF file size: $([math]::Round($size/1024, 1)) KB"
+} else {
+    Write-Host "WARNING: PDF file not found at $pdfPath"
+}

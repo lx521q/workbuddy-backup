@@ -1,0 +1,8 @@
+; AutoCAD script - plot to color PDF
+; Disable plot styles to preserve layer colors
+(setvar "CMDDIA" 0)
+(setvar "FILEDIA" 0)
+(command "-PLOT" "Y" "" "DWG To PDF.pc3" "ISO A3 (420.00 x 297.00 MM)" "M" "L" "N" "E" "F" "C" "N" "." "N" "N" "" "D:\\Lx电脑文件\\S实验\\2026.3回收油处理项目\\废油蒸馏8月技改\\废油蒸馏8月技改（彩印）.pdf" "N")
+(setvar "CMDDIA" 1)
+(setvar "FILEDIA" 1)
+_qsave
