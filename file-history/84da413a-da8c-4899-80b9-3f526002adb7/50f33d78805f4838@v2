@@ -1,0 +1,376 @@
+# -*- coding: utf-8 -*-
+"""生成滚动工作计划通知及模板文档"""
+
+from docx import Document
+from docx.shared import Pt, Cm, RGBColor, Inches
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.enum.table import WD_TABLE_ALIGNMENT
+from docx.oxml.ns import qn
+import copy
+
+doc = Document()
+
+# ===== 全局样式 =====
+style = doc.styles['Normal']
+style.font.name = '宋体'
+style.font.size = Pt(12)
+style._element.rPr.rFonts.set(qn('w:eastAsia'), '宋体')
+
+# 页边距
+for section in doc.sections:
+    section.top_margin = Cm(2.5)
+    section.bottom_margin = Cm(2.5)
+    section.left_margin = Cm(2.8)
+    section.right_margin = Cm(2.8)
+
+
+def set_cell_text(cell, text, bold=False, size=10.5, align='left', font='宋体'):
+    """设置单元格文本"""
+    cell.text = ''
+    p = cell.paragraphs[0]
+    if align == 'center':
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    elif align == 'right':
+        p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    run = p.add_run(text)
+    run.font.name = font
+    run.font.size = Pt(size)
+    run.bold = bold
+    run._element.rPr.rFonts.set(qn('w:eastAsia'), font)
+
+
+def set_cell_shading(cell, color):
+    """设置单元格底色"""
+    tc_pr = cell._element.get_or_add_tcPr()
+    shd = tc_pr.makeelement(qn('w:shd'), {
+        qn('w:val'): 'clear',
+        qn('w:color'): 'auto',
+        qn('w:fill'): color
+    })
+    tc_pr.append(shd)
+
+
+def add_heading_custom(text, level=1):
+    """添加自定义标题"""
+    p = doc.add_paragraph()
+    p.paragraph_format.space_before = Pt(12)
+    p.paragraph_format.space_after = Pt(6)
+    run = p.add_run(text)
+    run.font.name = '黑体'
+    run._element.rPr.rFonts.set(qn('w:eastAsia'), '黑体')
+    if level == 0:
+        run.font.size = Pt(18)
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    elif level == 1:
+        run.font.size = Pt(14)
+    elif level == 2:
+        run.font.size = Pt(13)
+    run.bold = True
+    return p
+
+
+def add_body(text, indent=True, bold=False, size=12):
+    """添加正文段落"""
+    p = doc.add_paragraph()
+    if indent:
+        p.paragraph_format.first_line_indent = Pt(24)
+    p.paragraph_format.space_after = Pt(4)
+    p.paragraph_format.line_spacing = 1.5
+    run = p.add_run(text)
+    run.font.name = '宋体'
+    run.font.size = Pt(size)
+    run.bold = bold
+    run._element.rPr.rFonts.set(qn('w:eastAsia'), '宋体')
+    return p
+
+
+# ========================
+# 一、通知正文
+# ========================
+
+add_heading_custom('关于推行月度滚动工作计划管理的通知', level=0)
+
+# 空行
+doc.add_paragraph()
+
+# 抬头
+p = doc.add_paragraph()
+p.paragraph_format.line_spacing = 1.5
+run = p.add_run('各分厂、各部门：')
+run.font.name = '宋体'
+run.font.size = Pt(12)
+run._element.rPr.rFonts.set(qn('w:eastAsia'), '宋体')
+
+add_body(
+    '为进一步提升各分厂、各部门工作的计划性和目标导向，强化工作过程管控与结果考核，'
+    '经研究决定，自2026年8月起在全公司范围内推行月度滚动工作计划管理制度。现将有关事项通知如下：'
+)
+
+# 一、总体要求
+add_heading_custom('一、总体要求', level=1)
+
+add_body(
+    '各分厂、各部门须按月编制可量化到数据、可衡量价值的工作计划和具体措施，'
+    '采用"三个月滚动"方式管理——即每月编制当月及后续两个月的工作计划，月初对上月实际完成情况进行考核，'
+    '并同步更新后三个月计划，形成"计划—执行—考核—滚动更新"的闭环管理机制。'
+)
+
+# 二、计划编制要求
+add_heading_custom('二、计划编制要求', level=1)
+
+add_body('1. 量化原则：每项工作计划必须明确量化指标（产量、能耗、成本、效率、安全等），杜绝"加强""提升"等模糊表述。')
+add_body('2. 价值导向：每项计划须标明预期产生的价值（节约成本金额、提升产量、降低能耗百分比等）。')
+add_body('3. 责任到人：每项计划须明确责任人和完成时限。')
+add_body('4. 措施具体：配套措施须可操作、可验证，避免空泛。')
+
+# 三、滚动计划周期
+add_heading_custom('三、滚动计划周期', level=1)
+
+add_body('滚动计划按以下周期循环执行：')
+
+# 滚动计划周期表
+t = doc.add_table(rows=5, cols=4)
+t.style = 'Table Grid'
+t.alignment = WD_TABLE_ALIGNMENT.CENTER
+
+headers = ['编制/考核时间', '考核期', '新编计划期', '说明']
+for i, h in enumerate(headers):
+    set_cell_text(t.cell(0, i), h, bold=True, size=10.5, align='center')
+    set_cell_shading(t.cell(0, i), 'D9E2F3')
+
+rows_data = [
+    ['2026年8月初', '—', '8月、9月、10月', '首次编制，启动滚动计划'],
+    ['2026年9月初', '8月', '9月、10月、11月', '考核8月完成情况，更新后三个月计划'],
+    ['2026年10月初', '9月', '10月、11月、12月', '考核9月完成情况，更新后三个月计划'],
+    ['2026年11月初', '10月', '11月、12月、次年1月', '以此类推，持续滚动'],
+]
+for r, row_data in enumerate(rows_data):
+    for c, val in enumerate(row_data):
+        set_cell_text(t.cell(r + 1, c), val, size=10, align='center' if c < 3 else 'left')
+
+doc.add_paragraph()
+
+# 四、考核与反馈
+add_heading_custom('四、考核与反馈', level=1)
+
+add_body('1. 每月初由各部门/分厂负责人对上月工作计划完成情况进行自评，填写"实际完成值"和"完成率"。')
+add_body('2. 未完成项须注明原因及后续追赶措施。')
+add_body('3. 考核结果作为月度绩效评定的参考依据。')
+add_body('4. 连续两个月未达70%完成率的部门，须向公司提交书面说明。')
+
+# 五、时间节点
+add_heading_custom('五、时间节点', level=1)
+
+add_body('各分厂、各部门请于每周一上班前将最新滚动工作计划表报送至本处。首次报送时间为2026年8月10日（周一）前。')
+
+# 落款
+doc.add_paragraph()
+doc.add_paragraph()
+p = doc.add_paragraph()
+p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+run = p.add_run('编制部门：                    ')
+run.font.name = '宋体'
+run.font.size = Pt(12)
+run._element.rPr.rFonts.set(qn('w:eastAsia'), '宋体')
+
+p = doc.add_paragraph()
+p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+run = p.add_run('2026年    月    日')
+run.font.name = '宋体'
+run.font.size = Pt(12)
+run._element.rPr.rFonts.set(qn('w:eastAsia'), '宋体')
+
+# ========================
+# 分页
+# ========================
+doc.add_page_break()
+
+# ========================
+# 二、滚动工作计划模板
+# ========================
+
+add_heading_custom('月度滚动工作计划表', level=0)
+doc.add_paragraph()
+
+# 基本信息表
+info_t = doc.add_table(rows=2, cols=4)
+info_t.style = 'Table Grid'
+info_t.alignment = WD_TABLE_ALIGNMENT.CENTER
+
+info_data = [
+    ['编制单位/分厂', '', '编制日期', ''],
+    ['编制人', '', '审核人', ''],
+]
+for r, row in enumerate(info_data):
+    for c, val in enumerate(row):
+        if c % 2 == 0:
+            set_cell_text(info_t.cell(r, c), val, bold=True, size=10.5, align='center')
+            set_cell_shading(info_t.cell(r, c), 'F2F2F2')
+        else:
+            set_cell_text(info_t.cell(r, c), val, size=10.5)
+
+doc.add_paragraph()
+
+# 考核期信息
+add_body('■ 上月考核期：2026年___月              ■ 本期计划期：2026年___月、___月、___月', bold=True, indent=False, size=11)
+
+doc.add_paragraph()
+
+# ===== Part A: 上月完成情况考核 =====
+add_heading_custom('一、上月工作计划完成情况考核', level=1)
+
+add_body('（首次编制时本栏不填，自第二期起填写）', indent=False, size=10.5)
+
+# 上月考核表
+ca = doc.add_table(rows=3, cols=8)
+ca.style = 'Table Grid'
+ca.alignment = WD_TABLE_ALIGNMENT.CENTER
+
+ca_headers = ['序号', '工作计划项', '量化指标', '目标值', '实际完成值', '完成率(%)', '未完成原因', '追赶措施']
+for i, h in enumerate(ca_headers):
+    set_cell_text(ca.cell(0, i), h, bold=True, size=9, align='center')
+    set_cell_shading(ca.cell(0, i), 'D9E2F3')
+
+# 空行
+for r in range(1, 3):
+    for c in range(8):
+        set_cell_text(ca.cell(r, c), '', size=9)
+
+# 设置列宽
+col_widths = [1.0, 2.5, 1.8, 1.5, 1.5, 1.2, 2.0, 2.0]
+for r in range(3):
+    for c, w in enumerate(col_widths):
+        ca.cell(r, c).width = Cm(w)
+
+doc.add_paragraph()
+
+# ===== Part B: 三个月滚动工作计划 =====
+add_heading_custom('二、三个月滚动工作计划', level=1)
+
+# ---- 第一个月 ----
+month1 = doc.add_paragraph()
+month1.paragraph_format.space_before = Pt(8)
+month1.paragraph_format.space_after = Pt(4)
+run = month1.add_run('（一）2026年___月工作计划')
+run.font.name = '黑体'
+run.font.size = Pt(12)
+run.bold = True
+run._element.rPr.rFonts.set(qn('w:eastAsia'), '黑体')
+
+m1 = doc.add_table(rows=4, cols=8)
+m1.style = 'Table Grid'
+m1.alignment = WD_TABLE_ALIGNMENT.CENTER
+
+m_headers = ['序号', '工作计划项', '量化指标', '目标值', '具体措施', '预期价值', '责任人', '完成时限']
+for i, h in enumerate(m_headers):
+    set_cell_text(m1.cell(0, i), h, bold=True, size=9, align='center')
+    set_cell_shading(m1.cell(0, i), 'E2EFDA')
+
+for r in range(1, 4):
+    for c in range(8):
+        set_cell_text(m1.cell(r, c), '', size=9)
+
+col_widths2 = [0.8, 2.2, 1.5, 1.2, 2.5, 1.8, 1.2, 1.3]
+for r in range(4):
+    for c, w in enumerate(col_widths2):
+        m1.cell(r, c).width = Cm(w)
+
+doc.add_paragraph()
+
+# ---- 第二个月 ----
+month2 = doc.add_paragraph()
+month2.paragraph_format.space_before = Pt(8)
+month2.paragraph_format.space_after = Pt(4)
+run = month2.add_run('（二）2026年___月工作计划')
+run.font.name = '黑体'
+run.font.size = Pt(12)
+run.bold = True
+run._element.rPr.rFonts.set(qn('w:eastAsia'), '黑体')
+
+m2 = doc.add_table(rows=4, cols=8)
+m2.style = 'Table Grid'
+m2.alignment = WD_TABLE_ALIGNMENT.CENTER
+
+for i, h in enumerate(m_headers):
+    set_cell_text(m2.cell(0, i), h, bold=True, size=9, align='center')
+    set_cell_shading(m2.cell(0, i), 'FFF2CC')
+
+for r in range(1, 4):
+    for c in range(8):
+        set_cell_text(m2.cell(r, c), '', size=9)
+
+for r in range(4):
+    for c, w in enumerate(col_widths2):
+        m2.cell(r, c).width = Cm(w)
+
+doc.add_paragraph()
+
+# ---- 第三个月 ----
+month3 = doc.add_paragraph()
+month3.paragraph_format.space_before = Pt(8)
+month3.paragraph_format.space_after = Pt(4)
+run = month3.add_run('（三）2026年___月工作计划')
+run.font.name = '黑体'
+run.font.size = Pt(12)
+run.bold = True
+run._element.rPr.rFonts.set(qn('w:eastAsia'), '黑体')
+
+m3 = doc.add_table(rows=4, cols=8)
+m3.style = 'Table Grid'
+m3.alignment = WD_TABLE_ALIGNMENT.CENTER
+
+for i, h in enumerate(m_headers):
+    set_cell_text(m3.cell(0, i), h, bold=True, size=9, align='center')
+    set_cell_shading(m3.cell(0, i), 'FCE4D6')
+
+for r in range(1, 4):
+    for c in range(8):
+        set_cell_text(m3.cell(r, c), '', size=9)
+
+for r in range(4):
+    for c, w in enumerate(col_widths2):
+        m3.cell(r, c).width = Cm(w)
+
+doc.add_paragraph()
+
+# ===== Part C: 填写说明 =====
+add_heading_custom('三、填写说明', level=1)
+
+add_body('1. 量化指标：须为可测量的数据指标，如"循环水电导率≤800μS/cm""废油回收率≥85%""蒸汽消耗≤X吨/天"等。', size=11)
+add_body('2. 目标值：明确具体数值，不可使用"有所提升""力争"等模糊表述。', size=11)
+add_body('3. 预期价值：注明该项工作完成后的量化收益，如"月节约电费约X元""减少废油处理量X吨"等。', size=11)
+add_body('4. 具体措施：写明实施路径和关键步骤，确保可执行、可验证。', size=11)
+add_body('5. 完成率 = 实际完成值 ÷ 目标值 × 100%。', size=11)
+add_body('6. 三个月计划用不同底色区分：当月（绿色）、次月（黄色）、第三月（橙色），体现滚动递进关系。', size=11)
+
+doc.add_paragraph()
+doc.add_paragraph()
+
+# 签字区
+sign_t = doc.add_table(rows=2, cols=3)
+sign_t.alignment = WD_TABLE_ALIGNMENT.CENTER
+
+sign_data = [
+    ['编制人（签字）', '审核人（签字）', '批准人（签字）'],
+    ['', '', ''],
+]
+for r, row in enumerate(sign_data):
+    for c, val in enumerate(row):
+        if r == 0:
+            set_cell_text(sign_t.cell(r, c), val, bold=True, size=10.5, align='center')
+            set_cell_shading(sign_t.cell(r, c), 'F2F2F2')
+        else:
+            set_cell_text(sign_t.cell(r, c), '\n\n\n', size=10.5, align='center')
+
+# 设置签字行高度
+for cell in sign_t.rows[1].cells:
+    tr = cell._element.getparent()
+    trPr = tr.makeelement(qn('w:trPr'), {})
+    trHeight = trPr.makeelement(qn('w:trHeight'), {qn('w:val'): '1200', qn('w:hRule'): 'atLeast'})
+    trPr.append(trHeight)
+    tr.insert(0, trPr)
+
+# ===== 保存 =====
+output_path = r'C:\Users\62628\Desktop\月度滚动工作计划通知及模板.docx'
+doc.save(output_path)
+print(f'文档已保存：{output_path}')

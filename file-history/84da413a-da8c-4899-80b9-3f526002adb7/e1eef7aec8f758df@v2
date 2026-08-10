@@ -1,0 +1,176 @@
+import openpyxl
+from collections import defaultdict
+
+wb = openpyxl.load_workbook(r'C:\Users\62628\Downloads\2026.6-8.xlsx', data_only=True)
+ws = wb['库存杂发单']
+
+items = []
+for r in range(3, ws.max_row + 1):
+    date = ws.cell(r, 2).value
+    doc_type = ws.cell(r, 3).value
+    category = ws.cell(r, 4).value or ''
+    name = ws.cell(r, 7).value or ''
+    qty = ws.cell(r, 9).value or 0
+    price = ws.cell(r, 10).value or 0
+    amount = ws.cell(r, 11).value or 0
+
+    if date is None:
+        continue
+
+    if hasattr(date, 'strftime'):
+        month = date.strftime('%Y-%m')
+        date_str = date.strftime('%Y-%m-%d')
+    else:
+        date_str = str(date)[:10]
+        month = date_str[:7]
+
+    items.append({
+        'month': month,
+        'date': date_str,
+        'doc_type': doc_type or '',
+        'category': category,
+        'name': name,
+        'qty': qty,
+        'price': price,
+        'amount': float(amount) if amount and str(amount).replace('.','').replace('-','').isdigit() else 0,
+    })
+
+print(f'总记录数: {len(items)}')
+print()
+
+# 1. By month
+print('=== 按月汇总 ===')
+month_data = defaultdict(lambda: {'count': 0, 'total': 0})
+for it in items:
+    month_data[it['month']]['count'] += 1
+    month_data[it['month']]['total'] += it['amount']
+
+for m in sorted(month_data.keys()):
+    d = month_data[m]
+    print(f'  {m}: {d["count"]}笔, 金额 {d["total"]:,.2f}元')
+
+total_all = sum(d['total'] for d in month_data.values())
+print(f'  合计: {len(items)}笔, 金额 {total_all:,.2f}元')
+
+# 2. By category
+print()
+print('=== 按财务分类汇总 ===')
+cat_data = defaultdict(lambda: {'count': 0, 'total': 0})
+for it in items:
+    cat_data[it['category']]['count'] += 1
+    cat_data[it['category']]['total'] += it['amount']
+
+for cat in sorted(cat_data.keys(), key=lambda x: -cat_data[x]['total']):
+    d = cat_data[cat]
+    pct = d['total'] / total_all * 100
+    print(f'  {cat}: {d["count"]}笔, {d["total"]:,.2f}元 ({pct:.1f}%)')
+
+# 3. Top 20 by amount
+print()
+print('=== 金额TOP20 ===')
+sorted_items = sorted(items, key=lambda x: -x['amount'])
+for i, it in enumerate(sorted_items[:20]):
+    print(f'  {i+1}. [{it["date"]}] {it["name"][:30]} | {it["category"]} | {it["amount"]:,.2f}元')
+
+# 4. By category x month
+print()
+print('=== 分类 x 月度交叉表 ===')
+cats = sorted(cat_data.keys(), key=lambda x: -cat_data[x]['total'])
+months = sorted(month_data.keys())
+header = f'{"分类":<10}' + ''.join(f'{m:>12}' for m in months) + f'{"合计":>12}'
+print(header)
+for cat in cats:
+    vals = []
+    row_total = 0
+    for m in months:
+        val = sum(it['amount'] for it in items if it['category'] == cat and it['month'] == m)
+        vals.append(val)
+        row_total += val
+    line = f'{cat:<10}' + ''.join(f'{v:>12,.0f}' for v in vals) + f'{row_total:>12,.0f}'
+    print(line)
+vals = []
+for m in months:
+    vals.append(month_data[m]['total'])
+line = f'{"合计":<10}' + ''.join(f'{v:>12,.0f}' for v in vals) + f'{total_all:>12,.0f}'
+print(line)
+
+# 5. Specific high-value items analysis
+print()
+print('=== 重点物资分析 ===')
+
+# 空压机相关
+print()
+print('--- 空压机相关 ---')
+ac_items = [it for it in items if '空压机' in it['name'] or '寿力' in it['name'] or '油分芯' in it['name'] or '空滤芯' in it['name'] or '油滤芯' in it['name'] or '空压机油' in it['name']]
+for it in ac_items:
+    print(f'  [{it["date"]}] {it["name"][:35]} x{it["qty"]} = {it["amount"]:,.2f}元')
+ac_total = sum(it['amount'] for it in ac_items)
+print(f'  空压机相关小计: {ac_total:,.2f}元')
+
+# 活性炭/脱附相关
+print()
+print('--- 活性炭/脱附设备相关 ---')
+ac2 = [it for it in items if '活性炭' in it['name'] or '脱附' in it['name'] or '科蓝' in it['name'] or '硅胶砂' in it['name']]
+for it in ac2:
+    print(f'  [{it["date"]}] {it["name"][:35]} x{it["qty"]} = {it["amount"]:,.2f}元')
+ac2_total = sum(it['amount'] for it in ac2)
+print(f'  活性炭/脱附相关小计: {ac2_total:,.2f}元')
+
+# 循环水药剂
+print()
+print('--- 循环水药剂 ---')
+chem = [it for it in items if '阻垢' in it['name'] or '杀菌' in it['name'] or '粘泥' in it['name'] or '缓蚀' in it['name'] or '片碱' in it['name']]
+for it in chem:
+    print(f'  [{it["date"]}] {it["name"][:35]} x{it["qty"]} = {it["amount"]:,.2f}元')
+chem_total = sum(it['amount'] for it in chem)
+print(f'  循环水药剂小计: {chem_total:,.2f}元')
+
+# 油水分离器
+print()
+print('--- 油水分离器（R101-R104, 同一单号4笔）---')
+sep = [it for it in items if '油水分离器' in it['name']]
+for it in sep:
+    print(f'  [{it["date"]}] {it["name"][:35]} x{it["qty"]} = {it["amount"]:,.2f}元 单号:{it["doc_type"]}')
+sep_total = sum(it['amount'] for it in sep)
+print(f'  油水分离器小计: {sep_total:,.2f}元 (4台x18761={sep_total/4:,.0f})')
+
+# 劳保
+print()
+print('--- 劳保用品 ---')
+lb = [it for it in items if it['category'] == '劳保']
+lb_total = sum(it['amount'] for it in lb)
+print(f'  劳保用品小计: {lb_total:,.2f}元 ({len(lb)}笔)')
+
+# 面漆
+print()
+print('--- 面漆/油漆 ---')
+paint = [it for it in items if '面漆' in it['name'] or '油漆' in it['name']]
+for it in paint:
+    print(f'  [{it["date"]}] {it["name"][:35]} x{it["qty"]} = {it["amount"]:,.2f}元')
+paint_total = sum(it['amount'] for it in paint)
+print(f'  面漆/油漆小计: {paint_total:,.2f}元')
+
+# 6. 油水分离器异常分析
+print()
+print('=== 异常项检查 ===')
+print()
+print('--- R70: 单价为c（非数字）---')
+r70 = items[67]  # 0-indexed, R70 = index 67
+print(f'  {r70["date"]} {r70["name"]} 单价={r70["price"]} 金额={r70["amount"]}')
+
+print()
+print('--- R132-134: 金额为0的面漆 ---')
+zero_items = [it for it in items if it['amount'] == 0 and it['price'] == 0]
+for it in zero_items:
+    print(f'  [{it["date"]}] {it["name"][:35]} x{it["qty"]} 单价={it["price"]} 金额={it["amount"]}')
+
+# 7. 环比分析
+print()
+print('=== 环比变化 ===')
+if '2026-06' in month_data and '2026-07' in month_data:
+    jun = month_data['2026-06']['total']
+    jul = month_data['2026-07']['total']
+    aug = month_data.get('2026-08', {'total': 0})['total']
+    print(f'  6月: {jun:,.2f}元')
+    print(f'  7月: {jul:,.2f}元 (环比 {"+" if jul>jun else ""}{(jul-jun)/jun*100:.1f}%)')
+    print(f'  8月(截至8/7): {aug:,.2f}元')

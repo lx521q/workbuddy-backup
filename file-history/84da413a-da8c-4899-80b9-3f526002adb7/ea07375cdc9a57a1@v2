@@ -1,0 +1,61 @@
+# -*- coding: utf-8 -*-
+"""修复月份标签"""
+
+from docx import Document
+
+doc = Document(r'C:\Users\62628\Desktop\月度滚动工作计划通知及模板.docx')
+
+# 直接遍历并替换
+for p in doc.paragraphs:
+    full_text = p.text
+    if '（一）2026年___月工作计划' in full_text:
+        # 清理所有run，重新写入
+        for run in p.runs:
+            run.text = ''
+        p.runs[0].text = '（一）2026年8月工作计划'
+
+for p in doc.paragraphs:
+    full_text = p.text
+    if '（二）2026年___月工作计划' in full_text:
+        for run in p.runs:
+            run.text = ''
+        p.runs[0].text = '（二）2026年9月工作计划'
+
+for p in doc.paragraphs:
+    full_text = p.text
+    if '（三）2026年___月工作计划' in full_text:
+        for run in p.runs:
+            run.text = ''
+        p.runs[0].text = '（三）2026年10月工作计划'
+
+# 也更新考核期和计划期行
+for p in doc.paragraphs:
+    if '上月考核期：2026年___月' in p.text:
+        for run in p.runs:
+            if '___' in run.text:
+                run.text = run.text.replace('___', '8', 1)
+    if '本期计划期：2026年___月、___月、___月' in p.text:
+        for run in p.runs:
+            if '___' in run.text:
+                run.text = run.text.replace('___', '8', 1)
+                break
+        for run in p.runs:
+            if '___' in run.text:
+                run.text = run.text.replace('___', '9', 1)
+                break
+        for run in p.runs:
+            if '___' in run.text:
+                run.text = run.text.replace('___', '10', 1)
+                break
+
+doc.save(r'C:\Users\62628\Desktop\月度滚动工作计划通知及模板.docx')
+print('月份标签修复完成')
+
+# 验证
+doc2 = Document(r'C:\Users\62628\Desktop\月度滚动工作计划通知及模板.docx')
+for p in doc2.paragraphs:
+    t = p.text.strip()
+    if '2026年' in t and '月工作' in t:
+        print(f'  {t[:50]}')
+    if '考核期' in t or '计划期' in t:
+        print(f'  {t[:60]}')

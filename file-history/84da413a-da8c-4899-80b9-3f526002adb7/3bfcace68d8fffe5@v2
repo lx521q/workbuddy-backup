@@ -1,0 +1,101 @@
+# -*- coding: utf-8 -*-
+"""填入运行车间8月滚动工作计划数据"""
+
+from docx import Document
+from docx.shared import Pt, Cm
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.oxml.ns import qn
+
+doc = Document(r'C:\Users\62628\Desktop\月度滚动工作计划通知及模板.docx')
+
+
+def set_cell_text(cell, text, bold=False, size=9, align='left'):
+    """清空单元格并写入文本"""
+    # 清空所有段落
+    for p in cell.paragraphs:
+        p.clear()
+    p = cell.paragraphs[0]
+    if align == 'center':
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run = p.add_run(str(text))
+    run.font.name = '宋体'
+    run.font.size = Pt(size)
+    run.bold = bold
+    run._element.rPr.rFonts.set(qn('w:eastAsia'), '宋体')
+
+
+# ===== 1. 填写基本信息 (Table 1) =====
+t1 = doc.tables[1]
+set_cell_text(t1.cell(0, 1), '运行车间', size=10.5)
+set_cell_text(t1.cell(0, 3), '2026年8月8日', size=10.5)
+
+# ===== 2. 更新月份标签 =====
+# 找到 "(一) 2026年___月工作计划" 改为 "8月"
+for p in doc.paragraphs:
+    if '(一) 2026年___月工作计划' in p.text:
+        for run in p.runs:
+            if '___' in run.text:
+                run.text = run.text.replace('___', '8')
+    if '(二) 2026年___月工作计划' in p.text:
+        for run in p.runs:
+            if '___' in run.text:
+                run.text = run.text.replace('___', '9')
+    if '(三) 2026年___月工作计划' in p.text:
+        for run in p.runs:
+            if '___' in run.text:
+                run.text = run.text.replace('___', '10')
+
+# ===== 3. 填写8月工作计划 (Table 3) =====
+t3 = doc.tables[3]  # 第3张表 = 8月计划（绿色底）
+
+# Row 1: 物料消耗领用管控
+set_cell_text(t3.cell(1, 0), '1', align='center')
+set_cell_text(t3.cell(1, 1), '物料消耗领用管控')
+set_cell_text(t3.cell(1, 2), '月度物料消耗领用金额（万元）')
+set_cell_text(t3.cell(1, 3), '较上月降低1.14万元')
+set_cell_text(t3.cell(1, 4),
+    '1. 严格物料领用审批流程，推行以旧换新制度\n'
+    '2. 每周盘点物料库存，避免重复采购\n'
+    '3. 加强修旧利废，减少新件领用')
+set_cell_text(t3.cell(1, 5), '月节约物料成本约1.14万元')
+set_cell_text(t3.cell(1, 6), '')
+set_cell_text(t3.cell(1, 7), '8月31日')
+
+# Row 2: 电耗 — 冷水机组优化
+set_cell_text(t3.cell(2, 0), '2', align='center')
+set_cell_text(t3.cell(2, 1), '冷水机组优化运行，降低单位电耗')
+set_cell_text(t3.cell(2, 2), 'PVC电耗（度/箱）\n丁腈电耗（度/箱）')
+set_cell_text(t3.cell(2, 3), 'PVC电耗下降0.28度/箱\n丁腈电耗下降1.34度/箱')
+set_cell_text(t3.cell(2, 4),
+    '根据天气变化及循环水温度，适时停运冷水机组，'
+    '在满足工艺要求的前提下减少制冷设备运行时间')
+set_cell_text(t3.cell(2, 5),
+    '按当月产量测算，预计月节电约：\n'
+    'PVC线：产量×0.28度/箱\n'
+    '丁腈线：产量×1.34度/箱')
+set_cell_text(t3.cell(2, 6), '')
+set_cell_text(t3.cell(2, 7), '8月31日')
+
+# Row 3: 电耗 — 无组织风机及凉水塔调整
+set_cell_text(t3.cell(3, 0), '3', align='center')
+set_cell_text(t3.cell(3, 1), '五六厂无组织风机及凉水塔散热扇运行优化')
+set_cell_text(t3.cell(3, 2),
+    '五六厂无组织风机日均用电量（度/天）\n'
+    '凉水塔散热扇日均用电量（度/天）')
+set_cell_text(t3.cell(3, 3),
+    '较7月日均用电量下降，目标恢复至6月水平\n'
+    '（7月较6月：无组织风机每天多用580度，散热扇每天多用573度）')
+set_cell_text(t3.cell(3, 4),
+    '1. 八月下旬温度降低后，与各车间协调配合，在保证车间安全运行的基础上，'
+    '逐步下调五六厂无组织风机转速\n'
+    '2. 根据天气及循环水温度，适时调整凉水塔及散热扇运行参数，减少不必要的高负荷运行')
+set_cell_text(t3.cell(3, 5),
+    '两项合计预计月节电约：\n'
+    '（580 + 573）× 调整天数\n'
+    '按15天计约1.73万度')
+set_cell_text(t3.cell(3, 6), '')
+set_cell_text(t3.cell(3, 7), '8月下旬起持续跟踪')
+
+# ===== 保存 =====
+doc.save(r'C:\Users\62628\Desktop\月度滚动工作计划通知及模板.docx')
+print('数据填入完成！')

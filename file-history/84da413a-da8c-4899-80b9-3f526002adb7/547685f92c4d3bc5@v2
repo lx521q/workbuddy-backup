@@ -1,0 +1,106 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""Analyze July material requisitions excluding fixed assets"""
+
+import openpyxl
+from collections import defaultdict
+
+wb = openpyxl.load_workbook(r'C:\Users\62628\Downloads\2026.6-8.xlsx', data_only=True)
+ws = wb['库存杂发单']
+
+items = []
+for r in range(3, ws.max_row + 1):
+    date = ws.cell(r, 2).value
+    doc_type = ws.cell(r, 3).value or ''
+    category = ws.cell(r, 4).value or ''
+    name = ws.cell(r, 7).value or ''
+    qty = ws.cell(r, 9).value or 0
+    price = ws.cell(r, 10).value or 0
+    amount = ws.cell(r, 11).value or 0
+    
+    if date is None:
+        continue
+    
+    if hasattr(date, 'strftime'):
+        month = date.strftime('%Y-%m')
+        date_str = date.strftime('%Y-%m-%d')
+    else:
+        date_str = str(date)[:10]
+        month = date_str[:7]
+    
+    try:
+        amt = float(amount) if amount else 0
+    except:
+        amt = 0
+    
+    items.append({
+        'month': month,
+        'date': date_str,
+        'doc_type': doc_type,
+        'category': category,
+        'name': name,
+        'qty': qty,
+        'price': price,
+        'amount': amt,
+    })
+
+# Focus on July only, exclude fixed assets
+july = [it for it in items if it['month'] == '2026-07']
+july_no_fixed = [it for it in july if it['category'] != '\u56fa\u5b9a\u8d44\u4ea7']  # 固定资产
+
+print('=== 7月全部领用 ===')
+july_total = sum(it['amount'] for it in july)
+print(f'  总笔数: {len(july)}, 总金额: {july_total:,.2f}元')
+
+print(f'\n=== 7月剔除固定资产后 ===')
+july_no_fixed_total = sum(it['amount'] for it in july_no_fixed)
+print(f'  笔数: {len(july_no_fixed)}, 金额: {july_no_fixed_total:,.2f}元')
+
+print(f'\n=== 7月消耗性领用分类汇总（剔除固定资产）===')
+cat_data = defaultdict(lambda: {'count': 0, 'total': 0})
+for it in july_no_fixed:
+    cat_data[it['category']]['count'] += 1
+    cat_data[it['category']]['total'] += it['amount']
+
+for cat in sorted(cat_data.keys(), key=lambda x: -cat_data[x]['total']):
+    d = cat_data[cat]
+    pct = d['total'] / july_no_fixed_total * 100 if july_no_fixed_total > 0 else 0
+    print(f'  {cat}: {d["count"]}笔, {d["total"]:,.2f}元 ({pct:.1f}%)')
+
+print(f'\n=== 7月消耗性领用明细（剔除固定资产，按金额排序）===')
+for it in sorted(july_no_fixed, key=lambda x: -x['amount']):
+    print(f'  [{it["date"]}] {it["name"][:40]} | {it["category"]} | x{it["qty"]} | {it["amount"]:,.2f}元')
+
+# June for comparison
+print(f'\n=== 6月消耗性领用（剔除固定资产）===')
+june = [it for it in items if it['month'] == '2026-06']
+june_no_fixed = [it for it in june if it['category'] != '\u56fa\u5b9a\u8d44\u4ea7']
+june_no_fixed_total = sum(it['amount'] for it in june_no_fixed)
+print(f'  笔数: {len(june_no_fixed)}, 金额: {june_no_fixed_total:,.2f}元')
+
+cat_data_june = defaultdict(lambda: {'count': 0, 'total': 0})
+for it in june_no_fixed:
+    cat_data_june[it['category']]['count'] += 1
+    cat_data_june[it['category']]['total'] += it['amount']
+
+for cat in sorted(cat_data_june.keys(), key=lambda x: -cat_data_june[x]['total']):
+    d = cat_data_june[cat]
+    pct = d['total'] / june_no_fixed_total * 100 if june_no_fixed_total > 0 else 0
+    print(f'  {cat}: {d["count"]}笔, {d["total"]:,.2f}元 ({pct:.1f}%)')
+
+# Month-over-month comparison (excluding fixed assets)
+print(f'\n=== 6→7月消耗性领用对比（剔除固定资产）===')
+print(f'  6月: {june_no_fixed_total:,.2f}元')
+print(f'  7月: {july_no_fixed_total:,.2f}元')
+diff = june_no_fixed_total - july_no_fixed_total
+print(f'  差额: {diff:,.2f}元 (7月{"减少" if diff > 0 else "增加"})')
+
+# August so far
+print(f'\n=== 8月消耗性领用（剔除固定资产，截至8/7）===')
+aug = [it for it in items if it['month'] == '2026-08']
+aug_no_fixed = [it for it in aug if it['category'] != '\u56fa\u5b9a\u8d44\u4ea7']
+aug_no_fixed_total = sum(it['amount'] for it in aug_no_fixed)
+print(f'  笔数: {len(aug_no_fixed)}, 金额: {aug_no_fixed_total:,.2f}元')
+
+for it in sorted(aug_no_fixed, key=lambda x: -x['amount']):
+    print(f'  [{it["date"]}] {it["name"][:40]} | {it["category"]} | x{it["qty"]} | {it["amount"]:,.2f}元')
