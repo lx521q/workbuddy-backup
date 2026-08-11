@@ -1,0 +1,27 @@
+"""Write the .scr file with correct LISP backslash escaping."""
+# In the .scr file, we need C:\\Users\\... (double backslash)
+# so LISP reads it as C:\Users\... (single backslash)
+path = r"C:\\Users\\62628\\WorkBuddy\\2026-08-05-10-25-06\\color_output.pdf"
+
+script = f"""(setvar "FILEDIA" 0)
+(setvar "CMDDIA" 0)
+(command "_.ZOOM" "_E")
+(command "_.-PLOT" "Y" "Model" "DWG To PDF.pc3" "" "M" "L" "N" "E" "F" "C" "Y" "" "N" "N" "{path}" "N" "Y")
+(command "_.QUIT" "N")
+(princ)
+"""
+
+output = r"C:\Users\62628\WorkBuddy\2026-08-05-10-25-06\plot_v5.scr"
+with open(output, 'w', encoding='ascii') as f:
+    f.write(script)
+
+print(f"Written to {output}")
+
+# Verify with hex
+with open(output, 'r', encoding='ascii') as f:
+    content = f.read()
+
+idx = content.find('color_output')
+snippet = content[max(0,idx-30):idx+50]
+print(f"Repr: {repr(snippet)}")
+print(f"Hex:  {snippet.encode('ascii').hex(' ')}")

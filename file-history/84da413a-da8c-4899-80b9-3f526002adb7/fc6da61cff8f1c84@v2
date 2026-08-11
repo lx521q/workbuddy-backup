@@ -1,0 +1,13 @@
+# Write a script using EXPORTPDF command - simpler than -PLOT
+script_content = r'''(setvar "FILEDIA" 0)
+(setvar "CMDDIA" 0)
+(command "_.ZOOM" "_E")
+(command "_.EXPORTPDF" "C:\\Users\\62628\\WorkBuddy\\2026-08-05-10-25-06\\color_output.pdf")
+(command "_.QUIT" "N")
+(princ)
+'''
+
+with open(r'C:\Users\62628\WorkBuddy\2026-08-05-10-25-06\export_pdf.scr', 'w', encoding='ascii') as f:
+    f.write(script_content)
+
+print("EXPORTPDF script written")

@@ -1,0 +1,10 @@
+# 2026-08-10 工作日志
+
+## DWG转彩印PDF
+- 使用AutoCAD 2027 accoreconsole + -PLOT命令将废油蒸馏8月技改DWG导出为彩印PDF
+- 目标文件：`D:\Lx电脑文件\S实验\2026.3回收油处理项目\废油蒸馏8月技改\废油蒸馏8月技改（彩印）.pdf`
+- 关键技术点：
+  - accoreconsole使用`/s`参数加载脚本（非`/b`）
+  - COM API（vlax-get-acad-object）在控制台模式下不可用，需用`-PLOT`命令行
+  - .scr文件中路径需双反斜杠`\\`，LISP才会正确解析为`\`
+  - 避免bash壳层转义干扰，用.py文件生成.scr脚本

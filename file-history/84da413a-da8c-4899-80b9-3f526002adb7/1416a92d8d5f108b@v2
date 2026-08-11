@@ -1,0 +1,35 @@
+# Write a script to list available media sizes for DWG To PDF.pc3
+script_content = r'''(setvar "FILEDIA" 0)
+(setvar "CMDDIA" 0)
+(setq f (open "C:\\Users\\62628\\WorkBuddy\\2026-08-05-10-25-06\\media_list.txt" "w"))
+(vl-load-com)
+(setq acad (vlax-get-acad-object))
+(if acad
+  (progn
+    (setq doc (vla-get-ActiveDocument acad))
+    (setq lay (vla-get-ActiveLayout doc))
+    (vl-catch-all-apply 'vla-RefreshPlotDeviceInfo (list lay))
+    (vl-catch-all-apply 'vla-put-ConfigName (list lay "DWG To PDF.pc3"))
+    (write-line (strcat "ConfigName: " (vla-get-ConfigName lay)) f)
+    (setq media (vl-catch-all-apply 'vla-GetCanonicalMediaNames (list lay)))
+    (if (vl-catch-all-error-p media)
+      (write-line (strcat "Media ERROR: " (vl-catch-all-error-message media)) f)
+      (progn
+        (write-line "Available media sizes:" f)
+        (foreach m (vlax-safearray->list (vlax-variant-value media))
+          (write-line (strcat "  " m) f)
+        )
+      )
+    )
+  )
+  (write-line "acad object is nil - COM not available in console" f)
+)
+(close f)
+(command "_.QUIT" "N")
+(princ)
+'''
+
+with open(r'C:\Users\62628\WorkBuddy\2026-08-05-10-25-06\list_media.scr', 'w', encoding='ascii') as f:
+    f.write(script_content)
+
+print("Script written")
