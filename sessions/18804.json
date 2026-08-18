@@ -1,13 +1,16 @@
 {
   "pid": 18804,
-  "lastHeartbeat": 1786666961485,
-  "sessionId": "prewarm-wb-pool-1786666959247-a2c3c6",
-  "cwd": "D:\\Software\\WorkBuddy",
-  "startedAt": 1786666961470,
-  "kind": "prewarm",
-  "meta": {
-    "prewarmId": "wb-pool-1786666959247-a2c3c6",
-    "socketPath": "\\\\.\\pipe\\codebuddy-prewarm-wb-pool-1786666959247-a2c3c6",
-    "status": "idle"
-  }
+  "lastHeartbeat": 1787011924672,
+  "sessionId": "e0b2d16a-99ef-428b-8f81-89fd84145f2f",
+  "cwd": "C:\\Users\\62628\\WorkBuddy\\2026-08-06-08-22-48",
+  "startedAt": 1787011774523,
+  "kind": "interactive",
+  "url": "http://127.0.0.1:55286",
+  "endpoint": "http://127.0.0.1:55286",
+  "mode": "local",
+  "version": "2.115.0",
+  "os": "win32",
+  "arch": "x64",
+  "hostname": "Lx-3600",
+  "updatedAt": 1787011924672
 }
