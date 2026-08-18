@@ -1,0 +1,358 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""生成循环水管线互通改造 — 技改奖励申报材料"""
+
+from docx import Document
+from docx.shared import Pt, Cm, Inches, RGBColor
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.enum.table import WD_TABLE_ALIGNMENT
+from docx.oxml.ns import qn
+from docx.oxml import OxmlElement
+import os
+
+def set_cell_border(cell, **kwargs):
+    """设置单元格边框"""
+    tc = cell._tc
+    tcPr = tc.get_or_add_tcPr()
+    tcBorders = OxmlElement('w:tcBorders')
+    for edge in ('start', 'top', 'end', 'bottom', 'insideH', 'insideV'):
+        edge_data = kwargs.get(edge)
+        if edge_data:
+            element = OxmlElement(f'w:{edge}')
+            for attr in ['sz', 'val', 'color', 'space']:
+                if attr in edge_data:
+                    element.set(qn(f'w:{attr}'), str(edge_data[attr]))
+            tcBorders.append(element)
+    tcPr.append(tcBorders)
+
+def set_cell_shading(cell, color):
+    """设置单元格底色"""
+    tc = cell._tc
+    tcPr = tc.get_or_add_tcPr()
+    shading = OxmlElement('w:shd')
+    shading.set(qn('w:fill'), color)
+    shading.set(qn('w:val'), 'clear')
+    tcPr.append(shading)
+
+def set_cell_text(cell, text, bold=False, font_size=11, font_name='宋体', alignment=None, color=None):
+    """设置单元格文本格式"""
+    cell.text = ''
+    p = cell.paragraphs[0]
+    if alignment is not None:
+        p.alignment = alignment
+    run = p.add_run(text)
+    run.bold = bold
+    run.font.size = Pt(font_size)
+    run.font.name = font_name
+    run._element.rPr.rFonts.set(qn('w:eastAsia'), font_name)
+    if color:
+        run.font.color.rgb = color
+
+def add_heading_row(table, cells_data, bg_color='4472C4'):
+    """添加表头行（蓝底白字）"""
+    row = table.add_row()
+    for i, text in enumerate(cells_data):
+        cell = row.cells[i]
+        cell._element.get_or_add_tcPr()
+        set_cell_shading(cell, bg_color)
+        set_cell_text(cell, text, bold=True, font_size=11, color=RGBColor(255, 255, 255),
+                       alignment=WD_ALIGN_PARAGRAPH.CENTER)
+    return row
+
+def add_data_row(table, cells_data, bold_first=True):
+    """添加数据行"""
+    row = table.add_row()
+    for i, text in enumerate(cells_data):
+        cell = row.cells[i]
+        is_bold = bold_first and i == 0
+        align = WD_ALIGN_PARAGRAPH.CENTER if i == 0 else WD_ALIGN_PARAGRAPH.LEFT
+        set_cell_text(cell, text, bold=is_bold, font_size=10.5, alignment=align)
+    return row
+
+def merge_cells(table, row_start, col_start, row_end, col_end, text=''):
+    """合并单元格并设置文本"""
+    cell_start = table.cell(row_start, col_start)
+    cell_end = table.cell(row_end, col_end)
+    cell_start.merge(cell_end)
+    # 清理合并后单元格
+    for p in cell_start.paragraphs:
+        p.clear()
+    cell_start.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.LEFT
+    run = cell_start.paragraphs[0].add_run(text)
+    run.font.size = Pt(10.5)
+    run.font.name = '宋体'
+    run._element.rPr.rFonts.set(qn('w:eastAsia'), '宋体')
+
+doc = Document()
+
+# 设置页边距
+for section in doc.sections:
+    section.top_margin = Cm(2.54)
+    section.bottom_margin = Cm(2.54)
+    section.left_margin = Cm(3.17)
+    section.right_margin = Cm(3.17)
+
+# ———— 标题 ————
+title = doc.add_paragraph()
+title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+run = title.add_run('运行车间循环水管线互通改造\n技改奖励申报材料')
+run.bold = True
+run.font.size = Pt(16)
+run.font.name = '黑体'
+run._element.rPr.rFonts.set(qn('w:eastAsia'), '黑体')
+run.font.color.rgb = RGBColor(0, 51, 102)
+
+doc.add_paragraph()  # 空行
+
+# ———— 基本信息表 ————
+info_heading = doc.add_paragraph()
+run = info_heading.add_run('一、基本信息')
+run.bold = True
+run.font.size = Pt(14)
+run.font.name = '黑体'
+run._element.rPr.rFonts.set(qn('w:eastAsia'), '黑体')
+
+# 基本信息表：3列 x N行
+table1 = doc.add_table(rows=0, cols=3, style='Table Grid')
+table1.alignment = WD_TABLE_ALIGNMENT.CENTER
+
+# 设置列宽
+for row in table1.rows:
+    for i, width in enumerate([Cm(3.5), Cm(5.5), Cm(7)]):
+        row.cells[i].width = width
+
+add_data_row(table1, ['项目名称', '循环水管线互通改造（东循环水池↔丁腈循环水池）', ''])
+# 合并后两列
+merge_cells(table1, 0, 1, 0, 2, '循环水管线互通改造（东循环水池 ↔ 丁腈循环水池）')
+
+add_data_row(table1, ['申报部门', '设备部'])
+add_data_row(table1, ['实施车间', '运行车间'])
+add_data_row(table1, ['实施日期', '2026年7月8日'])
+add_data_row(table1, ['关联施工方案', 'YXCJ-2026-011 循环水管线改造、循环水阀门更换'])
+add_data_row(table1, ['改造类型', '工艺优化 / 节能降耗 / 环保达标'])
+
+# 重新合并项目名称行
+merge_cells(table1, 0, 1, 0, 2, '循环水管线互通改造（东循环水池 ↔ 丁腈循环水池）')
+
+doc.add_paragraph()
+
+# ———— 改造前状况 ————
+p2 = doc.add_paragraph()
+run = p2.add_run('二、改造前状况（存在问题）')
+run.bold = True
+run.font.size = Pt(14)
+run.font.name = '黑体'
+run._element.rPr.rFonts.set(qn('w:eastAsia'), '黑体')
+
+problem_text = """丁腈冷冻机组冷凝器采用丁腈循环水池循环水进行降温。改造前，丁腈循环水池为独立循环系统，水池容量有限，循环水散热面积不足，夏季高温时段水池水温持续维持在37℃左右。
+
+水温过高直接导致以下连锁问题：
+
+1. 冷冻机组运行异常：冷凝器进水温度过高（37℃），压缩机组负载极小（压缩机无法满负荷工作），频繁出现高压跳闸保护停机，严重影响制冷稳定性。
+
+2. 冷水出水温度偏高：冷冻机组产出冷水温度约25℃（正常设计值为≤15℃），远高于工艺要求。
+
+3. 活性炭系统连锁影响：冷水温度高 → 活性炭吸附罐进口气体温度超过40℃ → 活性炭吸附效率大幅下降 → 脱附频次显著增加 → 活性炭寿命缩短、运行成本上升。
+
+4. 环保指标濒临超标：活性炭吸附效率下降导致VOC排放指标接近环保标准上限，存在超标排放风险。"""
+
+p = doc.add_paragraph()
+p.paragraph_format.first_line_indent = Cm(0.74)
+p.paragraph_format.line_spacing = 1.5
+run = p.add_run(problem_text)
+run.font.size = Pt(10.5)
+run.font.name = '宋体'
+run._element.rPr.rFonts.set(qn('w:eastAsia'), '宋体')
+
+doc.add_paragraph()
+
+# ———— 改造内容 ————
+p3 = doc.add_paragraph()
+run = p3.add_run('三、改造内容')
+run.bold = True
+run.font.size = Pt(14)
+run.font.name = '黑体'
+run._element.rPr.rFonts.set(qn('w:eastAsia'), '黑体')
+
+solution_text = """改造方案为将东循环水池与丁腈循环水池管路互通，实现两池循环水双向流通：
+
+◆ 东循环水池进水 → 通入丁腈循环水池（补充低温循环水）
+◆ 丁腈循环水池回收水 → 通入东循环水池（利用东池大容量散热降温）
+
+改造核心思路：东循环水池容量大、散热面积广、水温较低（受凉水塔持续降温），通过管路互通，将东池的低温循环水引入丁腈池，同时丁腈池的高温回水汇入东池散热降温，形成"大池带小池"的温度平衡机制。改造仅涉及管路连接和阀门调整，施工量小、见效快。"""
+
+p = doc.add_paragraph()
+p.paragraph_format.first_line_indent = Cm(0.74)
+p.paragraph_format.line_spacing = 1.5
+run = p.add_run(solution_text)
+run.font.size = Pt(10.5)
+run.font.name = '宋体'
+run._element.rPr.rFonts.set(qn('w:eastAsia'), '宋体')
+
+doc.add_paragraph()
+
+# ———— 改造后效果 ————
+p4 = doc.add_paragraph()
+run = p4.add_run('四、改造后效果对比')
+run.bold = True
+run.font.size = Pt(14)
+run.font.name = '黑体'
+run._element.rPr.rFonts.set(qn('w:eastAsia'), '黑体')
+
+# 效果对比表
+table2 = doc.add_table(rows=0, cols=4, style='Table Grid')
+table2.alignment = WD_TABLE_ALIGNMENT.CENTER
+
+add_heading_row(table2, ['对比项目', '改造前', '改造后', '改善幅度'])
+
+comparison_data = [
+    ['丁腈水池水温', '37℃', '27~29℃', '降低 8~10℃'],
+    ['冷水机组运行状态', '负载小、频繁跳闸', '负载增加、运行稳定', '杜绝跳闸停机'],
+    ['冷冻机组产出冷水温度', '~25℃', '~15℃', '降低 ~10℃'],
+    ['活性炭进口气体温度', '＞40℃', '＜30℃', '降低 10℃以上'],
+    ['活性炭脱附时长', '脱附频次高', '2000~2200分钟/次', '脱附间隔大幅延长'],
+    ['环保VOC排放指标', '接近超标值', '稳定在 10mg/m³', '稳定达标、安全裕度大'],
+]
+
+for item in comparison_data:
+    row = table2.add_row()
+    for i, text in enumerate(item):
+        cell = row.cells[i]
+        set_cell_text(cell, text, bold=(i == 0), font_size=10.5,
+                       alignment=WD_ALIGN_PARAGRAPH.CENTER if i > 0 else WD_ALIGN_PARAGRAPH.LEFT)
+
+doc.add_paragraph()
+
+# ———— 综合效益分析 ————
+p5 = doc.add_paragraph()
+run = p5.add_run('五、综合效益分析')
+run.bold = True
+run.font.size = Pt(14)
+run.font.name = '黑体'
+run._element.rPr.rFonts.set(qn('w:eastAsia'), '黑体')
+
+p5a = doc.add_paragraph()
+run = p5a.add_run('1. 环保效益（核心效益）')
+run.bold = True
+run.font.size = Pt(12)
+run.font.name = '黑体'
+run._element.rPr.rFonts.set(qn('w:eastAsia'), '黑体')
+
+env_text = """活性炭脱附时长从改造前的频繁脱附（脱附间隔短），延长至2000~2200分钟/次，脱附频次大幅降低。VOC排放指标稳定在10mg/m³，远低于环保标准限值，从根本上消除了超标排放风险，保障了车间环保合规运行。"""
+
+p = doc.add_paragraph()
+p.paragraph_format.first_line_indent = Cm(0.74)
+p.paragraph_format.line_spacing = 1.5
+run = p.add_run(env_text)
+run.font.size = Pt(10.5)
+run.font.name = '宋体'
+run._element.rPr.rFonts.set(qn('w:eastAsia'), '宋体')
+
+p5b = doc.add_paragraph()
+run = p5b.add_run('2. 运行稳定性效益')
+run.bold = True
+run.font.size = Pt(12)
+run.font.name = '黑体'
+run._element.rPr.rFonts.set(qn('w:eastAsia'), '黑体')
+
+stable_text = """改造前冷冻机组频繁高压跳闸，严重影响丁腈车间正常供冷；改造后冷冻机组负载增加、运行稳定，彻底解决了跳闸停机问题，保障了生产工艺用冷的连续性和稳定性。"""
+
+p = doc.add_paragraph()
+p.paragraph_format.first_line_indent = Cm(0.74)
+p.paragraph_format.line_spacing = 1.5
+run = p.add_run(stable_text)
+run.font.size = Pt(10.5)
+run.font.name = '宋体'
+run._element.rPr.rFonts.set(qn('w:eastAsia'), '宋体')
+
+p5c = doc.add_paragraph()
+run = p5c.add_run('3. 经济效益')
+run.bold = True
+run.font.size = Pt(12)
+run.font.name = '黑体'
+run._element.rPr.rFonts.set(qn('w:eastAsia'), '黑体')
+
+econ_text = """① 活性炭使用寿命延长：脱附频次降低，活性炭更换周期延长，减少活性炭采购更换费用。
+② 冷冻机组电耗降低：机组稳定运行、避免频繁启停，减少启停冲击电流和无效运行时间。
+③ 设备维修成本降低：消除频繁跳闸对压缩机、接触器、控制元件的损害，维修频次和备件更换成本下降。
+④ 改造投入极低：仅涉及管路连接和阀门调整，无大型设备采购，投入产出比高。"""
+
+p = doc.add_paragraph()
+p.paragraph_format.first_line_indent = Cm(0.74)
+p.paragraph_format.line_spacing = 1.5
+run = p.add_run(econ_text)
+run.font.size = Pt(10.5)
+run.font.name = '宋体'
+run._element.rPr.rFonts.set(qn('w:eastAsia'), '宋体')
+
+doc.add_paragraph()
+
+# ———— 技改亮点 ————
+p6 = doc.add_paragraph()
+run = p6.add_run('六、技改亮点')
+run.bold = True
+run.font.size = Pt(14)
+run.font.name = '黑体'
+run._element.rPr.rFonts.set(qn('w:eastAsia'), '黑体')
+
+highlights = """▶ 思路巧妙：利用东循环水池大容量、低水温的优势，通过简单管路互通解决丁腈水池水温过高问题，属于"大池带小池"式创新。
+
+▶ 投入小、见效快：仅改造管路连接，无需新增冷却设备，施工当日完成，投用即见效。
+
+▶ "一改三得"：一次改造同步解决了冷冻机组运行稳定性、活性炭脱附效率、环保VOC达标三个相互关联的问题，牵一发而动全身。
+
+▶ 可推广性强：此改造思路可推广至厂区其他存在类似水温问题的循环水系统。"""
+
+p = doc.add_paragraph()
+p.paragraph_format.first_line_indent = Cm(0.74)
+p.paragraph_format.line_spacing = 1.5
+run = p.add_run(highlights)
+run.font.size = Pt(10.5)
+run.font.name = '宋体'
+run._element.rPr.rFonts.set(qn('w:eastAsia'), '宋体')
+
+doc.add_paragraph()
+
+# ———— 申报栏 ————
+p7 = doc.add_paragraph()
+run = p7.add_run('七、审批意见')
+run.bold = True
+run.font.size = Pt(14)
+run.font.name = '黑体'
+run._element.rPr.rFonts.set(qn('w:eastAsia'), '黑体')
+
+table3 = doc.add_table(rows=0, cols=2, style='Table Grid')
+table3.alignment = WD_TABLE_ALIGNMENT.CENTER
+
+rows_data = [
+    ('申报部门意见', ''),
+    ('安全环保部意见', ''),
+    ('分管领导意见', ''),
+    ('总经理审批', ''),
+]
+
+for label, _ in rows_data:
+    row = table3.add_row()
+    row.height = Cm(2.5)
+    cell_label = row.cells[0]
+    cell_label.width = Cm(3.5)
+    set_cell_text(cell_label, label, bold=True, font_size=10.5, alignment=WD_ALIGN_PARAGRAPH.CENTER)
+    set_cell_shading(cell_label, 'D9E2F3')
+    cell_value = row.cells[1]
+    cell_value.width = Cm(12.5)
+
+# ———— 落款 ————
+doc.add_paragraph()
+p_footer = doc.add_paragraph()
+p_footer.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+run = p_footer.add_run('淄博蓝帆新材料有限公司\n设备部\n2026年8月')
+run.font.size = Pt(10.5)
+run.font.name = '宋体'
+run._element.rPr.rFonts.set(qn('w:eastAsia'), '宋体')
+
+# 保存文件
+output_dir = r'C:\Users\62628\Desktop'
+output_path = os.path.join(output_dir, '循环水管线互通改造-技改奖励申报材料.docx')
+doc.save(output_path)
+print(f'文档已生成：{output_path}')
+print(f'文件大小：{os.path.getsize(output_path)} bytes')
