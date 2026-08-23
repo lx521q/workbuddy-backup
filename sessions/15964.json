@@ -1,0 +1,13 @@
+{
+  "pid": 15964,
+  "lastHeartbeat": 1787443061579,
+  "sessionId": "prewarm-wb-pool-1787443059339-316efb",
+  "cwd": "D:\\Software\\WorkBuddy",
+  "startedAt": 1787443061567,
+  "kind": "prewarm",
+  "meta": {
+    "prewarmId": "wb-pool-1787443059339-316efb",
+    "socketPath": "\\\\.\\pipe\\codebuddy-prewarm-wb-pool-1787443059339-316efb",
+    "status": "idle"
+  }
+}
