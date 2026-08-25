@@ -1,0 +1,289 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""生成 顿汉布什螺杆式冷水机组作业指导书"""
+import sys
+sys.path.insert(0, r'C:\Users\62628\WorkBuddy\2026-08-05-10-25-06')
+from docx import Document
+from docx.shared import Pt, Cm, Inches, RGBColor
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.enum.table import WD_TABLE_ALIGNMENT
+from docx.oxml.ns import qn
+from docx_helpers import set_run_font, set_cell, set_cell_bg, set_col_widths, set_table_borders, add_heading, add_note
+
+SONG = '宋体'
+HEI = '黑体'
+
+OUTPUT = r'C:\Users\62628\Desktop\顿汉布什螺杆式冷水机组作业指导书.docx'
+
+def build_cover(doc):
+    for _ in range(3):
+        doc.add_paragraph()
+    p = doc.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run = p.add_run('顿汉布什螺杆式冷水机组')
+    set_run_font(run, 22, True, HEI)
+    p = doc.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run = p.add_run('作业指导书')
+    set_run_font(run, 22, True, HEI)
+    for _ in range(4):
+        doc.add_paragraph()
+    for label in ['编制：___________', '审核：___________', '审批：___________']:
+        p = doc.add_paragraph()
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run = p.add_run(label)
+        set_run_font(run, 14, False, SONG)
+    doc.add_page_break()
+
+def add_numbered(doc, text, size=10.5, bold=False, first_line=0.74):
+    p = doc.add_paragraph()
+    p.paragraph_format.first_line_indent = Cm(first_line)
+    run = p.add_run(text)
+    set_run_font(run, size, bold, SONG)
+    return p
+
+def add_plain(doc, text, size=10.5, bold=False):
+    p = doc.add_paragraph()
+    run = p.add_run(text)
+    set_run_font(run, size, bold, SONG)
+    return p
+
+def build_content(doc):
+    # 1.0 目的
+    add_heading(doc, '1.0  目的', 14, HEI, align='left')
+    add_plain(doc, '为了规范顿汉布什螺杆式冷水机组的操作，保证冷水机组安全、稳定、高效运行，特制定本作业指导书。')
+
+    # 2.0 范围
+    add_heading(doc, '2.0  范围', 14, HEI, align='left')
+    add_plain(doc, '适用于淄博蓝帆新材料运行车间顿汉布什螺杆式冷水机组的操作、运行管理及维护保养。')
+
+    # 3.0 职责
+    add_heading(doc, '3.0  职责', 14, HEI, align='left')
+    add_numbered(doc, '3.1  运行管理人员监督本作业指导书的执行。')
+    add_numbered(doc, '3.2  运行操作人员按本作业指导书要求进行冷水机组的操作、巡检及日常维护。')
+
+    # 4.0 主要内容（目录）
+    add_heading(doc, '4.0  主要内容', 14, HEI, align='left')
+    toc = [
+        '1  岗位任务和管理范围',
+        '2  设备结构及工作原理',
+        '3  主要技术参数及公用工程条件',
+        '4  开车前检查与准备',
+        '5  开车步骤',
+        '6  正常操作与运行管理',
+        '7  停车步骤',
+        '8  安全操作要点',
+        '9  异常现象及处理',
+        '10  日常维护与保养',
+    ]
+    for item in toc:
+        p = doc.add_paragraph()
+        p.paragraph_format.first_line_indent = Cm(0.74)
+        run = p.add_run(item)
+        set_run_font(run, 10.5, False, SONG)
+    doc.add_page_break()
+
+    # ========== 正文 ==========
+    # 1 岗位任务和管理范围
+    add_heading(doc, '1  岗位任务和管理范围', 14, HEI, align='left')
+    add_heading(doc, '1.1  岗位任务', 12, HEI, align='left')
+    add_plain(doc, '为生产工艺提供稳定的7℃冷冻水，保证循环水系统及关联工艺设备的正常运行。')
+    add_heading(doc, '1.2  管理范围', 12, HEI, align='left')
+    add_plain(doc, '顿汉布什螺杆式冷水机组本体、机载控制柜、冷冻水泵、冷却水泵、冷却塔风机、电动蝶阀、水系统管路及阀门、仪表和联锁保护装置等。')
+
+    # 2 设备结构及工作原理
+    add_heading(doc, '2  设备结构及工作原理', 14, HEI, align='left')
+    add_heading(doc, '2.1  设备结构', 12, HEI, align='left')
+    add_plain(doc, '顿汉布什螺杆式冷水机组主要由全封闭立式螺杆压缩机、满液式蒸发器、壳管式冷凝器、电子节流装置、高效内置油分离器、微电脑控制系统及机载控制柜等组成。')
+    add_plain(doc, '机组采用第六代MarkⅡ立式全封闭无级调节螺杆压缩机，主要运动部件为一对旋转螺杆转子和一个滑阀机构，内置式高效油分离器油分效率高达99.7%以上。')
+    add_heading(doc, '2.2  工作原理', 12, HEI, align='left')
+    add_plain(doc, '制冷循环由压缩、冷凝、节流、蒸发四个过程组成：')
+    add_plain(doc, '（1）压缩机：起压缩和输送制冷剂蒸气的作用；')
+    add_plain(doc, '（2）冷凝器：输出热量的设备，从蒸发器中吸收的热量连同压缩机消耗的功所转化的热量在冷凝器中被冷却介质（冷却水）带走；')
+    add_plain(doc, '（3）节流装置：对制冷剂起节流降压作用，并调节进入蒸发器的制冷剂流量；')
+    add_plain(doc, '（4）蒸发器：输出冷量的设备，制冷剂在蒸发器中吸收被冷却物体（冷冻水）的热量，从而达到制取冷量的目的。')
+    add_plain(doc, '制冷量调节由微电脑程序控制，通过控制上/卸载电磁阀的通断，利用液压驱动滑阀来实现无级调节。')
+
+    # 3 主要技术参数及公用工程条件
+    add_heading(doc, '3  主要技术参数及公用工程条件', 14, HEI, align='left')
+    add_heading(doc, '3.1  主要技术参数', 12, HEI, align='left')
+
+    # 参数表
+    tbl = doc.add_table(rows=1, cols=3)
+    tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
+    set_table_borders(tbl)
+    hdr = tbl.rows[0].cells
+    set_cell(hdr[0], '参数名称', 10.5, True)
+    set_cell(hdr[1], '单位', 10.5, True)
+    set_cell(hdr[2], '数值/要求', 10.5, True)
+    params = [
+        ('蒸发器出水温度', '℃', '7±0.5'),
+        ('蒸发压力', 'MPa', '0.227～0.262（33～38 PSI）'),
+        ('冷凝压力', 'MPa', '0.810～0.915（117～133 PSI）'),
+        ('吸气过热度', '℃', '0.6～1.1（1～2℉）'),
+        ('排气过热度', '℃', '≥11.1（≥20℉）'),
+        ('液体过冷度', '℃', '2.8～4.4（5～8℉）'),
+        ('电源电压', 'V', '400±10%'),
+        ('冷却水进水温度', '℃', '≥20（不得低于20℃）'),
+        ('冷冻水设计流量', '—', '恒定流量，可±10%浮动'),
+    ]
+    for name, unit, val in params:
+        row = tbl.add_row().cells
+        set_cell(row[0], name, 10.5)
+        set_cell(row[1], unit, 10.5)
+        set_cell(row[2], val, 10.5)
+    set_col_widths(tbl, [5.5, 3, 7])
+    add_note(doc, '注：以上参数为R134a制冷剂、蒸发器出水温度7℃时的典型运行参数。')
+
+    add_heading(doc, '3.2  公用工程条件', 12, HEI, align='left')
+    add_plain(doc, '（1）电源：机组从对应MCC柜引入400V（±10%）三相电源；')
+    add_plain(doc, '（2）冷却水：由冷却塔供给，进水温度不低于20℃；')
+    add_plain(doc, '（3）冷冻水：输送至各用冷单元，设计出水温度7℃，回水温度12℃；')
+    add_plain(doc, '（4）通信：机载控制柜提供RS485数据通信接口，可与BAS系统实现远程监控。')
+
+    # 4 开车前检查与准备
+    add_heading(doc, '4  开车前检查与准备', 14, HEI, align='left')
+    add_plain(doc, '4.1  检查电气接头的紧固性（主回路、控制回路）。')
+    add_plain(doc, '4.2  开机前至少给油槽加热24小时，使油槽温度不低于38℃。')
+    add_plain(doc, '4.3  检查机组各阀门状态、水泵、压力表、温度计、过滤器等状态正常。')
+    add_plain(doc, '4.4  检查机组末端及冷却塔情况，确认无异常。')
+    add_plain(doc, '4.5  先单独开启水系统的冷冻水泵和冷却水泵，查看水系统运行是否正常，保证不夹带气体，保证冷冻水、冷却水的进出水压差在要求范围内。')
+    add_plain(doc, '4.6  检查电压是否在400V±10%范围内。')
+    add_plain(doc, '4.7  确认设备上无人工作后方可送电；联动设备开机前必须发出信号，得到对方确切回答后才能开机。')
+
+    # 5 开车步骤
+    add_heading(doc, '5  开车步骤', 14, HEI, align='left')
+    add_plain(doc, '5.1  先开启冷冻水泵、冷却水泵，观察界面中水流开关的状态，确认水系统运行正常。')
+    add_plain(doc, '5.2  用触压屏幕，屏保取消后显示监控主页面。触压“操作主菜单”，再触压“授权操作”，选择“操作级”，输入密码，触压“返回前页”，返回操作主菜单。')
+    add_plain(doc, '5.3  触压“启停控制”，触压“启动”，将开关置于开机位置，再触压“返回主菜单”，退回监控主页面，等待开机。')
+    add_plain(doc, '5.4  检查数字输入量：在“操作主菜单”屏触压“数字输入”，检查各压缩机油位开关、水流开关、机组远程控制开关均应处于正常状态。')
+    add_plain(doc, '5.5  机组启动后，首要任务是观察吸气压力和排气压力，调整冷却水流量和冷却塔风机，使机组尽快建立0.2 MPa（约30 PSI）的吸排气压差。如果压差三分钟内没有建立起来，会发生报警；多次反复会导致低油位报警，威胁压缩机使用寿命。')
+    add_plain(doc, '5.6  在昼夜温差较大时，开机前不要运行冷却塔风机，并可关小冷凝器出水阀门；待开机及压差建立后，排气压力升到0.81 MPa时，才把出水阀门开大；排气压力继续升到0.85 MPa时出水阀门全开，并打开1台冷却塔风机；若排气压力再升高，再开另一台风机，把排气压力控制在0.81～0.915 MPa之间。')
+    add_plain(doc, '5.7  机组运行正常后，检查电机三相电流是否平衡，观察机组供液镜、油平衡视镜、回油视镜、二次补油镜和蒸发器视镜：')
+    add_plain(doc, '    （1）正常时机组供液镜应看不到液体流动；')
+    add_plain(doc, '    （2）蒸发器视镜开机应看不到液面，只有机组满负荷运行且冷冻水出水温度达到设定值时才可看到液面；')
+    add_plain(doc, '    （3）如出现液面过高或过低或有许多白沫为不正常。')
+    add_plain(doc, '5.8  开机后用手摸压缩机排气管，排压正常时排气管应发热；不热时要对吸气压力进行调整。')
+
+    # 6 正常操作与运行管理
+    add_heading(doc, '6  正常操作与运行管理', 14, HEI, align='left')
+    add_plain(doc, '6.1  机组运行中应定时巡检，记录蒸发压力、冷凝压力、吸气温度、排气温度、油位、电流、电压、冷冻水进出水温度及压力、冷却水进出水温度及压力等参数。')
+    add_plain(doc, '6.2  保持蒸发器出水温度在7±0.5℃范围内，冷凝压力控制在0.81～0.915 MPa。')
+    add_plain(doc, '6.3  机组不可在低电压和高排气压力下运行：电压低于360V或排气压力高于0.915 MPa（15 Kgf/cm²）时，机组会出现过热、过载或油温过高报警，可能造成压缩机严重损坏。')
+    add_plain(doc, '6.4  冷却水水质应符合要求，若水中含有大量矿物质或杂质，可能腐蚀铜管或钢外壳。冷却水中的杂质、藻类等容易沉积在冷凝器管束中阻碍换热，需定期检查清洗。')
+    add_plain(doc, '6.5  冷冻水设计成恒定水流量，可±10%浮动，但水流量的大幅变化会导致机组运行不可控。')
+    add_plain(doc, '6.6  机组机载控制柜与冷冻水泵、冷却水泵、冷却塔风机、电动蝶阀实现内部联锁，未经授权不得擅自解除联锁。')
+
+    # 7 停车步骤
+    add_heading(doc, '7  停车步骤', 14, HEI, align='left')
+    add_heading(doc, '7.1  正常停车', 12, HEI, align='left')
+    add_plain(doc, '（1）每天停机时，先停机组，再停冷却水泵，15分钟后停冷冻水泵。')
+    add_plain(doc, '（2）无论压缩机是否运行，关闭机组时分别关闭每个压缩机（不要关闭任何阀门），然后方可关闭水泵。')
+    add_plain(doc, '（3）不要断开系统刀闸开关，压缩机油槽加热器需保持通电。')
+    add_plain(doc, '（4）手动关机时，会产生压缩机不运行故障报警，只有复位后才能再次启动压缩机。')
+    add_heading(doc, '7.2  长期停车（停机超过12小时或季节性停机）', 12, HEI, align='left')
+    add_plain(doc, '（1）按正常停车步骤停机，保持油槽加热器通电。')
+    add_plain(doc, '（2）检查机组是否有腐蚀、漏油以及制冷剂泄漏等问题。')
+    add_plain(doc, '（3）检查电气回路上有关部件是否松动，接触器动作是否自如，绝缘包裹是否有破损，吹扫积累的灰尘。')
+    add_plain(doc, '（4）若环境温度可能低于0℃，必须将冷冻水、冷却水全部排出，并用高压空气将水吹干净，防止冻裂。')
+    add_plain(doc, '（5）若冷凝器或蒸发器中使用乙二醇溶液，应确保溶液的结冰温度低于环境可能的最低温度。')
+    add_heading(doc, '7.3  紧急停车', 12, HEI, align='left')
+    add_plain(doc, '（1）设备运行时如发现有异常情况（剧烈振动、异常噪声、大量泄漏、着火等），应立即按下急停按钮停机。')
+    add_plain(doc, '（2）冷水机组运行时如发生泄压阀动作，应立即停机检查水系统。')
+    add_plain(doc, '（3）紧急停机后应及时查明原因，排除故障后方可重新启动。')
+
+    # 8 安全操作要点
+    add_heading(doc, '8  安全操作要点', 14, HEI, align='left')
+    add_plain(doc, '8.1  设备开机前，必须确认设备上无人工作后才能送电。')
+    add_plain(doc, '8.2  联动设备开机前，必须发出信号，得到对方确切回答后才能开机。')
+    add_plain(doc, '8.3  工作范围内如发现有破损电线和开关、电线外露、电线落地现象，应叫电工及时处理。')
+    add_plain(doc, '8.4  设备上面及附近不准堆置衣服、布、棉纱等杂物。')
+    add_plain(doc, '8.5  机组运行时不得关闭泄压阀前面的阀门。')
+    add_plain(doc, '8.6  电气检修必须由有资格验证的电工或受过专业训练的人员完成；进行电控柜内任何操作前，必须先切断所有连接至机组的电源。')
+    add_plain(doc, '8.7  保证机组接地线来自电网的接地螺栓位置，可有效防止电击。')
+    add_plain(doc, '8.8  在机组运输、储存和电气安装、接线过程中，应严格注意防水防尘；电控柜内及各电气部件应保持清洁干燥。')
+
+    # 9 异常现象及处理
+    add_heading(doc, '9  异常现象及处理', 14, HEI, align='left')
+    add_plain(doc, '发现异常应及时判断原因并处理，常见故障及处理方法见表9.1。')
+    tbl = doc.add_table(rows=1, cols=4)
+    tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
+    set_table_borders(tbl)
+    hdr = tbl.rows[0].cells
+    set_cell(hdr[0], '序号', 10.5, True)
+    set_cell(hdr[1], '异常现象/报警', 10.5, True)
+    set_cell(hdr[2], '可能原因', 10.5, True)
+    set_cell(hdr[3], '处理方法', 10.5, True)
+    faults = [
+        ('1', '吸气压力低', '泄漏；供液不足；水流量不足；低压传感器故障；蒸发器换热效果差', '查找泄漏并处理；调整供液；调整水流量；校准或更换传感器；清洗蒸发器'),
+        ('2', '排气压力高', '冷却效果差；充氟过多；冷凝器换热效果差；水流量不足；传感器故障', '改善冷却条件；调整充氟量；清洗冷凝器；调整水流量；校准或更换传感器'),
+        ('3', '低油位', '回油不畅；液位过低；供液不稳；吸排气压差小；引射阀门开度过小；系统油过多；压缩机频繁启动', '分析原因，重新建立压差；调整供液；调整引射阀门开度；放出多余润滑油；调整负荷，避免频繁启动'),
+        ('4', '压缩机高温', '排气压力高；回油不畅；压缩机频繁启动', '见排气压力高处理；见低油位处理；避免频繁启动'),
+        ('5', '压缩机过载', '排气压力高；系统电源电压过低；压缩机频繁启动', '见排气压力高处理；检查供电电压；避免频繁启动'),
+        ('6', '蒸发器结冰', '冷冻水流量过低；水温设定过低；传感器故障', '检查并恢复水流量；调整设定温度；校准或更换传感器'),
+        ('7', '油温过高', '排气压力过高；冷却不足；油冷却器堵塞', '降低排气压力；改善冷却；清洗油冷却器'),
+        ('8', '机组不启动', '电源故障；水流开关断开；油位开关断开；控制回路故障', '检查电源；开启水泵恢复水流；检查油位；联系电气人员检修控制回路'),
+    ]
+    for seq, name, cause, action in faults:
+        row = tbl.add_row().cells
+        set_cell(row[0], seq, 10.5)
+        set_cell(row[1], name, 10.5)
+        set_cell(row[2], cause, 10.5)
+        set_cell(row[3], action, 10.5)
+    set_col_widths(tbl, [1.2, 3, 5, 5.5])
+
+    # 10 日常维护与保养
+    add_heading(doc, '10  日常维护与保养', 14, HEI, align='left')
+    add_plain(doc, '10.1  跟所有机械设备一样，应由训练有素的维修人员对机组按计划进行常规检查、清洗和预防性维护，以延长机组正常运转寿命。建议至少每年由顿汉布什授权服务工程师对机组进行检查并评定运行性能。')
+    add_heading(doc, '10.2  日常维护（每日/每班）', 12, HEI, align='left')
+    add_plain(doc, '（1）检查机组运行参数（压力、温度、电流、电压）是否正常；')
+    add_plain(doc, '（2）检查油位、油色是否正常，供液镜、视镜有无异常；')
+    add_plain(doc, '（3）检查有无异常噪声、振动及泄漏；')
+    add_plain(doc, '（4）检查水流开关、水泵、冷却塔风机运行状态；')
+    add_plain(doc, '（5）保持设备及周围清洁，消防器材齐全。')
+    add_heading(doc, '10.3  月度维护', 12, HEI, align='left')
+    add_plain(doc, '（1）检查并紧固电气接头（主回路、控制回路）；')
+    add_plain(doc, '（2）检查机组各阀门状态、过滤器压差，必要时清洗；')
+    add_plain(doc, '（3）检查末端设备、冷却塔填料及风机状况；')
+    add_plain(doc, '（4）记录运行数据，分析趋势。')
+    add_heading(doc, '10.4  季度维护', 12, HEI, align='left')
+    add_plain(doc, '（1）清洗冷凝器换热管（视水质情况，必要时化学清洗）；')
+    add_plain(doc, '（2）检查并校准温度、压力传感器及流量开关；')
+    add_plain(doc, '（3）检查节流球阀盘根，若泄漏或连续运行超过六个月，按参考扭矩紧固：')
+    add_plain(doc, '    1/4″～3/8″：2.8～6.8 N·m；5/8″～7/8″：3.4～6.8 N·m；1″～1-5/8″：20.6～33.9 N·m；2″～2-1/8″：33.9～39.5 N·m。')
+    add_plain(doc, '（4）检查接触器接点、继电器及保护装置动作是否可靠。')
+    add_heading(doc, '10.5  年度维护', 12, HEI, align='left')
+    add_plain(doc, '（1）对润滑油进行油分析，必要时更换（只能使用DUNHAM-BUSH指定型号润滑油）；')
+    add_plain(doc, '（2）更换压缩机油过滤器；')
+    add_plain(doc, '（3）检查压缩机马达绝缘阻抗；')
+    add_plain(doc, '（4）检查蒸发器、冷凝器换热管结垢情况，必要时彻底清洗；')
+    add_plain(doc, '（5）检查冷媒量，补充或回收至正常量；')
+    add_plain(doc, '（6）检查并校正控制参数及设定值；')
+    add_plain(doc, '（7）对电控柜进行全面除尘、防潮处理。')
+    add_heading(doc, '10.6  水系统维护', 12, HEI, align='left')
+    add_plain(doc, '（1）定期检查水质，必要时进行水处理，防止结垢、腐蚀及生物粘泥；')
+    add_plain(doc, '（2）定期清洗冷却塔填料、接水盘及布水器；')
+    add_plain(doc, '（3）检查水管路阀门、过滤器、水泵密封及轴承润滑；')
+    add_plain(doc, '（4）冬季停机时排净系统存水，防止冻裂。')
+
+
+def main():
+    doc = Document()
+    # 页面设置 A4 纵向
+    sec = doc.sections[0]
+    sec.page_width = Cm(21)
+    sec.page_height = Cm(29.7)
+    sec.left_margin = Cm(2.54)
+    sec.right_margin = Cm(2.54)
+    sec.top_margin = Cm(2.54)
+    sec.bottom_margin = Cm(2.54)
+
+    build_cover(doc)
+    build_content(doc)
+
+    doc.save(OUTPUT)
+    print('已生成:', OUTPUT)
+
+
+if __name__ == '__main__':
+    main()
