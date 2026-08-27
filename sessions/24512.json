@@ -1,0 +1,16 @@
+{
+  "pid": 24512,
+  "lastHeartbeat": 1787819413287,
+  "sessionId": "0b85b6d8-f92c-4423-9be7-f58854de99f9",
+  "cwd": "C:\\Users\\62628\\.workbuddy-sync",
+  "startedAt": 1787819413281,
+  "kind": "interactive",
+  "url": "http://127.0.0.1:54707",
+  "endpoint": "http://127.0.0.1:54707",
+  "mode": "local",
+  "version": "2.115.0",
+  "os": "win32",
+  "arch": "x64",
+  "hostname": "Lx-3600",
+  "updatedAt": 1787819413492
+}
