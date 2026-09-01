@@ -1,0 +1,96 @@
+# -*- coding: utf-8 -*-
+"""生成《2026.8月份运行车间总结.docx》"""
+import sys
+sys.path.insert(0, r'C:\Users\62628\WorkBuddy\2026-08-05-10-25-06')
+from docx import Document
+from docx.shared import Pt, Cm
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx_helpers import set_run_font
+
+SONG = '宋体'
+HEI = '黑体'
+
+
+def P(doc, text, size=12, bold=False, font=SONG, align='left',
+      space_after=0):
+    p = doc.add_paragraph()
+    p.alignment = {'center': WD_ALIGN_PARAGRAPH.CENTER,
+                   'left': WD_ALIGN_PARAGRAPH.LEFT,
+                   'justify': WD_ALIGN_PARAGRAPH.JUSTIFY}[align]
+    p.paragraph_format.space_after = Pt(space_after)
+    p.paragraph_format.line_spacing = 1.3
+    r = p.add_run(text)
+    set_run_font(r, size, bold, font)
+    return p
+
+
+doc = Document()
+# 页面设置 A4
+sec = doc.sections[0]
+sec.page_width = Cm(21.0)
+sec.page_height = Cm(29.7)
+sec.left_margin = Cm(2.6)
+sec.right_margin = Cm(2.6)
+sec.top_margin = Cm(2.54)
+sec.bottom_margin = Cm(2.54)
+
+# 标题
+P(doc, '2026年8月份总结', 14, True, HEI, 'center', 6)
+
+# 一、基地重点工作
+P(doc, '一、基地重点工作', 14, True, HEI, 'left', 4)
+P(doc, '1、降本增效：', 12, True, SONG, 'left', 0)
+P(doc, '8月车间累计回收送油274桶、过滤油11桶，空桶全部拉回回收利用；废油入库6桶，危废出库34吨桶并规范规整危废库。废油蒸馏装置完成停车检修技改后恢复开车，按计划完成月度处理任务，持续消耗V110罐脱附油降低储罐液位，实现降本增效。', 12, False, SONG, 'justify', 6)
+
+P(doc, '管理提升：请从成本管理、工艺管理、设备管理等多方面体现8月份开展项目和达成效果，有数据的请以数据进行体现，内容可以根据实际情况进行补充。', 12, True, SONG, 'justify', 6)
+
+P(doc, '环保设施维护保养：完成活性炭静电电厂更换142块，清理瓷瓶、过滤网，静电送电无异常，消防水实验正常；五厂吸附时间调整至2000、六厂调整至1800，优化脱附效率；活性炭PLC控制程序升级调试完成；活性炭冷水机组投用及切出试验，降低安全隐患，减少事故风险。', 12, False, SONG, 'justify', 6)
+
+P(doc, '废油蒸馏检修技改：完成废油蒸馏改造施工方案及检修安全施工方案审批；溶剂塔换热器拆除、管线拆解清理；导热油泵、出料泵更换泵头，导热油泵返厂维修；水喷射泵验货卸车；8月21日检修完成恢复开车，运行正常。', 12, False, SONG, 'justify', 6)
+
+P(doc, '冷水机组投用及开关试验，关注冷水机组投用后的用电量。', 12, False, SONG, 'justify', 6)
+
+P(doc, '电机巡检及注油维护保养：五六厂、丁腈、外围区域电机日常巡检，定时注油维护保养，共计更换电机9台（丁腈3线A1预脱电机、61线预脱电机、59线检漏机电机、丁腈1线升降电机、3线B面预脱电机、49线预脱电机等），更换前后轴承，确保设备稳定运行。', 12, False, SONG, 'justify', 6)
+
+P(doc, '空压机维护保养：1＃仪表风更换电磁阀3个、放空阀2个、漏气管线2条；三号空压站压缩风管线漏点修复；开山空压机备件盘点、12桶冷却液外仓运回，联系开山空压机维保，备件到厂卸车验收。', 12, False, SONG, 'justify', 6)
+
+P(doc, '培训情况：包括但不限于培训次数，涉及人次，考试情况等等，培训率低说明原因', 12, True, SONG, 'left', 0)
+P(doc, '组织部门员工开展专项学习培训及演练共计6次，包括消防培训（泡沫灭火车操作检查）、安环部学习考试、操作规程考试、冷水机组与空压机专项培训、煤粉炉组织培训演练、停送电演练培训；月底完成安全操作规程抽查考试，夯实岗位专业技能、规范作业流程，全面提升全员实操能力、安全履职意识与综合管理素养。', 12, False, SONG, 'justify', 6)
+
+P(doc, '改善创新举措', 12, True, SONG, 'left', 0)
+P(doc, '废油蒸馏装置停车检修，完成导热油泵、出料泵泵头更换及溶剂塔换热器改造，提升装置运行可靠性。', 12, False, SONG, 'justify', 4)
+P(doc, '活性炭PLC控制程序升级，吸附/脱附时间优化（五厂2000、六厂1800），提高脱附效率。', 12, False, SONG, 'justify', 4)
+P(doc, '冷水机组投用及切出试验，活性炭冷水管线接入东循环水，优化冷却水系统运行方式。', 12, False, SONG, 'justify', 6)
+
+P(doc, '自动化情况', 12, True, SONG, 'left', 0)
+P(doc, '活性炭PLC控制程序升级调试完成，实现脱附流程自动化精准控制。', 12, False, SONG, 'justify', 4)
+P(doc, '六厂码垛机配电箱安装、电缆头接线、地沟电缆铺设，即将投用。', 12, False, SONG, 'justify', 4)
+P(doc, '五六厂无组织VOC数据测量，完善有组织脱附后氮气界面，提升自动化监测水平。', 12, False, SONG, 'justify', 6)
+
+P(doc, '6、生产管理：', 12, True, SONG, 'left', 0)
+P(doc, '8月完成车间回收送油274桶，废油蒸馏装置检修后平稳运行；完成隐患排查整改24处+18处，处理整改项13处，作业票检查，完善巡检区域及责任区域划分；组织冷水机组、空压机培训；完成审核一致性会议、环保评级不合格整改（五六厂有组织界面添加脱附后氮气界面）。', 12, False, SONG, 'justify', 6)
+
+P(doc, '7、库存管理：', 12, True, SONG, 'left', 0)
+P(doc, '月末完成油量、库存、危废盘点；废油蒸馏物资、活性炭漏水处理物资到厂验收；开山空压机备件盘点、12桶冷却液外仓运回，备件到厂卸车；仓库垃圾清理、物品规整。', 12, False, SONG, 'justify', 6)
+
+P(doc, '8、实验：', 12, True, SONG, 'left', 0)
+P(doc, '废油蒸馏成品罐、搅拌罐、产品罐油样取样化验，按计划往罐区打油；水质化验按要求完成，各循环水池补水开大蒸发实验已交接。', 12, False, SONG, 'justify', 6)
+
+# 二、9月份主要计划
+P(doc, '二、2026年9月份主要计划', 14, True, HEI, 'left', 4)
+P(doc, '严抓现场 6S 管理，各现场标准提升。', 12, False, SONG, 'left', 2)
+P(doc, '控制室瓷砖更换、配电室吊顶检查修复。', 12, False, SONG, 'left', 2)
+P(doc, '强化消防设施管理，检查消防栓、灭火器、泡沫灭火车完好性。每周测试消防出水，对各烟道消防喷淋进行定期测试，测试静电、活性炭设备自动消防喷淋处于正常状态。', 12, False, SONG, 'left', 2)
+P(doc, '废油蒸馏装置稳定运行，持续消耗110罐脱附油，降低储罐液位。', 12, False, SONG, 'left', 2)
+P(doc, '六厂码垛机安装调试投用。', 12, False, SONG, 'left', 2)
+P(doc, '五六厂生产线更换防爆声光报警灯。', 12, False, SONG, 'left', 2)
+P(doc, '厂区电机加强巡检，维护保养，确保运行稳定。', 12, False, SONG, 'left', 2)
+P(doc, '组织车间培训学习，提高员工自身能力。', 12, False, SONG, 'left', 2)
+
+# 三、需要协调事项
+P(doc, '三、需要协调事项', 14, True, HEI, 'left', 4)
+P(doc, '（暂无）', 12, False, SONG, 'left', 2)
+
+out = r'C:\Users\62628\Desktop\2026.8月份运行车间总结（完成稿）.docx'
+doc.save(out)
+print('已生成:', out)
