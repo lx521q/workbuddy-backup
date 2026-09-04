@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "lastUpdated": 1788503344359,
+  "artifacts": [
+    {
+      "name": "history-today-google-19980904.md",
+      "title": "history-today-google-19980904.md",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 1483,
+      "createdAt": 1788503285229,
+      "updatedAt": 1788503285229,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/WorkBuddy/automation-2026-08-05-10-35-08/outputs/history-today-google-19980904.md",
+      "_meta": {
+        "sourceTool": "Checkpoint",
+        "toolCallId": "call_HKzCuea9Br66OB9bU12Ml0sr",
+        "requestId": "b1ad74c4889dc7653e3e7e0ede33f4d1",
+        "codebuddy.ai/requestId": "b1ad74c4889dc7653e3e7e0ede33f4d1"
+      }
+    },
+    {
+      "name": "memory.md",
+      "title": "memory.md",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 870,
+      "createdAt": 1788503295171,
+      "updatedAt": 1788503295172,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/WorkBuddy/automation-2026-08-05-10-35-08/.workbuddy/memory/automations/automation-1785897308803/memory.md",
+      "_meta": {
+        "sourceTool": "Checkpoint",
+        "requestId": "b1ad74c4889dc7653e3e7e0ede33f4d1",
+        "codebuddy.ai/requestId": "b1ad74c4889dc7653e3e7e0ede33f4d1",
+        "toolCallId": "call_LNE8njm2xBjNiEF8LpETc1Xo"
+      }
+    },
+    {
+      "name": "2026-09-04.md",
+      "title": "2026-09-04.md",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 475,
+      "createdAt": 1788503344327,
+      "updatedAt": 1788503344332,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/WorkBuddy/automation-2026-08-05-10-35-08/.workbuddy/memory/2026-09-04.md",
+      "_meta": {
+        "sourceTool": "Checkpoint",
+        "toolCallId": "call_o5gOCHPaOikqT9R5uX4MnpUq",
+        "requestId": "b1ad74c4889dc7653e3e7e0ede33f4d1",
+        "codebuddy.ai/requestId": "b1ad74c4889dc7653e3e7e0ede33f4d1"
+      }
+    }
+  ]
+}
