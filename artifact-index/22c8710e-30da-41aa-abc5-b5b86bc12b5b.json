@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "lastUpdated": 1788658237962,
+  "artifacts": [
+    {
+      "name": "memory.md",
+      "title": "memory.md",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 1615,
+      "createdAt": 1788503295171,
+      "updatedAt": 1788658237961,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/WorkBuddy/automation-2026-08-05-10-35-08/.workbuddy/memory/automations/automation-1785897308803/memory.md",
+      "_meta": {
+        "sourceTool": "Edit",
+        "toolCallId": "Edit_4",
+        "requestId": "08009c909c1aa223999d7c1be7cd0fc4",
+        "codebuddy.ai/requestId": "08009c909c1aa223999d7c1be7cd0fc4"
+      }
+    }
+  ]
+}

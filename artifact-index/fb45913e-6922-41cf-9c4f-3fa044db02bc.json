@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "lastUpdated": 1788511405251,
+  "artifacts": [
+    {
+      "name": "memory.md",
+      "title": "memory.md",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 649,
+      "createdAt": 1788511405225,
+      "updatedAt": 1788511405225,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/.workbuddy-sync/.workbuddy/memory/automations/automation-1786069231416/memory.md",
+      "_meta": {
+        "sourceTool": "Checkpoint",
+        "toolCallId": "call_992c8a5ce00c4125ac58984a",
+        "requestId": "af4c2cd90b614351fc6c72b0b66e6682",
+        "codebuddy.ai/requestId": "af4c2cd90b614351fc6c72b0b66e6682"
+      }
+    }
+  ]
+}
