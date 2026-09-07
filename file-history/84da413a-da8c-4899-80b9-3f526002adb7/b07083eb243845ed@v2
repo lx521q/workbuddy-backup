@@ -1,0 +1,124 @@
+# -*- coding: utf-8 -*-
+"""普威尔余热回收方案 数据复核意见 docx 生成"""
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from docx import Document
+from docx.shared import Pt, Cm
+from docx_helpers import (SONG, HEI, set_cell, set_cell_bg, add_heading,
+                          add_sub_heading, make_table)
+
+OUT = r'C:\Users\62628\Desktop\余热回收方案数据复核意见-蓝帆新材料.docx'
+
+doc = Document()
+sec = doc.sections[0]
+sec.page_width, sec.page_height = Cm(21.0), Cm(29.7)
+sec.left_margin = sec.right_margin = Cm(2.2)
+sec.top_margin = sec.bottom_margin = Cm(2.2)
+
+
+def add_para(text, size=10.5, bold=False, align='left', indent=True):
+    p = doc.add_paragraph()
+    p.alignment = {'left': 0, 'center': 1, 'right': 2}[align]
+    if indent:
+        p.paragraph_format.first_line_indent = Pt(size * 2)
+    p.paragraph_format.space_after = Pt(3)
+    r = p.add_run(text)
+    from docx_helpers import set_run_font
+    set_run_font(r, size, bold, SONG)
+    return p
+
+
+def fill_row(t, r, vals, size=9.5, header=False, bg=None):
+    for c, v in enumerate(vals):
+        set_cell(t.cell(r, c), v, size, header, 'center')
+        if header:
+            set_cell_bg(t.cell(r, c), 'D9E2F3')
+        elif bg:
+            set_cell_bg(t.cell(r, c), bg)
+
+
+# ===== 标题 =====
+add_heading(doc, '蓝帆新材料烘干排烟系统余热回收方案', 15, HEI)
+add_heading(doc, '数 据 复 核 意 见', 15, HEI)
+add_para('（受蓝帆新材料有限公司委托，依据现场实测数据对烟台普威尔新能源科技有限公司《蓝帆新材料烘干排烟系统余热回收技术方案》进行复核）', 9.5, align='center', indent=False)
+add_para('复核日期：2026年9月7日', 10, align='center', indent=False)
+
+# ===== 一、复核依据 =====
+add_sub_heading(doc, '一、复核依据（现场实测数据）', 12)
+t = make_table(doc, 6, 4, [3.2, 1.0, 4.2, 4.2])
+fill_row(t, 0, ['项目', '', '五车间', '六车间'], header=True)
+data1 = [
+    ['排烟管径', '', 'φ1400 mm（碳钢4mm）', 'φ1600 mm（碳钢4mm）'],
+    ['实测烟道风速', '', '16.8 m/s', '11.3 m/s'],
+    ['烟气温度', '', '进121℃ / 换热后36.1℃', '进136℃ / 换热后38.9℃'],
+    ['循环水', '', '286 m³/h，进23℃/回26.4℃', '330 m³/h，进23℃/回27℃'],
+    ['备注', '', '现为循环水冷却', '现为循环水冷却'],
+]
+for i, row in enumerate(data1, start=1):
+    fill_row(t, i, row)
+
+# ===== 二、实测烟气量核算 =====
+add_sub_heading(doc, '二、实测烟气量核算（工况流量）', 12)
+t = make_table(doc, 4, 5, [3.0, 2.6, 2.8, 3.2, 3.4])
+fill_row(t, 0, ['车间', '截面积', '工况烟气量', '标况折算', '与厂家90000 m³/h对比'], header=True)
+fill_row(t, 1, ['五车间', '1.539 m²', '≈9.3万 m³/h@121℃', '≈6.4万 Nm³/h', '基本一致（高2~3%）'])
+fill_row(t, 2, ['六车间', '2.011 m²', '≈8.2万 m³/h@136℃', '≈5.5万 Nm³/h', '厂家高估约9~10%'])
+fill_row(t, 3, ['注', '', '风速按单点实测值', '按273/(273+t)折算', '建议多点测速取截面平均'])
+merge_needed = True
+add_para('说明：厂家方案中90000 m³/h为排烟温度下的工况烟气流量（非标况），口径与实测一致。以实测风量做气水平衡反推，现一级循环水冷却出口烟温约五车间72℃、六车间58℃，数据自洽。', 9.5)
+
+# ===== 三、换热器回收热量复核 =====
+add_sub_heading(doc, '三、换热器回收热量复核（烟气冷至65℃）', 12)
+t = make_table(doc, 5, 5, [2.6, 3.0, 3.2, 2.8, 3.4])
+fill_row(t, 0, ['车间', '标况风量', '烟气ΔT(至65℃)', '可回收热量', '厂家设计'], header=True)
+fill_row(t, 1, ['五车间', '6.4万 Nm³/h', '121−65=56℃', '≈1290 kW（18.5 t/h）', '1256 kW / 18 t/h'])
+fill_row(t, 2, ['六车间', '5.5万 Nm³/h', '136−65=71℃', '≈1390 kW（20.0 t/h）', '1535 kW / 22 t/h'])
+fill_row(t, 3, ['合计', '', '', '≈2680 kW（38.5 t/h）', '2791 kW / 40 t/h'])
+fill_row(t, 4, ['结论', '', '', '', '五车间满足；六车间差约11%'], bg='FCE4D6')
+
+# ===== 四、要求厂家修订内容 =====
+add_sub_heading(doc, '四、需厂家修订的技术内容（重点：六车间换热器）', 12)
+for i, txt in enumerate([
+    '1. 六车间烟气量按实测8.2万 m³/h（工况@136℃）重新校核，不得按90000 m³/h取值；',
+    '2. 六车间换热器换热量1535 kW、产水22 t/h 无法达到：烟气出口65℃时实测风量仅可回收约1390 kW、产水约20 t/h；',
+    '3. 若六车间需保持1535 kW / 22 t/h出力，烟气出口温度须降至≤60℃（对应温降约76℃），请据此重新核算换热面积、LMTD、压降并更新数据表；',
+    '4. 两车间合计产水量按38.5~40 t/h区间明确，标注锅炉补充热负荷下限及系统调节方式；',
+    '5. 五车间换热器可按原设计（1256 kW / 18 t/h）执行，实测风量满足要求且略有富余。',
+]):
+    add_para(txt, 10)
+
+# ===== 五、节能收益复核 =====
+add_sub_heading(doc, '五、节能收益复核', 12)
+t = make_table(doc, 5, 5, [3.4, 2.6, 2.8, 2.6, 2.6])
+fill_row(t, 0, ['情景', '蒸汽节约', '循环水节费', '电费/清洗', '年净收益'], header=True)
+fill_row(t, 1, ['甲：产38.5 t/h（六车间出口65℃）', '617万', '55.5万', '−5.97万', '≈666.5万'])
+fill_row(t, 2, ['乙：满产40 t/h（六车间加深至≈60℃）', '640万', '55.5万', '−5.97万', '≈689.5万'])
+fill_row(t, 3, ['厂家原报', '640万', '55.5万', '−5.97万', '689.5万'])
+fill_row(t, 4, ['复核结论', '', '', '', '甲低3.3%；乙与厂家一致'])
+add_para('注1：收益按蒸汽200元/t、年运行8000 h、1 t蒸汽≈700 kW折算；新增电耗9.5 kW×0.75元×8000 h≈5.7万元，清洗0.27万元。', 9)
+add_para('注2：循环水节费55.5万元按厂家口径（0.15元/m³×578 m³/h×8000 h×80%）暂列。循环水为闭路系统，建议按冷却塔风机降载电耗＋蒸发/排污补水节约另行核算，该项口径可能高估。', 9)
+add_para('注3：投资回收期按隐含投资≈172万元计，约0.26~0.35年。', 9)
+
+# ===== 六、待确认事项 =====
+add_sub_heading(doc, '六、建议补充确认事项', 12)
+for i, txt in enumerate([
+    '1. 烟道风速建议多点/网格测速取截面平均流速，复核单点读数误差；',
+    '2. 确认六车间排烟系统是否有旁路或支路，核实总烟气量是否大于主管实测值；',
+    '3. 核实丁腈车间热水系统回水温度：厂家按20℃水直热至80℃（温升60℃）计算需求2791 kW，若为循环回水系统（回水55~60℃），实际需求大幅低于此值，方案富余度更高；',
+    '4. 换热器烟气出口目标温度按65℃还是≤60℃定案（影响六车间出力与投资）；',
+    '5. 现场实测一级循环水冷却器进出口烟温，验证反推值（五车间≈72℃、六车间≈58℃）。',
+]):
+    add_para(txt, 10)
+
+# ===== 七、总体结论 =====
+add_sub_heading(doc, '七、总体结论', 12)
+for i, txt in enumerate([
+    '1. 余热回收技术路线可行，节能收益基本成立，投资回收期短（<0.4年）；',
+    '2. 五车间换热器设计参数与实测工况匹配，可按原方案执行；',
+    '3. 六车间换热器存在出力虚高（约11%），需厂家按实测风量8.2万 m³/h重新校核后更新方案及报价；',
+    '4. 建议厂家修订后，双方现场共同确认烟气量、出水温度与产水量后签订技术协议。',
+]):
+    add_para(txt, 10)
+
+doc.save(OUT)
+print('已生成:', OUT)

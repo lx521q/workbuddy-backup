@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "lastUpdated": 1788744961005,
+  "artifacts": [
+    {
+      "name": "history-today-television-19270907.md",
+      "title": "history-today-television-19270907.md",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 1709,
+      "createdAt": 1788744954183,
+      "updatedAt": 1788744954183,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/WorkBuddy/automation-2026-08-05-10-35-08/outputs/history-today-television-19270907.md",
+      "_meta": {
+        "sourceTool": "PresentFiles",
+        "toolCallId": "call_7ee54d52adc7424886e7fb02",
+        "requestId": "553c6a1837adf2556c252e1d75f9445c",
+        "codebuddy.ai/requestId": "553c6a1837adf2556c252e1d75f9445c"
+      }
+    },
+    {
+      "name": "memory.md",
+      "title": "memory.md",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 2576,
+      "createdAt": 1788503295171,
+      "updatedAt": 1788744961004,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/WorkBuddy/automation-2026-08-05-10-35-08/.workbuddy/memory/automations/automation-1785897308803/memory.md",
+      "_meta": {
+        "sourceTool": "Edit",
+        "toolCallId": "call_3a9bd62f3316461280a6e911",
+        "requestId": "553c6a1837adf2556c252e1d75f9445c",
+        "codebuddy.ai/requestId": "553c6a1837adf2556c252e1d75f9445c"
+      }
+    }
+  ]
+}

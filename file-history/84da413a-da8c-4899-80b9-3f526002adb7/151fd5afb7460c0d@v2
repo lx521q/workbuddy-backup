@@ -1,0 +1,115 @@
+# -*- coding: utf-8 -*-
+"""废油蒸馏储罐扩容（增设100吨储罐）开停车对比分析 docx 生成"""
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from docx import Document
+from docx.shared import Pt, Cm
+from docx_helpers import (SONG, HEI, set_cell, set_cell_bg, merge_range,
+                          add_heading, add_sub_heading, add_note, make_table,
+                          set_col_widths)
+
+OUT = r'C:\Users\62628\Desktop\废油蒸馏储罐扩容开停车对比分析.docx'
+
+doc = Document()
+sec = doc.sections[0]
+sec.page_width, sec.page_height = Cm(21.0), Cm(29.7)
+sec.left_margin = sec.right_margin = Cm(2.2)
+sec.top_margin = sec.bottom_margin = Cm(2.2)
+
+
+def add_para(text, size=10.5, bold=False, align='left', first_indent=True):
+    p = doc.add_paragraph()
+    p.alignment = {'left': 0, 'center': 1, 'right': 2}[align]
+    if first_indent:
+        p.paragraph_format.first_line_indent = Pt(size * 2)
+    p.paragraph_format.space_after = Pt(3)
+    run = p.add_run(text)
+    from docx_helpers import set_run_font
+    set_run_font(run, size, bold, SONG)
+    return p
+
+
+def fill_row(table, r, values, size=10, header=False, bg=None):
+    for c, v in enumerate(values):
+        set_cell(table.cell(r, c), v, size, header, 'center')
+        if header:
+            set_cell_bg(table.cell(r, c), 'D9E2F3')
+        elif bg:
+            set_cell_bg(table.cell(r, c), bg)
+
+
+# ================= 封面标题 =================
+add_heading(doc, '废油蒸馏装置储罐扩容开停车对比分析', 16, HEI, align='center')
+p = doc.add_paragraph()
+p.alignment = 1
+from docx_helpers import set_run_font
+r = p.add_run('（现有95吨储罐 vs 增设100吨储罐后195吨）')
+set_run_font(r, 11, False, SONG)
+
+# ================= 一、计算基础 =================
+add_sub_heading(doc, '一、计算基础', 12)
+t = make_table(doc, 6, 3, [6.5, 4.0, 4.0])
+fill_row(t, 0, ['参数', '方案A：现状', '方案B：扩容后'], 10.5, header=True)
+fill_row(t, 1, ['储油能力（原料罐）', '95 吨', '95+100=195 吨'])
+fill_row(t, 2, ['每日新增废油量', '12.5 吨/天', '12.5 吨/天'])
+fill_row(t, 3, ['装置进料量', '800~1000 kg/h\n（19.2~24 吨/天）', '800~1000 kg/h\n（19.2~24 吨/天）'])
+fill_row(t, 4, ['装置处理能力（日）', '大于日新增量', '大于日新增量'])
+fill_row(t, 5, ['运行模式', '攒满一罐→开车处理完→停车攒料', '同左，单罐容量更大'])
+
+add_note(doc, '说明：开车期间来料不停，罐内净消耗速率 = 进料量 − 日新增量（12.5吨/天 ≈ 520.8 kg/h）。', 9)
+
+# ================= 二、单独对比 =================
+add_sub_heading(doc, '二、单独对比', 12)
+
+add_sub_heading(doc, '（一）方案A：现有95吨储罐', 11)
+t = make_table(doc, 6, 3, [5.5, 5.0, 5.0])
+fill_row(t, 0, ['项目', '进料800 kg/h', '进料1000 kg/h'], 10.5, header=True)
+fill_row(t, 1, ['停车攒满95吨时间', '7.6 天', '7.6 天'])
+fill_row(t, 2, ['开车处理95吨时间（理论）', '118.75 小时 ≈ 5.0 天', '95 小时 ≈ 4.0 天'])
+fill_row(t, 3, ['连续运行时间（含来料）', '95÷6.7 ≈ 14.2 天', '95÷11.5 ≈ 8.3 天'])
+fill_row(t, 4, ['完整开停周期（攒料+开车）', '约 12.6 天', '约 11.6 天'])
+fill_row(t, 5, ['单周期处理量', '95 吨', '95 吨'])
+
+add_sub_heading(doc, '（二）方案B：增设100吨储罐（总195吨）', 11)
+t = make_table(doc, 6, 3, [5.5, 5.0, 5.0])
+fill_row(t, 0, ['项目', '进料800 kg/h', '进料1000 kg/h'], 10.5, header=True)
+fill_row(t, 1, ['停车攒满195吨时间', '15.6 天', '15.6 天'])
+fill_row(t, 2, ['开车处理195吨时间（理论）', '243.75 小时 ≈ 10.2 天', '195 小时 ≈ 8.1 天'])
+fill_row(t, 3, ['连续运行时间（含来料）', '195÷6.7 ≈ 29.1 天', '195÷11.5 ≈ 17.0 天'])
+fill_row(t, 4, ['完整开停周期（攒料+开车）', '约 25.8 天', '约 23.7 天'])
+fill_row(t, 5, ['单周期处理量', '195 吨', '195 吨'])
+
+# ================= 三、整体对比 =================
+add_sub_heading(doc, '三、整体对比', 12)
+
+add_sub_heading(doc, '（一）核心指标对比', 11)
+t = make_table(doc, 9, 3, [6.0, 4.7, 4.8])
+fill_row(t, 0, ['对比项', '方案A（95吨）', '方案B（195吨）'], 10.5, header=True)
+fill_row(t, 1, ['停车攒料时间', '7~8 天', '15~16 天'])
+fill_row(t, 2, ['连续开车时间', '4~5 天', '8~10 天'])
+fill_row(t, 3, ['完整开停周期', '约 12 天', '约 24~26 天'])
+fill_row(t, 4, ['年开车周期数', '约 29~31 次', '约 14~15 次'])
+fill_row(t, 5, ['年启停次数', '约 60 次', '约 30 次'])
+fill_row(t, 6, ['月开车天数', '约 10~13 天', '约 10~13 天'])
+fill_row(t, 7, ['年处理能力', '≈ 4560 吨（受日来料限制）', '≈ 4560 吨（受日来料限制）'])
+fill_row(t, 8, ['装置负荷率', '相同', '相同'])
+
+add_note(doc, '注：两方案年处理能力均受日新增12.5吨/天限制（12.5×365≈4560吨/年），差异体现在开车节奏与启停频次。', 9)
+
+add_sub_heading(doc, '（二）运营影响对比', 11)
+t = make_table(doc, 6, 3, [3.5, 6.2, 5.8])
+fill_row(t, 0, ['维度', '方案A（95吨）', '方案B（195吨）'], 10.5, header=True)
+fill_row(t, 1, ['启停损耗', '启停频繁，导热油反复升降温，热循环冲击大，能耗高', '启停减半，热工况稳定，设备寿命更有利'])
+fill_row(t, 2, ['检修窗口', '周期短，攒料期7~8天即需开车，检修安排紧凑', '攒料期15~16天，检修、清渣、技改窗口充裕'])
+fill_row(t, 3, ['来料波动缓冲', '缓冲能力弱，来料突增易冒罐', '100吨富余容量，可应对来料波动和上游异常'])
+fill_row(t, 4, ['操作管理', '开停车操作频繁，人员投人多，操作风险点多', '集中开车，操作简化，风险点暴露时间减少'])
+fill_row(t, 5, ['产品品质', '启停阶段精馏工况不稳，收率波动', '长周期稳定运行，精馏收率更稳定'])
+
+add_sub_heading(doc, '（三）结论与建议', 11)
+add_para('1. 扩容前（95吨）：停车攒料约7~8天，连续开车约4~5天，周期约12天，年开停车约30个周期，启停频繁。')
+add_para('2. 扩容后（195吨）：停车攒料约15~16天，连续开车约8~10天，周期约24~26天，年开停车约15个周期，启停次数减半。')
+add_para('3. 两方案年处理能力相同（约4560吨，受日来料12.5吨限制），扩容不增加产量，但显著改善运行节奏。')
+add_para('4. 建议：增设100吨储罐后，按"攒满一罐、集中开车"模式运行，每月开车1~2次、每次连续运行8~10天；结合长周期运行安排检修与清渣，充分利用15天以上的攒料期开展检维修作业。')
+
+doc.save(OUT)
+print('已生成:', OUT)
