@@ -1,0 +1,16 @@
+{
+  "pid": 19868,
+  "lastHeartbeat": 1788933123453,
+  "sessionId": "interactive-19868",
+  "cwd": "C:\\Users\\62628\\AppData\\Local\\Temp\\workbuddy-host-cli\\__workbuddy_cli_host__-1-a18dcdcb",
+  "startedAt": 1788932673173,
+  "kind": "interactive",
+  "url": "http://127.0.0.1:61571",
+  "endpoint": "http://127.0.0.1:61571",
+  "mode": "local",
+  "version": "2.132.0",
+  "os": "win32",
+  "arch": "x64",
+  "hostname": "Lx-3600",
+  "updatedAt": 1788933123453
+}
