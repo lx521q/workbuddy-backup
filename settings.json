@@ -1,12 +1,14 @@
 {
   "sandbox": {
     "extraAllowWrite": [
+      "~/AppData/Local/AgentConnectors/",
       "~/.tencent-cloudq",
       "~/.andonq",
       "~/.xiaoe-cloud",
       "~/.config/wecom/",
       "~/.lark-cli",
       "~/.lark-channel/",
+      "~/Library/Application Support/beisencli/",
       "~/.dws",
       "/tmp/dws-cache",
       "~/.tmeet",
@@ -45,5 +47,6 @@
       }
     },
     "legacyOwnerUid": "176fb40b-ad53-4b53-93dd-c744cab86c43"
-  }
+  },
+  "autoLaunchDesired": true
 }
