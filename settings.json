@@ -22,7 +22,8 @@
     "agent-browser@codebuddy-plugins-official": true,
     "find-skills@codebuddy-plugins-official": true,
     "sheetagent@workbuddy-builtin": true,
-    "tencent-docx@workbuddy-builtin": true
+    "tencent-docx@workbuddy-builtin": true,
+    "finance-data@cb_teams_marketplace": true
   },
   "claw": {
     "channels": {},
