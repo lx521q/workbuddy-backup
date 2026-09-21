@@ -1,0 +1,13 @@
+# -*- coding: utf-8 -*-
+from pypdf import PdfReader
+p = r'C:/Users/62628/Desktop/2027年运行技改详细说明/蓝帆医疗股份有限公司无组织尾气处理方案-山东蓝驰节能环保0824.pdf'
+r = PdfReader(p)
+print('pages:', len(r.pages))
+out = []
+for i, pg in enumerate(r.pages):
+    t = pg.extract_text() or ''
+    out.append('\n===== 第%d页 =====\n' % (i + 1) + t)
+full = ''.join(out)
+with open(r'C:/Users/62628/WorkBuddy/2026-08-05-10-25-06/lanchi_plan.txt', 'w', encoding='utf-8') as f:
+    f.write(full)
+print('chars:', len(full))
