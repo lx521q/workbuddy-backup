@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "lastUpdated": 1790041203082,
+  "artifacts": [
+    {
+      "name": "history-today-faraday-17910922.md",
+      "title": "history-today-faraday-17910922.md",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 1358,
+      "createdAt": 1790041181345,
+      "updatedAt": 1790041181346,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/WorkBuddy/automation-2026-08-05-10-35-08/outputs/history-today-faraday-17910922.md",
+      "_meta": {
+        "sourceTool": "PresentFiles",
+        "codebuddy.ai/toolName": "present_files",
+        "toolCallId": "call_194bc1a219f14cfaab04eb33",
+        "ownerConversationId": "18255f93-aee0-490d-a093-50f7e4c0602e",
+        "requestId": "3c7670128f363ef118e96f572444f167",
+        "codebuddy.ai/requestId": "3c7670128f363ef118e96f572444f167"
+      }
+    }
+  ]
+}
