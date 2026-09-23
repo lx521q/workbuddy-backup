@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "lastUpdated": 1790127387664,
+  "artifacts": [
+    {
+      "name": "history-today-neptune-18460923.md",
+      "title": "history-today-neptune-18460923.md",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 1178,
+      "createdAt": 1790127361482,
+      "updatedAt": 1790127361482,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/WorkBuddy/automation-2026-08-05-10-35-08/outputs/history-today-neptune-18460923.md",
+      "_meta": {
+        "sourceTool": "PresentFiles",
+        "codebuddy.ai/toolName": "present_files",
+        "toolCallId": "call_9161cba5f591459e8a8998de",
+        "ownerConversationId": "d8bd2fc1-67f8-4247-a436-d7c3f6cf924b",
+        "requestId": "19a2ecab4ca9096f4a080c3e5f078eb3",
+        "codebuddy.ai/requestId": "19a2ecab4ca9096f4a080c3e5f078eb3"
+      }
+    }
+  ]
+}
