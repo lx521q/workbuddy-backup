@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "lastUpdated": 1790213785592,
+  "artifacts": [
+    {
+      "name": "history-today-henson-19360924.md",
+      "title": "history-today-henson-19360924.md",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 2192,
+      "createdAt": 1790213747418,
+      "updatedAt": 1790213747418,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/WorkBuddy/automation-2026-08-05-10-35-08/outputs/history-today-henson-19360924.md",
+      "_meta": {
+        "sourceTool": "PresentFiles",
+        "codebuddy.ai/toolName": "present_files",
+        "toolCallId": "call_435bacff03694dc6bd6bf0db",
+        "ownerConversationId": "962fb483-154a-4646-a14b-df2347cd007d",
+        "requestId": "b7a18a40eebd7830ec3f296a22437641",
+        "codebuddy.ai/requestId": "b7a18a40eebd7830ec3f296a22437641"
+      }
+    }
+  ]
+}
