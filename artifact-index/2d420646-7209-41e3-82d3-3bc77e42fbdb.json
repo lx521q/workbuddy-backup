@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "lastUpdated": 1790300680430,
+  "artifacts": [
+    {
+      "name": "history-today-gould-19320925.md",
+      "title": "history-today-gould-19320925.md",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 2267,
+      "createdAt": 1790300649861,
+      "updatedAt": 1790300649861,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/WorkBuddy/automation-2026-08-05-10-35-08/outputs/history-today-gould-19320925.md",
+      "_meta": {
+        "sourceTool": "PresentFiles",
+        "codebuddy.ai/toolName": "present_files",
+        "toolCallId": "call_249460cc4ee34734a71c44a6",
+        "ownerConversationId": "2d420646-7209-41e3-82d3-3bc77e42fbdb",
+        "requestId": "bfb4b715a3f13dee8ebfcd25f612e5b6",
+        "codebuddy.ai/requestId": "bfb4b715a3f13dee8ebfcd25f612e5b6"
+      }
+    }
+  ]
+}
