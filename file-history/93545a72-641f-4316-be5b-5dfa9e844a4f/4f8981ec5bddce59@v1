@@ -1,15 +1,5 @@
 # 自动化执行记录 — WorkBuddy 配置同步推送（GitHub）
 
-## 2026-09-27 07:56 执行
-- 命令：`bash ~/.workbuddy-sync/sync.sh push`
-- 结果：⚠️ 部分失败（本地提交成功，远程推送连接被重置）
-- 本地 Commit：`85576a4`（sync: 2026-09-27 07:57:06 - Lx-3600），8 个文件变更（+191/-2）
-  - 新增：1 个 file-history、4 个 sessions（5104/5824/6140/17980），其余为更新
-- 远程推送：❌ 失败 — `fatal: unable to access 'https://github.com/lx521q/workbuddy-backup.git/': Recv failure: Connection was reset`（GitHub 连接被重置）
-- 耗时：不足 1 分钟（commit 阶段正常，push 阶段连接重置）
-- 备注：commit `85576a4` 已留在本地但未推上远程，下次执行时若网络恢复可随同推送
-- 备注2：LF/CRLF 警告为 Windows 环境正常提示，可忽略
-
 ## 2026-09-25 16:30 执行
 - 命令：`bash ~/.workbuddy-sync/sync.sh push`
 - 结果：✅ 成功
