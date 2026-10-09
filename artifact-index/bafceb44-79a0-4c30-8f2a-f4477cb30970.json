@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "lastUpdated": 1791528463961,
+  "artifacts": [
+    {
+      "name": "annotate_pipes.py",
+      "title": "annotate_pipes.py",
+      "mimeType": "text/plain",
+      "contentType": "code",
+      "language": "python",
+      "size": 5964,
+      "createdAt": 1791528355433,
+      "updatedAt": 1791528425381,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/WorkBuddy/2026-10-07-14-52-46/annotate_pipes.py",
+      "_meta": {
+        "sourceTool": "Edit",
+        "codebuddy.ai/toolName": "Edit",
+        "toolCallId": "call_01a11f6a5c0277b982551e0e",
+        "ownerConversationId": "bafceb44-79a0-4c30-8f2a-f4477cb30970",
+        "requestId": "01a11f67c35d7bbc97d2a03134b664cc",
+        "codebuddy.ai/requestId": "01a11f67c35d7bbc97d2a03134b664cc"
+      }
+    },
+    {
+      "name": "卫生间2_管线长度标注.png",
+      "title": "卫生间2_管线长度标注.png",
+      "mimeType": "image/png",
+      "contentType": "image",
+      "size": 3068276,
+      "createdAt": 1791528362651,
+      "updatedAt": 1791528434497,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/WorkBuddy/2026-10-07-14-52-46/outputs/%E5%8D%AB%E7%94%9F%E9%97%B42_%E7%AE%A1%E7%BA%BF%E9%95%BF%E5%BA%A6%E6%A0%87%E6%B3%A8.png",
+      "_meta": {
+        "sourceTool": "PresentFiles",
+        "codebuddy.ai/toolName": "present_files",
+        "toolCallId": "call_01a11f6af54e77798396f068",
+        "ownerConversationId": "bafceb44-79a0-4c30-8f2a-f4477cb30970",
+        "requestId": "01a11f67c35d7bbc97d2a03134b664cc",
+        "codebuddy.ai/requestId": "01a11f67c35d7bbc97d2a03134b664cc"
+      }
+    },
+    {
+      "name": "卫生间1_管线长度标注.png",
+      "title": "卫生间1_管线长度标注.png",
+      "mimeType": "image/png",
+      "contentType": "image",
+      "size": 1631922,
+      "createdAt": 1791528362346,
+      "updatedAt": 1791528434178,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/WorkBuddy/2026-10-07-14-52-46/outputs/%E5%8D%AB%E7%94%9F%E9%97%B41_%E7%AE%A1%E7%BA%BF%E9%95%BF%E5%BA%A6%E6%A0%87%E6%B3%A8.png",
+      "_meta": {
+        "sourceTool": "PresentFiles",
+        "codebuddy.ai/toolName": "present_files",
+        "toolCallId": "call_01a11f6af54e77798396f068",
+        "ownerConversationId": "bafceb44-79a0-4c30-8f2a-f4477cb30970",
+        "requestId": "01a11f67c35d7bbc97d2a03134b664cc",
+        "codebuddy.ai/requestId": "01a11f67c35d7bbc97d2a03134b664cc"
+      }
+    }
+  ]
+}
