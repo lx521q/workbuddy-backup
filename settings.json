@@ -1257,7 +1257,6 @@
     "find-skills@codebuddy-plugins-official": true,
     "sheetagent@workbuddy-builtin": true,
     "tencent-docx@workbuddy-builtin": true,
-    "finance-data@cb_teams_marketplace": true,
     "ardot@workbuddy-builtin": true,
     "subscription-gate@workbuddy-builtin": true
   },
@@ -1294,5 +1293,6 @@
   "autoLaunchDesired": true,
   "officeFileAssociationsRepairMarker": "v9:win32:5.7.7:D:\\Software\\WorkBuddy\\WorkBuddy.exe:WorkBuddy:machine:1791469960000:aac,csv,doc,docm,docx,dot,dotm,dotx,html,jpeg,jpg,m4a,md,mp3,pdf,png,pot,potm,potx,ppt,pptm,pptx,txt,wav,webp,wps,wpt,xls,xlsm,xlsx,xlt,xltm,xltx",
   "autoLaunchDefaultApplied": true,
-  "officeMarkdownDefaultClaimAttempted": true
+  "officeMarkdownDefaultClaimAttempted": true,
+  "pluginConfigs": {}
 }

@@ -251,6 +251,14 @@
 - 耗时：约 12.5 分钟（git push 网络等待占大头，属正常现象，非故障）
 - 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略；下次执行时如遇网络超时可自然重试
 
+## 2026-10-12 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：⚠️ 部分失败（本地提交成功，远程推送失败）
+- 本地 Commit：`7fa7874`（sync: 2026-10-12 16:30:57 - Lx-3600），9 个文件变更（+104/-6），新增 2 个 file-history、2 个 sessions（19012/26536）
+- 远程推送：❌ 失败 — 第一次 `Recv failure: Connection was reset`；重试 1 次 `Failed to connect to github.com:443 after 21519 ms`
+- 验证：`git status -sb` 显示 `main...origin/main [ahead 3]`，本地积压 3 个 commit：`7fa7874`（本次）、`e9a60ac`（10-12 08:03 遗留）、`f795ced`（10-10 遗留），下次执行时若网络恢复可一并推上
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略
+
 ## 2026-10-12 08:03 同步推送
 - 本地同步+提交成功（commit e9a60ac，9 文件，含 3 个新 session）
 - git push 超过 25 分钟无进展，疑似网络传输停滞（ls-remote 可达，但 push 挂起）
