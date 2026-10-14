@@ -259,6 +259,19 @@
 - 验证：`git status -sb` 显示 `main...origin/main [ahead 3]`，本地积压 3 个 commit：`7fa7874`（本次）、`e9a60ac`（10-12 08:03 遗留）、`f795ced`（10-10 遗留），下次执行时若网络恢复可一并推上
 - 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略
 
+## 2026-10-13 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：⚠️ 部分失败（本地提交成功，远程推送失败——GitHub 连接被重置）
+- 本地 Commit：`e5932c8`（sync: 2026-10-13 16:30:36 - Lx-3600），17 个文件变更（+450/-6）
+  - 新增：`.workbuddy/memory/2026-10-12.md`、3 个 file-history、7 个 sessions（13412/13716/14260/23088/24696/24988/29412），其余为更新
+- 远程推送：❌ 失败 — `fatal: unable to access 'https://github.com/lx521q/workbuddy-backup.git/': Recv failure: Connection was reset`（与 10-12 同一失败模式，GitHub 入口网络层连续异常）
+- 验证：`git status -sb` 显示 `main...origin/main [ahead 4]`，本地积压 4 个未推送 commit：
+  - `e5932c8`（本次 10-13 16:30）
+  - `7fa7874`（10-12 16:30）
+  - `e9a60ac`（10-12 08:03）
+  - `f795ced`（10-10 16:39）
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略；脚本对"无 push 成功"仍输出"同步完成"是历史行为
+
 ## 2026-10-12 08:03 同步推送
 - 本地同步+提交成功（commit e9a60ac，9 文件，含 3 个新 session）
 - git push 超过 25 分钟无进展，疑似网络传输停滞（ls-remote 可达，但 push 挂起）
