@@ -1,0 +1,150 @@
+from PIL import Image, ImageDraw, ImageFont
+import os
+
+SRC = 'C:/Users/62628/.workbuddy/clipboard-images/'
+OUT = 'C:/Users/62628/WorkBuddy/2026-10-07-14-52-46/outputs/'
+os.makedirs(OUT, exist_ok=True)
+
+FONT = 'C:/Windows/Fonts/msyh.ttc'
+FONTB = 'C:/Windows/Fonts/msyhbd.ttc'
+
+def f(sz, bold=False):
+    return ImageFont.truetype(FONTB if bold else FONT, sz)
+
+# color scheme
+C_160 = (232, 90, 48)
+C_110 = (24, 95, 165)
+C_50  = (59, 109, 17)
+C_DIM = (90, 90, 88)
+C_BG  = (255, 255, 255)
+C_LINE= (200, 60, 30)
+
+def tag(draw, xy, title, sub, color, anchor='lt', bw=None):
+    """draw a label box with leader; xy is anchor point on the photo"""
+    x, y = xy
+    tfont = f(30, True)
+    sfont = f(23)
+    tw = draw.textlength(title, font=tfont)
+    sw = draw.textlength(sub, font=sfont) if sub else 0
+    w = int(max(tw, sw)) + 28
+    h = 84 if sub else 58
+    if bw:
+        w = bw
+    # box position
+    bx, by = x, y
+    if anchor == 'rt':
+        bx = x - w
+    elif anchor == 'ct':
+        bx = x - w // 2
+    if anchor.startswith('b'):
+        by = y - h
+    draw.rounded_rectangle([bx, by, bx + w, by + h], 10, fill=C_BG, outline=color, width=3)
+    draw.rectangle([bx, by, bx + 6, by + h], fill=color)
+    if sub:
+        draw.text((bx + 18, by + 8), title, font=tfont, fill=color)
+        draw.text((bx + 18, by + 46), sub, font=sfont, fill=C_DIM)
+    else:
+        draw.text((bx + 18, by + 12), title, font=tfont, fill=color)
+    return (bx, by, bx + w, by + h)
+
+def leader(draw, p1, p2, color, width=3):
+    draw.line([p1, p2], fill=color, width=width)
+    # dot at pipe end
+    r = 7
+    draw.ellipse([p2[0]-r, p2[1]-r, p2[0]+r, p2[1]+r], fill=color)
+
+def dimline(draw, p1, p2, color, label):
+    """double arrow dimension line with label at midpoint"""
+    draw.line([p1, p2], fill=color, width=3)
+    for p in (p1, p2):
+        draw.ellipse([p[0]-6, p[1]-6, p[0]+6, p[1]+6], fill=color)
+    mx, my = (p1[0]+p2[0])//2, (p1[1]+p2[1])//2
+    fnt = f(26, True)
+    tw = draw.textlength(label, font=fnt)
+    draw.rectangle([mx-tw//2-10, my-20, mx+tw//2+10, my+20], fill=C_BG)
+    draw.text((mx-tw//2, my-15), label, font=fnt, fill=color)
+
+# ================= IMAGE 1 =================
+im1 = Image.open(SRC+'clipboard-2026-10-09T06-39-04-301Z-320ec47a.jpg').convert('RGB')
+d1 = ImageDraw.Draw(im1)
+W, H = im1.size
+
+# photo1: DN160 vertical riser around x≈1060, from y≈700 down to y≈1700
+# horizontal DN110 along top from x≈210 to x≈1010, y≈600
+leader(d1, (1010, 600), (640, 430), C_110)
+tag(d1, (470, 400), 'DN110 横管', '估算 3.8 m', C_110)
+
+leader(d1, (1108, 1150), (830, 1000), C_160)
+tag(d1, (560, 930), 'DN160 立管', '包覆 2.2 m', C_160)
+
+# cleanout
+d1.rounded_rectangle([1072, 1290, 1122, 1340], 6, outline=C_160, width=3)
+leader(d1, (1097, 1315), (760, 1420), C_160)
+tag(d1, (430, 1400), '清扫口 · 必须留空', '不包覆，可检修', C_160)
+
+# floor line
+d1.line([120, 1760, 1500, 1740], fill=C_DIM, width=3)
+d1.text((120, 1790), '地面', font=f(26, True), fill=C_DIM)
+
+# floor to ceiling height note
+d1.line([1530, 250, 1530, 1750], fill=C_110, width=3)
+for yy in (250, 1750):
+    d1.line([1520, yy, 1540, yy], fill=C_110, width=3)
+d1.text((1440, 980), '层高', font=f(28, True), fill=C_110)
+d1.text((1436, 1024), '2.80m', font=f(30, True), fill=C_110)
+
+# single-room total
+d1.rounded_rectangle([60, 1850, 720, 2060], 14, fill=(255,255,255), outline=C_DIM, width=3)
+d1.text((90, 1878), '图1 单间估算合计', font=f(30, True), fill=(40,40,40))
+d1.text((90, 1930), 'DN160  2.2m   |   DN110  3.8m', font=f(27), fill=C_DIM)
+d1.text((90, 1976), 'DN50   1.5m（图中未出现）', font=f(27), fill=C_DIM)
+d1.text((90, 2022), '小计 约 7.5 m', font=f(29, True), fill=C_160)
+d1.text((760, 1900), '※ 照片目测走向估算，\n   非实测尺寸，\n   结算以现场量尺为准', font=f(26), fill=(150,150,148))
+
+im1.save(OUT+'卫生间1_管线长度标注.png', quality=95)
+
+# ================= IMAGE 2 =================
+im2 = Image.open(SRC+'clipboard-2026-10-09T06-39-04-305Z-d5b891b8.jpg').convert('RGB')
+d2 = ImageDraw.Draw(im2)
+
+# photo2: vertical riser x≈690, y 900 -> 1700
+# horizontal DN110 from x≈130 to x≈660, y≈870
+# slanted branch upper right x 780->1000, y 380->700
+# DN50 branch x 790->860, y 1690
+leader(d2, (400, 866), (330, 640), C_110)
+tag(d2, (90, 560), 'DN110 主横管', '估算 3.4 m', C_110)
+
+leader(d2, (690, 1300), (930, 1420), C_160)
+tag(d2, (940, 1380), 'DN160 立管', '包覆 2.2 m', C_160)
+
+leader(d2, (890, 540), (1080, 470), C_110)
+tag(d2, (1080, 400), 'DN110 斜向支管', '估算 0.9 m', C_110)
+
+leader(d2, (824, 1690), (1010, 1760), C_50)
+tag(d2, (1015, 1720), 'DN50 支管', '估算 1.5 m', C_50)
+
+# cleanout on riser
+d2.rounded_rectangle([655, 1560, 700, 1605], 6, outline=C_160, width=3)
+leader(d2, (678, 1582), (420, 1640), C_160)
+tag(d2, (150, 1620), '清扫口 · 留空', '不得包死', C_160)
+
+d2.line([120, 1760, 1470, 1760], fill=C_DIM, width=3)
+d2.text((120, 1778), '地面', font=f(26, True), fill=C_DIM)
+d2.line([1520, 90, 1520, 1760], fill=C_110, width=3)
+for yy in (90, 1760):
+    d2.line([1510, yy, 1530, yy], fill=C_110, width=3)
+d2.text((1408, 880), '层高', font=f(28, True), fill=C_110)
+d2.text((1400, 926), '2.80m', font=f(30, True), fill=C_110)
+
+d2.rounded_rectangle([60, 1850, 760, 2070], 14, fill=(255,255,255), outline=C_DIM, width=3)
+d2.text((90, 1878), '图2 单间估算合计', font=f(30, True), fill=(40,40,40))
+d2.text((90, 1930), 'DN160  2.2m   |   DN110  3.4 + 0.9 m', font=f(27), fill=C_DIM)
+d2.text((90, 1976), 'DN50   1.5 m', font=f(27), fill=C_DIM)
+d2.text((90, 2026), '小计 约 9.0 m', font=f(29, True), fill=C_160)
+d2.text((800, 1900), '※ 照片目测走向估算，\n   非实测尺寸，\n   结算以现场量尺为准', font=f(26), fill=(150,150,148))
+
+im2.save(OUT+'卫生间2_管线长度标注.png', quality=95)
+
+print('DONE')
+print(OUT+'卫生间1_管线长度标注.png')
+print(OUT+'卫生间2_管线长度标注.png')
