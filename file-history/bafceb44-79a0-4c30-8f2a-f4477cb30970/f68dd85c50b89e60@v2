@@ -1,0 +1,166 @@
+from PIL import Image, ImageDraw, ImageFont
+import os
+
+OUT = 'C:/Users/62628/WorkBuddy/2026-10-07-14-52-46/outputs/'
+os.makedirs(OUT, exist_ok=True)
+FONT = 'C:/Windows/Fonts/msyh.ttc'
+FONTB = 'C:/Windows/Fonts/msyhbd.ttc'
+
+def f(sz, bold=False):
+    return ImageFont.truetype(FONTB if bold else FONT, sz)
+
+W, H = 1360, 1240
+im = Image.new('RGB', (W, H), (255, 255, 255))
+d = ImageDraw.Draw(im)
+
+RED   = (163, 45, 45)
+BLACK = (44, 44, 42)
+BLUE  = (24, 95, 165)
+AMBER = (133, 79, 11)
+GREEN = (15, 110, 86)
+GRAY  = (136, 135, 128)
+LGRAY = (241, 239, 232)
+
+S = 2.0  # scale factor from 680x470 viewBox
+
+def box(x, y, w, h, fill, stroke, r=8):
+    d.rounded_rectangle([x*S, y*S, (x+w)*S, (y+h)*S], int(r*S), fill=fill, outline=stroke, width=2)
+
+def txt(x, y, s, font, fill, anchor='la', ctr=False):
+    d.text((x*S, y*S), s, font=font, fill=fill, anchor=anchor)
+
+def line(pts, color, w=5):
+    d.line([(x*S, y*S) for x, y in pts], fill=color, width=int(w*S))
+
+def dot(x, y, r, color):
+    d.ellipse([(x-r)*S, (y-r)*S, (x+r)*S, (y+r)*S], fill=color)
+
+# background
+d.rectangle([0, 0, W, H], fill=(255, 255, 255))
+
+# ---- power supply ----
+box(44, 52, 132, 66, (230, 241, 251), BLUE)
+txt(110, 74, '24V 恒压电源', f(26, True), (12, 68, 124), 'ma')
+txt(110, 98, '200W / 8.33A', f(20), BLUE, 'ma')
+txt(110, 133, '220V 交流进线', f(20), GRAY, 'ma')
+
+dot(176, 72, 5, RED)
+txt(166, 72, '+', f(22, True), RED, 'rm')
+dot(176, 98, 5, BLACK)
+txt(166, 98, '-', f(22, True), BLACK, 'rm')
+
+# ---- trunk wire ----
+line([(180, 72), (296, 72)], RED)
+line([(180, 98), (296, 98)], BLACK)
+txt(238, 128, '1.5mm² 双芯线 4m', f(21, True), (95, 94, 90), 'ma')
+txt(238, 154, '全长过 8.33A', f(20), GRAY, 'ma')
+
+# ---- junction terminal ----
+box(300, 56, 60, 60, LGRAY, (95, 94, 90), r=8)
+for cx in (312, 330, 348):
+    dot(cx, 72, 5, RED)
+    dot(cx, 100, 5, BLACK)
+txt(392, 68, '分叉接线端子', f(20, True), (68, 68, 65), 'lm')
+txt(392, 96, '3 孔 / WAGO', f(18), GRAY, 'lm')
+
+# ---- branch wires: left side goes down outside the label column ----
+line([(312, 62), (312, 186), (96, 186), (96, 258), (150, 258)], RED)
+line([(312, 110), (312, 206), (76, 206), (76, 274), (150, 274)], BLACK)
+line([(348, 72), (348, 132), (596, 132), (596, 258)], RED)
+line([(348, 100), (348, 152), (596, 152), (596, 274)], BLACK)
+
+txt(46, 240, '灯带 A 端', f(20, True), (68, 68, 65), 'la')
+txt(646, 240, '灯带 B 端', f(20, True), (68, 68, 65), 'ra')
+txt(46, 264, '+', f(21, True), RED, 'la')
+txt(646, 264, '+', f(21, True), RED, 'ra')
+txt(46, 284, '-', f(21, True), BLACK, 'la')
+txt(646, 284, '-', f(21, True), BLACK, 'ra')
+
+# ---- LED strip ----
+box(150, 258, 446, 16, (250, 199, 117), AMBER, r=8)
+line([(373, 248), (373, 284)], RED, w=6)
+d.ellipse([(373-7)*S, 266*S-7*S, (373+7)*S, 266*S+7*S], fill=LGRAY, outline=RED, width=4)
+txt(373, 292, '中间剪断处（按剪刀标记）', f(21, True), AMBER, 'ma')
+txt(261, 292, '10m', f(20), GRAY, 'ma')
+txt(485, 292, '10m', f(20), GRAY, 'ma')
+
+# ---- current flow box ----
+box(44, 348, 592, 88, (225, 245, 238), GREEN, r=8)
+txt(64, 368, '电流走向', f(24, True), (8, 80, 65), 'la')
+txt(64, 396, '电源 8.33A 全流量 → 4m 主线 → 分叉端子 → 每路 4.17A → 各带 10m 灯带', f(22), GREEN, 'la')
+txt(64, 424, '电流从两端向中间汇合，中间最亮，头尾亮度差压到最小', f(22), GREEN, 'la')
+
+# ---- warnings box ----
+box(44, 456, 592, 102, (252, 235, 235), RED, r=8)
+txt(64, 476, '三个必须注意', f(24, True), (121, 31, 31), 'la')
+txt(64, 504, '1. A 端正极只能接 B 端正极，交叉接等于短接，会烧电源', f(22), RED, 'la')
+txt(64, 530, '2. 中间断口用热缩管或专用连接帽封住，不可裸露', f(22), RED, 'la')
+txt(64, 556, '3. 全程断电操作，24V 虽安全，短路电流仍有十几安培', f(22), RED, 'la')
+
+# ---- title ----
+txt(340, 22, '24V 灯带 20m 双端供电接线示意图', f(30, True), (40, 40, 40), 'ma')
+txt(340, 582, '线材：1.5mm² 双芯 BVR 软铜线 10m　｜　电源：24V 200W（8.33A）', f(21), (68, 68, 65), 'ma')
+txt(340, 610, '采购价均为参考区间，具体以当地建材市场/门店实时报价为准', f(19), GRAY, 'ma')
+
+im.save(OUT + '24V灯带双端供电接线示意图.png')
+
+# ---- second image: wiring checklist table ----
+W2, H2 = 1360, 900
+im2 = Image.new('RGB', (W2, H2), (255, 255, 255))
+d2 = ImageDraw.Draw(im2)
+d2.rectangle([0, 0, W2, H2], fill=(255, 255, 255))
+
+txt(60, 44, '材料清单与采购参考', f(34, True), (40, 40, 40), 'la')
+
+rows = [
+    ('项目', '规格', '数量', '参考单价', '小计'),
+    ('供电延长线', '1.5mm² 双芯 BVR 软铜线', '10 m', '2-4 元/米', '20-40 元'),
+    ('24V 恒压电源', '200W / 8.33A（或 300W 档）', '1 个', '80-220 元', '80-220 元'),
+    ('分叉接线端子', '3 孔小号端子 / WAGO 221', '3 只', '3-8 元/只', '9-24 元'),
+    ('灯带连接帽', '双芯防水连接帽或热缩管', '4 只', '2-5 元/只', '8-20 元'),
+    ('防水接头盒', 'IP65 防水接线盒（选配）', '2 个', '10-25 元/个', '20-50 元'),
+]
+
+x0, y0 = 60, 90
+colw = [180, 380, 140, 180, 180]
+rowh = 62
+for ri, row in enumerate(rows):
+    yy = y0 + ri * rowh
+    if ri == 0:
+        d2.rectangle([x0, yy, x0 + sum(colw), yy + rowh], fill=(230, 241, 251))
+    elif ri % 2 == 0:
+        d2.rectangle([x0, yy, x0 + sum(colw), yy + rowh], fill=(248, 247, 244))
+    d2.line([(x0, yy), (x0 + sum(colw), yy)], fill=(200, 200, 196), width=2)
+    xx = x0
+    for ci, cell in enumerate(row):
+        fnt = f(23, True) if ri == 0 else f(22)
+        col = (40, 40, 40) if ri == 0 else ((12, 68, 124) if ci == 0 else (68, 68, 65))
+        if ri > 0 and ci >= 3:
+            col = GREEN
+        d2.text((xx + 20, yy + rowh // 2), cell, font=fnt, fill=col, anchor='lm')
+        xx += colw[ci]
+d2.line([(x0, y0 + len(rows) * rowh), (x0 + sum(colw), y0 + len(rows) * rowh)], fill=(200, 200, 196), width=2)
+for ci in range(len(colw) + 1):
+    xx = x0 + sum(colw[:ci])
+    d2.line([(xx, y0), (xx, y0 + len(rows) * rowh)], fill=(200, 200, 196), width=2)
+
+tot_y = y0 + len(rows) * rowh + 34
+d2.rounded_rectangle([x0, tot_y, x0 + sum(colw), tot_y + 70], 12, fill=(225, 245, 238), outline=GREEN, width=2)
+d2.text((x0 + 24, tot_y + 35), '合计约 137-354 元（参考区间，具体以当地门店实时报价为准）', font=f(26, True), fill=(8, 80, 65), anchor='lm')
+
+d2.text((x0, tot_y + 110), '采购提示', font=f(28, True), fill=(40, 40, 40), anchor='la')
+tips = [
+    '电线选 BVR 多股软线，不要 BV 单股硬线——要沿吊顶走弯角、拐角、进盒，软线不易断芯',
+    '端子必须配 1.5mm² 专用小号端子，普通大号端子压不紧，是日后灯带闪烁的常见原因',
+    '24V 电源选 200W 起步即可；若想留余量或后续加长，直接上 300W（12.5A）型号更多',
+    '别买标 300W 实测只有 8A 输出的虚标电源，加载后电压掉到 18V 会导致灯带发红变暗',
+    '若灯带是 RGB/双色温，需另拉 0.5-0.75mm² 屏蔽信号线，超过 5m 建议加信号放大器',
+]
+ty = tot_y + 152
+for i, t in enumerate(tips):
+    d2.text((x0, ty), f'{i+1}.', font=f(22, True), fill=BLUE, anchor='la')
+    d2.text((x0 + 34, ty), t, font=f(22), fill=(68, 68, 65), anchor='la')
+    ty += 42
+
+im2.save(OUT + '24V灯带接线材料清单.png')
+print('DONE')
