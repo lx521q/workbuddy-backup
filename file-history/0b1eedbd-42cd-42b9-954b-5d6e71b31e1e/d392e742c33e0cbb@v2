@@ -1,0 +1,52 @@
+import time, sys, os
+from playwright.sync_api import sync_playwright
+
+HASH = "bfDLcq07tZP5bA"
+FNAME = "sbx_x96max_plus2_4gb_atv_9_20.zip"
+ROOT = f"https://disk.yandex.ru/d/{HASH}"
+FILE_URL = f"{ROOT}/{FNAME}"
+TARGET = r"C:\Users\62628\Downloads\sbx_x96max_plus2_4gb_atv_9_20.zip"
+
+def log(m): print(f"[{time.strftime('%H:%M:%S')}] {m}", flush=True)
+
+with sync_playwright() as p:
+    browser = p.chromium.launch(
+        channel="msedge", headless=False,
+        proxy={"server": "http://127.0.0.1:7890"},
+        args=["--no-sandbox", "--disable-blink-features=AutomationControlled"],
+    )
+    ctx = browser.new_context(accept_downloads=True, locale="ru-RU", viewport={"width": 1400, "height": 900})
+    page = ctx.new_page()
+
+    # 先访问分享页建立 cookie
+    log("建立会话...")
+    page.goto(ROOT, wait_until="domcontentloaded", timeout=90000)
+    time.sleep(3)
+
+    log(f"直接访问文件 URL: {FILE_URL}")
+    got = {"download": None}
+    page.on("download", lambda d: got.__setitem__("download", d))
+
+    try:
+        with page.expect_download(timeout=90000) as dl:
+            page.goto(FILE_URL, wait_until="commit", timeout=60000)
+        d = dl.value
+        log(f"捕获下载: {d.suggested_filename}")
+        path = d.path()
+        size = os.path.getsize(path)
+        log(f"下载完成 {size/1024/1024:.1f} MB")
+        os.makedirs(os.path.dirname(TARGET), exist_ok=True)
+        if os.path.exists(TARGET):
+            os.remove(TARGET)
+        d.save_as(TARGET)
+        log(f"已保存 {TARGET}")
+    except Exception as e:
+        log(f"expect_download 失败: {type(e).__name__}: {str(e)[:300]}")
+        log(f"当前 URL: {page.url}")
+        try:
+            log("页面文本: " + page.inner_text("body")[:500].replace("\n", " | "))
+        except Exception:
+            pass
+        page.screenshot(path="ya_step4.png")
+        log("截图 ya_step4.png")
+    browser.close()

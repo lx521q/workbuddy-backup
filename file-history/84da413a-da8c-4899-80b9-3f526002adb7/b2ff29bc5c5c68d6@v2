@@ -1,0 +1,374 @@
+# -*- coding: utf-8 -*-
+"""生成《五六厂无组织VOC废气治理改造申请报告》总结与数据核查意见"""
+import os
+from docx import Document
+from docx.shared import Pt, Cm, RGBColor
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.enum.table import WD_ALIGN_VERTICAL
+from docx.oxml.ns import qn, nsdecls
+from docx.oxml import parse_xml
+
+SONG = '宋体'
+HEI = '黑体'
+
+
+def _align(a):
+    return {'center': WD_ALIGN_PARAGRAPH.CENTER,
+            'left': WD_ALIGN_PARAGRAPH.LEFT,
+            'right': WD_ALIGN_PARAGRAPH.RIGHT,
+            'just': WD_ALIGN_PARAGRAPH.JUSTIFY}[a]
+
+
+def set_run_font(run, size=10.5, bold=False, font=SONG, color=None):
+    run.font.name = font
+    run.font.size = Pt(size)
+    run.font.bold = bold
+    if color:
+        run.font.color.rgb = RGBColor(*color)
+    rPr = run._element.get_or_add_rPr()
+    rFonts = rPr.find(qn('w:rFonts'))
+    if rFonts is None:
+        rFonts = parse_xml(
+            '<w:rFonts %s w:ascii="%s" w:hAnsi="%s" w:eastAsia="%s"/>'
+            % (nsdecls('w'), font, font, font))
+        rPr.append(rFonts)
+    else:
+        rFonts.set(qn('w:ascii'), font)
+        rFonts.set(qn('w:hAnsi'), font)
+        rFonts.set(qn('w:eastAsia'), font)
+
+
+def para(doc, text, size=10.5, bold=False, font=SONG, align='just',
+         before=0, after=0, indent=False, color=None, line=1.25):
+    p = doc.add_paragraph()
+    p.alignment = _align(align)
+    pf = p.paragraph_format
+    pf.space_before = Pt(before)
+    pf.space_after = Pt(after)
+    pf.line_spacing = line
+    if indent:
+        pf.first_line_indent = Pt(size * 2)
+    r = p.add_run(text)
+    set_run_font(r, size, bold, font, color)
+    return p
+
+
+def set_cell(cell, text, size=9, bold=False, align='center', font=SONG, color=None):
+    if isinstance(text, (int, float)):
+        text = str(text)
+    cell.text = ''
+    p0 = cell.paragraphs[0]
+    lines = str(text).split('\n')
+    for i, ln in enumerate(lines):
+        p = p0 if i == 0 else cell.add_paragraph()
+        p.alignment = _align(align)
+        p.paragraph_format.space_before = Pt(1)
+        p.paragraph_format.space_after = Pt(1)
+        p.paragraph_format.line_spacing = 1.0
+        r = p.add_run(ln)
+        set_run_font(r, size, bold, font, color)
+    cell.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
+
+
+def set_cell_bg(cell, hexcolor):
+    tcPr = cell._tc.get_or_add_tcPr()
+    shd = parse_xml('<w:shd %s w:val="clear" w:color="auto" w:fill="%s"/>'
+                    % (nsdecls('w'), hexcolor))
+    tcPr.append(shd)
+
+
+def set_table_borders(table, sz=4, color='000000'):
+    tbl = table._tbl
+    borders = parse_xml(
+        '<w:tblBorders %s>'
+        '<w:top w:val="single" w:sz="%d" w:space="0" w:color="%s"/>'
+        '<w:left w:val="single" w:sz="%d" w:space="0" w:color="%s"/>'
+        '<w:bottom w:val="single" w:sz="%d" w:space="0" w:color="%s"/>'
+        '<w:right w:val="single" w:sz="%d" w:space="0" w:color="%s"/>'
+        '<w:insideH w:val="single" w:sz="%d" w:space="0" w:color="%s"/>'
+        '<w:insideV w:val="single" w:sz="%d" w:space="0" w:color="%s"/>'
+        '</w:tblBorders>'
+        % (nsdecls('w'), sz, color, sz, color, sz, color, sz, color,
+           sz, color, sz, color))
+    tbl.tblPr.append(borders)
+
+
+def make_table(doc, nrows, ncols, widths_cm):
+    t = doc.add_table(rows=nrows, cols=ncols)
+    t.alignment = 1
+    t.autofit = False
+    set_table_borders(t)
+    for row in t.rows:
+        for i, w in enumerate(widths_cm):
+            if i < len(row.cells):
+                row.cells[i].width = Cm(w)
+    return t
+
+
+OUT = r'C:/Users/62628/WorkBuddy/2026-08-05-10-25-06/outputs/VOC_summary_check.docx'
+
+doc = Document()
+sec = doc.sections[0]
+sec.page_width = Cm(21.0)
+sec.page_height = Cm(29.7)
+sec.left_margin = Cm(2.2)
+sec.right_margin = Cm(2.0)
+sec.top_margin = Cm(2.0)
+sec.bottom_margin = Cm(2.0)
+
+# ================= 标题 =================
+p = doc.add_paragraph()
+p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+p.paragraph_format.space_after = Pt(2)
+r = p.add_run('《五六厂无组织VOC废气治理改造申请报告》')
+set_run_font(r, 16, True, HEI)
+
+p = doc.add_paragraph()
+p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+p.paragraph_format.space_after = Pt(4)
+r = p.add_run('总结与数据核查意见')
+set_run_font(r, 16, True, HEI)
+
+para(doc, '（说明：本文件为独立编制的总结与核查意见，未对原申请报告做任何修改，'
+          '供修改原稿时参考。）', size=9, align='center', after=10,
+     color=(89, 89, 89))
+
+# ================= 一、报告内容总结 =================
+para(doc, '一、报告内容总结', size=12, bold=True, font=HEI, align='left',
+     before=4, after=4)
+
+para(doc, '1. 项目概况', size=10.5, bold=True, align='left', before=4, after=2)
+para(doc, '在五厂、六厂中间新增2套70000m³/h无组织尾气处理系统（合计处理能力140000m³/h），'
+          '每套含表冷器、活性炭吸附罐（8套×2）、氮气内循环脱附系统、引风机、气动阀门、'
+          '电加热、脱附冷凝系统、凝液接收罐及外排设施。将五厂无组织1#2#5#6#、'
+          '六厂无组织1#3#5#6#等高浓度点位（抽聚烟区、滑车）接入活性炭设备，'
+          '实现净剂回收与尾气达标排放。预估投入1100万元以内。',
+     size=10.5, indent=True, after=4)
+
+para(doc, '2. 改造必要性', size=10.5, bold=True, align='left', before=4, after=2)
+para(doc, '2026年三季度委托烟气治理厂家使用VOCs-FID检测仪实测：五厂无组织东烟囱205mg/m³、'
+          '西烟囱101mg/m³、六厂无组织烟囱80.1mg/m³，均超过山东省地方标准限值60mg/m³。'
+          '改造目的有三：环保合规、污染物减排回收利用、消除无组织烟气回收系统隐患。',
+     size=10.5, indent=True, after=4)
+
+para(doc, '3. 净剂回收测算（2026年1—9月，五六车间）', size=10.5, bold=True,
+     align='left', before=4, after=2)
+para(doc, '改造前：总投料3935.74吨，有组织回收3180.79吨（80.82%），无组织回收96吨（2.44%），'
+          '合计回收3276.79吨（83.26%），排放及逸散658.95吨（16.74%）。',
+     size=10.5, indent=True, after=2)
+para(doc, '改造后：总投料不变，有组织回收3180.79吨（80.82%），无组织回收525吨（13.34%），'
+          '合计回收3705.79吨（94.16%），排放及逸散降至229.95吨（5.84%）。',
+     size=10.5, indent=True, after=2)
+para(doc, '即：无组织净多回收429吨，逸散量由658.95吨降至229.95吨，减少429吨，两项完全对应。',
+     size=10.5, indent=True, after=4)
+
+para(doc, '4. 投资回报（原报告口径）', size=10.5, bold=True, align='left',
+     before=4, after=2)
+t = make_table(doc, 6, 5, [1.3, 3.6, 3.4, 3.4, 3.2])
+hdr = ['序号', '项目', '计算依据', '金额', '说明']
+for i, h in enumerate(hdr):
+    set_cell(t.cell(0, i), h, 9, True)
+    set_cell_bg(t.cell(0, i), 'D9D9D9')
+rows = [
+    ('1', '运行电耗', '150kW/套×2套×0.75元/kW', '-225元/h', '每小时电费'),
+    ('2', '年运行费用', '225元/h×8500h', '-191.25万元/年', '全年运行'),
+    ('3', '年回收溶剂', '350吨/套×2套×0.74万元/吨', '+518万元/年', 'D70/DOP/DOTP'),
+    ('4', '合计年净收益', '518-191.25', '+326.75万元/年', ''),
+    ('5', '投入回收期', '1100万元÷326.75万元', '3.37年', '静态回收期'),
+]
+for ri, row in enumerate(rows, start=1):
+    for ci, v in enumerate(row):
+        set_cell(t.cell(ri, ci), v, 9, ci == 0)
+
+para(doc, '', size=6, after=0)
+para(doc, '5. 报告整体结论', size=10.5, bold=True, align='left', before=4, after=2)
+para(doc, '改造兼具环保合规（消超标）与经济收益（年净收益约327万元、约3.4年收回投资）双重效益，'
+          '建议列入2027年技改计划实施。报告框架完整，必要性—投入—核算—对比—总结链条清晰，'
+          '主要测算数据内部自洽。', size=10.5, indent=True, after=8)
+
+# ================= 二、数据核对 =================
+para(doc, '二、数据核对结果', size=12, bold=True, font=HEI, align='left',
+     before=8, after=4)
+
+para(doc, '1. 核算正确的部分（已逐项验算，可直接沿用）', size=10.5, bold=True,
+     align='left', before=2, after=2)
+
+t = make_table(doc, 12, 4, [1.0, 5.2, 4.6, 4.1])
+for i, h in enumerate(['序号', '核对项', '验算过程', '结论']):
+    set_cell(t.cell(0, i), h, 9, True)
+    set_cell_bg(t.cell(0, i), 'D9D9D9')
+ok_rows = [
+    ('1', '改造前有组织回收率', '3180.79÷3935.74=80.82%', '正确'),
+    ('2', '改造前无组织回收率', '96÷3935.74=2.44%', '正确'),
+    ('3', '改造前总回收率', '(3180.79+96)÷3935.74=83.26%', '正确'),
+    ('4', '改造前逸散量', '3935.74-3180.79-96=658.95吨', '正确'),
+    ('5', '改造前逸散占比', '658.95÷3935.74=16.74%', '正确'),
+    ('6', '改造后无组织回收率', '525÷3935.74=13.34%', '正确'),
+    ('7', '改造后总回收率', '(3180.79+525)÷3935.74=94.16%', '正确'),
+    ('8', '改造后逸散量', '3935.74-3180.79-525=229.95吨', '正确'),
+    ('9', '改造后逸散占比', '229.95÷3935.74=5.84%', '正确'),
+    ('10', '电耗费用', '150×2×0.75×8500=191.25万元', '正确'),
+    ('11', '回收期', '1100÷326.75=3.37年', '算术正确（口径见后）'),
+]
+for ri, row in enumerate(ok_rows, start=1):
+    for ci, v in enumerate(row):
+        set_cell(t.cell(ri, ci), v, 9, ci == 0,
+                 align='center' if ci in (0, 3) else 'left')
+
+para(doc, '', size=6, after=0)
+para(doc, '表内三项占比合计均为100%（80.82+2.44+16.74=100.00；80.82+13.34+5.84=100.00），'
+          '数据链条闭合，无算术错误。', size=9.5, indent=True, after=8, color=(89, 89, 89))
+
+# ================= 三、需修正的问题 =================
+para(doc, '三、需修正的问题（按严重程度排序）', size=12, bold=True, font=HEI,
+     align='left', before=8, after=4)
+
+# 问题1
+para(doc, '问题1（重要）：525吨与350吨/套的口径未标注“年化”，易被质疑', size=10.5,
+     bold=True, align='left', before=6, after=2, color=(192, 0, 0))
+para(doc, '正文写“1-9月运行期间2套无组织尾气系统可产出回收油525吨”，而投资回报表写'
+          '“350吨/套”（2套即700吨/年）。两者相差1.33倍，看似矛盾，实为年化关系：'
+          '525÷9×12=700吨，700÷2=350吨/套。',
+     size=10.5, indent=True, after=2)
+para(doc, '修改建议：将正文改为“1-9月运行期间2套系统可产出回收油525吨，折合年（8500h）'
+          '回收约700吨，即350吨/套·年”，把年化过程写明。同时明确“525吨含原有已回收的96吨，'
+          '净增量为429吨”，避免被理解为全部为新增收益。', size=10.5, indent=True, after=6)
+
+# 问题2
+para(doc, '问题2（重要）：收益计算用了回收总量700吨，而实际新增收益只对应净增量572吨',
+     size=10.5, bold=True, align='left', before=6, after=2, color=(192, 0, 0))
+para(doc, '改造后无组织回收525吨中，原有96吨本来就在回收（改造前已计入），因此电耗换来的'
+          '“新增”收益只来自429吨（1-9月），年化约572吨。若按净增量口径重算：',
+     size=10.5, indent=True, after=2)
+
+t = make_table(doc, 5, 4, [1.0, 5.6, 4.0, 4.3])
+for i, h in enumerate(['序号', '口径', '年净收益计算', '静态回收期']):
+    set_cell(t.cell(0, i), h, 9, True)
+    set_cell_bg(t.cell(0, i), 'D9D9D9')
+cmp_rows = [
+    ('1', '原报告口径：回收700吨/年', '700×0.74-191.25=326.75万', '3.37年'),
+    ('2', '净增量口径：净增572吨/年', '572×0.74-191.25=232.03万', '4.74年'),
+    ('3', '若525吨为全年（不年化）', '525×0.74-191.25=197.25万', '5.58年'),
+]
+for ri, row in enumerate(cmp_rows, start=1):
+    for ci, v in enumerate(row):
+        set_cell(t.cell(ri, ci), v, 9, ci == 0,
+                 align='center' if ci in (0, 3) else 'left')
+set_cell(t.cell(4, 0), '建议', 9, True)
+set_cell(t.cell(4, 1), '以第2行为准报出，并在表中加注原口径，说明差异原因', 9, False, 'left')
+for ci in (2, 3):
+    set_cell(t.cell(4, ci), '—', 9)
+for ci in range(4):
+    set_cell_bg(t.cell(4, ci), 'FFF2CC')
+
+para(doc, '', size=6, after=0)
+para(doc, '修改建议：保守起见，对外统一按净增量口径报“年净收益约232万元、静态回收期约4.7年”，'
+          '并在附注中说明若计入原有96吨则为327万元/3.37年。这样既真实又经得起追问。',
+     size=10.5, indent=True, after=6)
+
+# 问题3
+para(doc, '问题3（重要）：投入金额与《2027年修继技改汇总表》不一致（1100万 vs 700万）',
+     size=10.5, bold=True, align='left', before=6, after=2, color=(192, 0, 0))
+para(doc, '本报告“项目投入”写“1100万以内”，而2027年修继技改汇总表序号30'
+          '“五六厂无组织VOC改造”填报为700万。两处相差400万，属对外报送口径冲突，'
+          '须在上报前统一。按700万测算回收期为700÷326.75=2.14年；按净增量口径为'
+          '700÷232.03=3.02年。', size=10.5, indent=True, after=2)
+para(doc, '修改建议：核实蓝驰方案报价后，确定一处金额并在汇总表与申请报告中同步统一，'
+          '不要出现两个数。', size=10.5, indent=True, after=6)
+
+# 问题4
+para(doc, '问题4（格式）：章条编号出现重复与跳号', size=10.5, bold=True,
+     align='left', before=6, after=2, color=(192, 0, 0))
+para(doc, '① “投资回报率测算：”下第一节为“项目投入”，未编（1），下文直接是“（2）运行核算'
+          '及投入回报”，缺（1）。② “（1）五六厂无组织VOC废气治理改造前：”之下又出现'
+          '“（1）”“（2）”两个子条，层级重复；改造后部分同样以“（1）”开头。',
+     size=10.5, indent=True, after=2)
+para(doc, '修改建议：改为“（1）项目投入”“（2）运行核算及投入回报”；子条改为“① ②”或'
+          '“1）2）”以示区分。', size=10.5, indent=True, after=6)
+
+# 问题5
+para(doc, '问题5（表述）：检测标准引用不完整', size=10.5, bold=True, align='left',
+     before=6, after=2, color=(192, 0, 0))
+para(doc, '原文只写“山东省地方标准限值60mg/m³”，未注明标准号、污染因子和是否折标干。'
+          '建议补全为“DB37/2801.7-2019《挥发性有机物排放标准 第7部分：其他行业》'
+          '表2 厂界/排放限值 60mg/m³”，并注明检测条件（标干、检测方法HJ 733或HJ 38）。',
+     size=10.5, indent=True, after=2)
+para(doc, '另：三根烟囱实测205/101/80.1mg/m³，分别为限值的3.4倍、1.7倍、1.3倍，'
+          '建议在正文中直接写出超标倍数，比“均超过限值”更有说服力。',
+     size=10.5, indent=True, after=6)
+
+# 问题6
+para(doc, '问题6（技术合理性）：回收量525吨与实测风量、浓度不能相互印证', size=10.5,
+     bold=True, align='left', before=6, after=2, color=(192, 0, 0))
+para(doc, '按报告给出的处理能力140000m³/h、三根烟囱加权平均浓度约108.8mg/m³、'
+          '年运行8500h测算，全年捕集量约129吨，按95%回收率仅约123吨，与525吨（1-9月）'
+          '相差4倍以上。反推：若要实现525吨/9个月（年化700吨），在140000m³/h风量下'
+          '需进气浓度约619mg/m³，与实测值不符。',
+     size=10.5, indent=True, after=2)
+para(doc, '可能原因：①525吨并非仅来自这三根烟囱，还包含抽聚烟区、滑车等未在实测清单内的'
+          '高浓度点位；②无组织收集后浓度远高于排放口实测（收集口未稀释）。'
+          '修改建议：在正文中补一句口径说明，例如“525吨为接入的8个高浓度点位收集气'
+          '经活性炭吸附后的回收量，收集口实测浓度高于排放口，故不能直接用排放口浓度反算”，'
+          '否则评审时容易被质疑数据来源。', size=10.5, indent=True, after=6)
+
+# 问题7
+para(doc, '问题7（小）：其他细节', size=10.5, bold=True, align='left',
+     before=6, after=2, color=(192, 0, 0))
+t = make_table(doc, 5, 3, [1.0, 5.4, 8.5])
+for i, h in enumerate(['序号', '位置', '问题与建议']):
+    set_cell(t.cell(0, i), h, 9, True)
+    set_cell_bg(t.cell(0, i), 'D9D9D9')
+det_rows = [
+    ('1', '落款日期2026年10月20日', '晚于当前报送时间，若本月上报请核对日期'),
+    ('2', '“投资回报率测算”标题', '实际算的是静态投资回收期，非回报率；建议改为'
+     '“投资回收期测算”或“投入产出测算”'),
+    ('3', '表2“介质”列', '第4行“年回收溶剂”实为收益项、第5-6行为汇总行，'
+     '与“介质”列名不符，建议列名改为“项目”，或把汇总行移出表格另设说明'),
+    ('4', '正文“（1）2026年五、六车间1-9月总投料…”', '句中“运行车间有组织烟气回收，'
+     '静电、活性炭设备回收油3180.79吨”逗号用法易误读，建议改为顿号或补“经”字'),
+]
+for ri, row in enumerate(det_rows, start=1):
+    for ci, v in enumerate(row):
+        set_cell(t.cell(ri, ci), v, 9, ci == 0,
+                 align='center' if ci == 0 else 'left')
+
+para(doc, '', size=6, after=0)
+
+# ================= 四、建议对外统一口径 =================
+para(doc, '四、建议对外统一的数据口径', size=12, bold=True, font=HEI, align='left',
+     before=10, after=4)
+para(doc, '为避免节后与领导对接时出现信息偏差，建议本报告对外只用下表一套数据：',
+     size=10.5, indent=True, after=4)
+
+t = make_table(doc, 8, 3, [1.2, 6.4, 7.3])
+for i, h in enumerate(['序号', '项目', '统一口径建议值']):
+    set_cell(t.cell(0, i), h, 9, True)
+    set_cell_bg(t.cell(0, i), 'D9D9D9')
+uni_rows = [
+    ('1', '项目投入', '待核实（1100万 或 700万，须与汇总表一致）'),
+    ('2', '处理能力', '2套×70000m³/h，合计140000m³/h'),
+    ('3', '年运行费用（电耗）', '191.25万元/年（150kW×2×0.75元×8500h）'),
+    ('4', '年回收溶剂', '700吨/年（1-9月525吨年化，350吨/套·年）'),
+    ('5', '年毛收益 / 净收益', '518万元/年 / 净增口径232万元·年，原口径327万元/年'),
+    ('6', '静态回收期', '净增口径约4.7年（原口径3.37年）'),
+    ('7', '环境效益', '无组织逸散由658.95吨降至229.95吨，减排429吨/9个月；'
+     '排放浓度由205/101/80.1mg/m³降至60mg/m³以下'),
+]
+for ri, row in enumerate(uni_rows, start=1):
+    for ci, v in enumerate(row):
+        set_cell(t.cell(ri, ci), v, 9, ci == 0,
+                 align='center' if ci == 0 else 'left')
+
+para(doc, '', size=6, after=0)
+para(doc, '注：原报告整体框架可用，主要问题集中在“525吨/350吨·套”口径未年化说明、'
+          '投入金额与汇总表冲突两处，改动量不大，建议按上述意见局部修订后再报。',
+     size=9.5, indent=True, after=10, color=(89, 89, 89))
+
+# ================= 落款 =================
+para(doc, '', size=10, after=12)
+para(doc, '淄博蓝帆新材料  运行车间', size=10.5, align='right', after=2)
+para(doc, '2026年10月16日', size=10.5, align='right', after=0)
+
+doc.save(OUT)
+print('OK ->', OUT)
+print('段落', len(doc.paragraphs), '表格', len(doc.tables))

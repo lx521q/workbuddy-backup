@@ -1,0 +1,24 @@
+import sys, time
+from playwright.sync_api import sync_playwright
+
+URL = "https://disk.yandex.ru/d/bfDLcq07tZP5bA"
+
+with sync_playwright() as p:
+    browser = p.chromium.launch(
+        channel="msedge",
+        headless=False,
+        proxy={"server": "http://127.0.0.1:7890"},
+        args=["--no-sandbox", "--disable-blink-features=AutomationControlled"],
+    )
+    ctx = browser.new_context(accept_downloads=True, locale="ru-RU")
+    page = ctx.new_page()
+    page.goto(URL, wait_until="domcontentloaded", timeout=90000)
+    time.sleep(6)
+    print("URL:", page.url)
+    print("TITLE:", page.title())
+    txt = page.inner_text("body")
+    print("=== BODY TEXT ===")
+    print(txt[:3000])
+    page.screenshot(path="ya_shot.png", full_page=True)
+    print("=== screenshot saved ===")
+    browser.close()

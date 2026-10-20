@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "lastUpdated": 1790301943797,
+  "lastUpdated": 1792410062613,
   "artifacts": [
     {
       "type": "media",
@@ -178,6 +178,222 @@
         "ownerConversationId": "0b1eedbd-42cd-42b9-954b-5d6e71b31e1e",
         "requestId": "01a0d64d63317573adcaaef29a7b472c",
         "codebuddy.ai/requestId": "01a0d64d63317573adcaaef29a7b472c"
+      }
+    },
+    {
+      "name": "ya_probe.py",
+      "title": "ya_probe.py",
+      "mimeType": "text/plain",
+      "contentType": "code",
+      "language": "python",
+      "size": 805,
+      "createdAt": 1792408866935,
+      "updatedAt": 1792408866936,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/WorkBuddy/Claw/ya_probe.py",
+      "_meta": {
+        "sourceTool": "Write",
+        "codebuddy.ai/toolName": "Write",
+        "toolCallId": "call_00_tMgosekiROVoQDC92QMA5801",
+        "ownerConversationId": "0b1eedbd-42cd-42b9-954b-5d6e71b31e1e",
+        "requestId": "01a153df2b7d7a3882c1eeceb4de35ff",
+        "codebuddy.ai/requestId": "01a153df2b7d7a3882c1eeceb4de35ff",
+        "createdByRequestId": "01a153df2b7d7a3882c1eeceb4de35ff",
+        "touchedByRequestIds": [
+          "01a153df2b7d7a3882c1eeceb4de35ff"
+        ]
+      }
+    },
+    {
+      "name": "ya_download.py",
+      "title": "ya_download.py",
+      "mimeType": "text/plain",
+      "contentType": "code",
+      "language": "python",
+      "size": 2631,
+      "createdAt": 1792408917619,
+      "updatedAt": 1792408917619,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/WorkBuddy/Claw/ya_download.py",
+      "_meta": {
+        "sourceTool": "Write",
+        "codebuddy.ai/toolName": "Write",
+        "toolCallId": "call_33cb8247d0ef42338010725e",
+        "ownerConversationId": "0b1eedbd-42cd-42b9-954b-5d6e71b31e1e",
+        "requestId": "01a153df2b7d7a3882c1eeceb4de35ff",
+        "codebuddy.ai/requestId": "01a153df2b7d7a3882c1eeceb4de35ff",
+        "createdByRequestId": "01a153df2b7d7a3882c1eeceb4de35ff",
+        "touchedByRequestIds": [
+          "01a153df2b7d7a3882c1eeceb4de35ff"
+        ]
+      }
+    },
+    {
+      "name": "ya_diag.py",
+      "title": "ya_diag.py",
+      "mimeType": "text/plain",
+      "contentType": "code",
+      "language": "python",
+      "size": 2011,
+      "createdAt": 1792409111789,
+      "updatedAt": 1792409111789,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/WorkBuddy/Claw/ya_diag.py",
+      "_meta": {
+        "sourceTool": "Write",
+        "codebuddy.ai/toolName": "Write",
+        "toolCallId": "call_8916587915c841ea81b83d5c",
+        "ownerConversationId": "0b1eedbd-42cd-42b9-954b-5d6e71b31e1e",
+        "requestId": "01a153df2b7d7a3882c1eeceb4de35ff",
+        "codebuddy.ai/requestId": "01a153df2b7d7a3882c1eeceb4de35ff",
+        "createdByRequestId": "01a153df2b7d7a3882c1eeceb4de35ff",
+        "touchedByRequestIds": [
+          "01a153df2b7d7a3882c1eeceb4de35ff"
+        ]
+      }
+    },
+    {
+      "name": "ya_diag2.py",
+      "title": "ya_diag2.py",
+      "mimeType": "text/plain",
+      "contentType": "code",
+      "language": "python",
+      "size": 1712,
+      "createdAt": 1792409169575,
+      "updatedAt": 1792409169576,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/WorkBuddy/Claw/ya_diag2.py",
+      "_meta": {
+        "sourceTool": "Write",
+        "codebuddy.ai/toolName": "Write",
+        "toolCallId": "call_a565c6bc144a4b89a1902440",
+        "ownerConversationId": "0b1eedbd-42cd-42b9-954b-5d6e71b31e1e",
+        "requestId": "01a153df2b7d7a3882c1eeceb4de35ff",
+        "codebuddy.ai/requestId": "01a153df2b7d7a3882c1eeceb4de35ff",
+        "createdByRequestId": "01a153df2b7d7a3882c1eeceb4de35ff",
+        "touchedByRequestIds": [
+          "01a153df2b7d7a3882c1eeceb4de35ff"
+        ]
+      }
+    },
+    {
+      "name": "ya_direct.py",
+      "title": "ya_direct.py",
+      "mimeType": "text/plain",
+      "contentType": "code",
+      "language": "python",
+      "size": 1912,
+      "createdAt": 1792409303614,
+      "updatedAt": 1792409303615,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/WorkBuddy/Claw/ya_direct.py",
+      "_meta": {
+        "sourceTool": "Write",
+        "codebuddy.ai/toolName": "Write",
+        "toolCallId": "call_00_M85EkoqV046Lc4mn85Zy9081",
+        "ownerConversationId": "0b1eedbd-42cd-42b9-954b-5d6e71b31e1e",
+        "requestId": "01a153eacc7871459e72568bf6d705ab",
+        "codebuddy.ai/requestId": "01a153eacc7871459e72568bf6d705ab",
+        "createdByRequestId": "01a153eacc7871459e72568bf6d705ab",
+        "touchedByRequestIds": [
+          "01a153eacc7871459e72568bf6d705ab"
+        ]
+      }
+    },
+    {
+      "name": "ya_cap.py",
+      "title": "ya_cap.py",
+      "mimeType": "text/plain",
+      "contentType": "code",
+      "language": "python",
+      "size": 1747,
+      "createdAt": 1792409413425,
+      "updatedAt": 1792409413427,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/WorkBuddy/Claw/ya_cap.py",
+      "_meta": {
+        "sourceTool": "Write",
+        "codebuddy.ai/toolName": "Write",
+        "toolCallId": "call_00_oKit5P1uAgVT6sMf7KnV5338",
+        "ownerConversationId": "0b1eedbd-42cd-42b9-954b-5d6e71b31e1e",
+        "requestId": "01a153eacc7871459e72568bf6d705ab",
+        "codebuddy.ai/requestId": "01a153eacc7871459e72568bf6d705ab",
+        "createdByRequestId": "01a153eacc7871459e72568bf6d705ab",
+        "touchedByRequestIds": [
+          "01a153eacc7871459e72568bf6d705ab"
+        ]
+      }
+    },
+    {
+      "name": "ya_api.py",
+      "title": "ya_api.py",
+      "mimeType": "text/plain",
+      "contentType": "code",
+      "language": "python",
+      "size": 2324,
+      "createdAt": 1792409504054,
+      "updatedAt": 1792409504054,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/WorkBuddy/Claw/ya_api.py",
+      "_meta": {
+        "sourceTool": "Write",
+        "codebuddy.ai/toolName": "Write",
+        "toolCallId": "call_23c185c2a8884f90aa68f9e7",
+        "ownerConversationId": "0b1eedbd-42cd-42b9-954b-5d6e71b31e1e",
+        "requestId": "01a153eacc7871459e72568bf6d705ab",
+        "codebuddy.ai/requestId": "01a153eacc7871459e72568bf6d705ab",
+        "createdByRequestId": "01a153eacc7871459e72568bf6d705ab",
+        "touchedByRequestIds": [
+          "01a153eacc7871459e72568bf6d705ab"
+        ]
+      }
+    },
+    {
+      "name": "ya_intercept.py",
+      "title": "ya_intercept.py",
+      "mimeType": "text/plain",
+      "contentType": "code",
+      "language": "python",
+      "size": 1679,
+      "createdAt": 1792409557623,
+      "updatedAt": 1792409557624,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/WorkBuddy/Claw/ya_intercept.py",
+      "_meta": {
+        "sourceTool": "Write",
+        "codebuddy.ai/toolName": "Write",
+        "toolCallId": "call_4d60fd9cbebb421b8afedc4a",
+        "ownerConversationId": "0b1eedbd-42cd-42b9-954b-5d6e71b31e1e",
+        "requestId": "01a153eacc7871459e72568bf6d705ab",
+        "codebuddy.ai/requestId": "01a153eacc7871459e72568bf6d705ab",
+        "createdByRequestId": "01a153eacc7871459e72568bf6d705ab",
+        "touchedByRequestIds": [
+          "01a153eacc7871459e72568bf6d705ab"
+        ]
+      }
+    },
+    {
+      "name": "ya_hook.py",
+      "title": "ya_hook.py",
+      "mimeType": "text/plain",
+      "contentType": "code",
+      "language": "python",
+      "size": 2644,
+      "createdAt": 1792409621732,
+      "updatedAt": 1792410062612,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/WorkBuddy/Claw/ya_hook.py",
+      "_meta": {
+        "sourceTool": "Edit",
+        "codebuddy.ai/toolName": "Edit",
+        "toolCallId": "call_c21feceed2dd408a9ae75365",
+        "ownerConversationId": "0b1eedbd-42cd-42b9-954b-5d6e71b31e1e",
+        "requestId": "01a153eacc7871459e72568bf6d705ab",
+        "codebuddy.ai/requestId": "01a153eacc7871459e72568bf6d705ab",
+        "createdByRequestId": "01a153eacc7871459e72568bf6d705ab",
+        "touchedByRequestIds": [
+          "01a153eacc7871459e72568bf6d705ab"
+        ]
       }
     }
   ]

@@ -1,0 +1,147 @@
+# -*- coding: utf-8 -*-
+"""VCF (vCard 3.0, iCloud export) -> Excel converter."""
+import re
+import sys
+from openpyxl import Workbook
+from openpyxl.styles import Font, PatternFill, Alignment
+from openpyxl.utils import get_column_letter
+
+SRC = r"C:\Users\62628\Desktop\iCloud全部.vcf"
+DST = r"C:\Users\62628\Desktop\iCloud全部.xlsx"
+MAX_PHONES = 10
+
+LABEL_RE = re.compile(r"^_\$!<(.+?)>!\$_$")
+
+
+def unfold(text):
+    lines = []
+    for raw in text.splitlines():
+        if raw[:1] in (" ", "\t") and lines:
+            lines[-1] += raw[1:]
+        else:
+            lines.append(raw)
+    return lines
+
+
+def parse_prop(line):
+    """Return (name, params:set, value) or None."""
+    if ":" not in line:
+        return None
+    head, value = line.split(":", 1)
+    parts = head.split(";")
+    name = parts[0].split(".", 1)[-1].upper()  # strip itemN. / group.
+    params = set()
+    for p in parts[1:]:
+        for v in p.split(","):
+            params.add(v.strip().upper())
+    return name, params, value.strip()
+
+
+def clean_phone(v):
+    v = v.strip()
+    if v.lower().startswith("tel:"):
+        v = v[4:]
+    return re.sub(r"[\s\-()]", "", v)
+
+
+def join_nonempty(parts, sep=" "):
+    return sep.join(p for p in parts if p)
+
+
+contacts = []
+cur = None
+with open(SRC, "r", encoding="utf-8-sig", errors="replace") as f:
+    for line in unfold(f.read()):
+        prop = parse_prop(line)
+        if prop is None:
+            continue
+        name, params, value = prop
+        if name == "BEGIN":
+            cur = {"FN": "", "N": "", "TEL": [], "LABEL": [], "ORG": "",
+                   "NOTE": [], "EMAIL": [], "NICKNAME": "", "ADR": "", "BDAY": ""}
+            continue
+        if name == "END":
+            if cur is not None:
+                contacts.append(cur)
+            cur = None
+            continue
+        if cur is None:
+            continue
+        if name in ("PHOTO", "PRODID", "VERSION", "X-ABDATE", "X-SOCIALPROFILE",
+                    "X-APPLE", "URL", "X-AIM", "IMPP"):
+            continue
+        if name == "FN":
+            cur["FN"] = value
+        elif name == "N":
+            cur["N"] = value
+        elif name == "TEL":
+            p = clean_phone(value)
+            if p:
+                cur["TEL"].append(p)
+        elif name == "X-ABLABEL":
+            m = LABEL_RE.match(value)
+            cur["LABEL"].append(m.group(1) if m else value)
+        elif name == "ORG":
+            cur["ORG"] = join_nonempty(value.split(";"), " / ")
+        elif name == "NOTE":
+            cur["NOTE"].append(value.replace("\\n", " ").replace("\\,", ","))
+        elif name == "EMAIL":
+            cur["EMAIL"].append(value)
+        elif name == "NICKNAME":
+            cur["NICKNAME"] = value
+        elif name == "ADR":
+            cur["ADR"] = join_nonempty(value.split(";"), "")
+        elif name in ("BDAY", "X-ALTBDAY"):
+            cur["BDAY"] = value
+
+rows = []
+max_tel = 0
+for c in contacts:
+    name = c["FN"] or join_nonempty(c["N"].split(";")) or "(无名)"
+    phones = c["TEL"]
+    max_tel = max(max_tel, len(phones))
+    rows.append([
+        name,
+        *[phones[i] if i < len(phones) else "" for i in range(MAX_PHONES)],
+        "; ".join(c["LABEL"]),
+        c["ORG"],
+        "; ".join(c["EMAIL"]),
+        c["ADR"],
+        c["NICKNAME"],
+        "; ".join(c["NOTE"]),
+    ])
+
+cols = (["姓名"] + [f"电话{i+1}" for i in range(MAX_PHONES)]
+        + ["标签", "单位", "邮箱", "地址", "昵称", "备注"])
+
+wb = Workbook()
+ws = wb.active
+ws.title = "通讯录"
+
+header_font = Font(bold=True, color="FFFFFF")
+header_fill = PatternFill("solid", fgColor="185FA5")
+for col, h in enumerate(cols, 1):
+    cell = ws.cell(row=1, column=col, value=h)
+    cell.font = header_font
+    cell.fill = header_fill
+    cell.alignment = Alignment(horizontal="center", vertical="center")
+
+for r, row in enumerate(rows, 2):
+    for col, v in enumerate(row, 1):
+        ws.cell(row=r, column=col, value=v)
+
+widths = []
+for i, h in enumerate(cols):
+    w = max([len(str(h))] + [len(str(r[i])) for r in rows[:200]] or [0])
+    # CJK chars count double-ish; scale
+    widths.append(min(max(w * 1.6, 10), 42))
+for i, w in enumerate(widths, 1):
+    ws.column_dimensions[get_column_letter(i)].width = w
+
+ws.freeze_panes = "A2"
+ws.auto_filter.ref = f"A1:{get_column_letter(len(cols))}{len(rows)+1}"
+
+wb.save(DST)
+print(f"联系人数: {len(contacts)}")
+print(f"单联系人最多电话数: {max_tel}")
+print(f"输出: {DST}")

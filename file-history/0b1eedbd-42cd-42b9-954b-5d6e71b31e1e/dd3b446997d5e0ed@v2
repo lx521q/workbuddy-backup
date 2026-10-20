@@ -1,0 +1,44 @@
+import time, json
+from playwright.sync_api import sync_playwright
+
+HASH = "bfDLcq07tZP5bA"
+FNAME = "sbx_x96max_plus2_4gb_atv_9_20.zip"
+ROOT = f"https://disk.yandex.ru/d/{HASH}"
+FILE_URL = f"{ROOT}/{FNAME}"
+
+def log(m): print(f"[{time.strftime('%H:%M:%S')}] {m}", flush=True)
+
+with sync_playwright() as p:
+    browser = p.chromium.launch(
+        channel="msedge", headless=False,
+        proxy={"server": "http://127.0.0.1:7890"},
+        args=["--no-sandbox", "--disable-blink-features=AutomationControlled"],
+    )
+    ctx = browser.new_context(accept_downloads=True, locale="ru-RU", viewport={"width": 1400, "height": 900})
+    page = ctx.new_page()
+    page.on("download", lambda d: log(f"DOWNLOAD: {d.suggested_filename}"))
+    page.on("popup", lambda pp: log(f"POPUP: {pp.url}"))
+    page.on("framenavigated", lambda f: log(f"NAV: {f.url[:150]}") if f == page.main_frame else None)
+
+    log("打开文件面板")
+    page.goto(FILE_URL, wait_until="domcontentloaded", timeout=90000)
+    page.wait_for_selector("button:visible:has-text('Скачать')", timeout=60000)
+    log("按钮就绪")
+
+    try:
+        with page.expect_response(lambda r: "download" in r.url.lower(), timeout=45000) as ri:
+            page.locator("button:visible", has_text="Скачать").first.click()
+            log("已点击 Скачать")
+        resp = ri.value
+        log(f"响应 {resp.status} {resp.url}")
+        try:
+            log("BODY: " + resp.text()[:1500])
+        except Exception as e:
+            log(f"读取 body 失败: {e}")
+    except Exception as e:
+        log(f"未捕获响应: {type(e).__name__}: {str(e)[:200]}")
+
+    time.sleep(8)
+    page.screenshot(path="ya_step5.png")
+    log("URL now: " + page.url)
+    browser.close()

@@ -1,0 +1,80 @@
+import time, sys, os
+from playwright.sync_api import sync_playwright
+
+URL = "https://disk.yandex.ru/d/bfDLcq07tZP5bA"
+TARGET = r"C:\Users\62628\Downloads\sbx_x96max_plus2_4gb_atv_9_20.zip"
+
+def log(msg):
+    print(f"[{time.strftime('%H:%M:%S')}] {msg}", flush=True)
+
+with sync_playwright() as p:
+    browser = p.chromium.launch(
+        channel="msedge",
+        headless=False,
+        proxy={"server": "http://127.0.0.1:7890"},
+        args=["--no-sandbox", "--disable-blink-features=AutomationControlled"],
+    )
+    ctx = browser.new_context(accept_downloads=True, locale="ru-RU", viewport={"width": 1400, "height": 900})
+    page = ctx.new_page()
+
+    log("打开分享页...")
+    page.goto(URL, wait_until="domcontentloaded", timeout=90000)
+    page.wait_for_selector("text=sbx_x96max_plus2_4gb_atv_9_20.zip", timeout=60000)
+    log("文件行已出现")
+
+    # 关闭可能的提示浮层
+    try:
+        page.click("button:has-text('×')", timeout=3000)
+        log("关闭提示浮层")
+    except Exception:
+        pass
+
+    # 点击目标文件行（选中）
+    row = page.locator("text=sbx_x96max_plus2_4gb_atv_9_20.zip").first
+    row.click()
+    log("已点击文件行")
+    time.sleep(2)
+    page.screenshot(path="ya_step2.png")
+
+    # 找下载按钮
+    dl_btn = None
+    for sel in ["button:has-text('Скачать')", "a:has-text('Скачать')", "[data-test-id*='download']"]:
+        try:
+            el = page.locator(sel).first
+            if el.is_visible():
+                dl_btn = el
+                log(f"找到下载按钮: {sel}")
+                break
+        except Exception:
+            continue
+    if dl_btn is None:
+        log("未找到下载按钮，dump 按钮文本：")
+        for b in page.locator("button").all():
+            try:
+                t = b.inner_text().strip()
+                if t:
+                    log("  button: " + t[:50])
+            except Exception:
+                pass
+        browser.close()
+        sys.exit(2)
+
+    with page.expect_download(timeout=120000) as dl_info:
+        dl_btn.click()
+        log("已点击下载")
+    download = dl_info.value
+    log(f"下载开始: suggested={download.suggested_filename}")
+
+    # 轮询等待下载完成
+    tmp_path = download.path()  # 阻塞直到完成
+    log(f"下载完成: {tmp_path}")
+    size = os.path.getsize(tmp_path)
+    log(f"大小: {size} bytes ({size/1024/1024:.1f} MB)")
+
+    os.makedirs(os.path.dirname(TARGET), exist_ok=True)
+    if os.path.exists(TARGET):
+        os.remove(TARGET)
+    download.save_as(TARGET)
+    log(f"已保存: {TARGET}")
+    browser.close()
+    log("DONE")

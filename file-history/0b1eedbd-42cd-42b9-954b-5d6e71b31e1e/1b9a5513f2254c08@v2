@@ -1,0 +1,48 @@
+import time, json
+from playwright.sync_api import sync_playwright
+
+FILE_URL = "https://disk.yandex.ru/d/bfDLcq07tZP5bA/sbx_x96max_plus2_4gb_atv_9_20.zip"
+
+def log(m): print(f"[{time.strftime('%H:%M:%S')}] {m}", flush=True)
+
+found = []
+with sync_playwright() as p:
+    browser = p.chromium.launch(
+        channel="msedge", headless=False,
+        proxy={"server": "http://127.0.0.1:7890"},
+        args=["--no-sandbox", "--disable-blink-features=AutomationControlled"],
+    )
+    ctx = browser.new_context(accept_downloads=True, locale="ru-RU", viewport={"width": 1400, "height": 900})
+    page = ctx.new_page()
+
+    def on_resp(r):
+        if r.url.endswith("/public/api/download-url"):
+            try:
+                body = r.text()
+                log(f"响应 {r.status}: {body[:800]}")
+                found.append(body)
+            except Exception as e:
+                log(f"读响应失败: {e}")
+    page.on("response", on_resp)
+
+    log("打开文件面板")
+    page.goto(FILE_URL, wait_until="domcontentloaded", timeout=90000)
+    page.wait_for_selector("button:visible:has-text('Скачать')", timeout=60000)
+    log("点击下载按钮")
+    page.locator("button:visible", has_text="Скачать").first.click()
+    for i in range(10):
+        time.sleep(2)
+        if found:
+            break
+    if not found:
+        log("30秒内未捕获到响应")
+    browser.close()
+
+if found:
+    try:
+        data = json.loads(found[0])
+        url = data.get("url") or data.get("download_url") or ""
+        log("EXTRACTED_URL=" + url)
+        open("ya_url.txt", "w").write(url)
+    except Exception as e:
+        log(f"解析失败: {e}; raw={found[0][:500]}")

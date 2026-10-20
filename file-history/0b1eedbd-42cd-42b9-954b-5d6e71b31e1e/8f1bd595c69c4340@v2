@@ -1,0 +1,70 @@
+import time, json
+from playwright.sync_api import sync_playwright
+
+FILE_URL = "https://disk.yandex.ru/d/bfDLcq07tZP5bA/sbx_x96max_plus2_4gb_atv_9_20.zip"
+
+def log(m): print(f"[{time.strftime('%H:%M:%S')}] {m}", flush=True)
+
+HOOK = """
+(() => {
+  window.__dl = null;
+  const save = (t) => { window.__dl = t; };
+  const of = window.fetch;
+  window.fetch = async (...args) => {
+    const r = await of(...args);
+    try {
+      if (String(args[0] && args[0].url || args[0]).includes('download-url')) {
+        save(await r.clone().text());
+      }
+    } catch (e) {}
+    return r;
+  };
+  const oOpen = XMLHttpRequest.prototype.open;
+  const oSend = XMLHttpRequest.prototype.send;
+  XMLHttpRequest.prototype.open = function(m, u) { this.__u = u; return oOpen.apply(this, arguments); };
+  XMLHttpRequest.prototype.send = function() {
+    this.addEventListener('load', () => {
+      try { if (this.__u && String(this.__u).includes('download-url')) save(this.responseText); } catch (e) {}
+    });
+    return oSend.apply(this, arguments);
+  };
+})();
+"""
+
+with sync_playwright() as p:
+    browser = p.chromium.launch(
+        channel="msedge", headless=False,
+        proxy={"server": "http://127.0.0.1:7890"},
+        args=["--no-sandbox", "--disable-blink-features=AutomationControlled"],
+    )
+    ctx = browser.new_context(accept_downloads=True, locale="ru-RU", viewport={"width": 1400, "height": 900})
+    ctx.add_init_script(HOOK)
+    page = ctx.new_page()
+
+    log("打开文件面板")
+    page.goto(FILE_URL, wait_until="domcontentloaded", timeout=90000)
+    page.wait_for_selector("button:visible:has-text('Скачать')", timeout=60000)
+    time.sleep(2)
+
+    # 逐个触发所有可见的 Скачать 按钮（JS click 不受遮挡影响）
+    for attempt in range(6):
+        n = page.locator("button:visible", has_text="Скачать").count()
+        log(f"轮次 {attempt+1}: 可见按钮 {n} 个")
+        for i in range(n):
+            try:
+                page.locator("button:visible", has_text="Скачать").nth(i).evaluate("e => e.click()")
+            except Exception:
+                pass
+        for _ in range(4):
+            time.sleep(1.5)
+            dl = page.evaluate("window.__dl")
+            if dl:
+                log("捕获到下载接口响应!")
+                print("RAW>>>" + dl[:1000])
+                open("ya_url.txt", "w", encoding="utf-8").write(dl)
+                browser.close()
+                log("DONE")
+                raise SystemExit(0)
+    log("未能捕获响应")
+    page.screenshot(path="ya_step6.png")
+    browser.close()

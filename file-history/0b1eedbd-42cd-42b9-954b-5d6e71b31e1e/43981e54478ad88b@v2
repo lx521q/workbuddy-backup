@@ -1,0 +1,68 @@
+import time, json
+from playwright.sync_api import sync_playwright
+
+HASH = "bfDLcq07tZP5bA"
+FNAME = "sbx_x96max_plus2_4gb_atv_9_20.zip"
+ROOT = f"https://disk.yandex.ru/d/{HASH}"
+FILE_URL = f"{ROOT}/{FNAME}"
+
+def log(m): print(f"[{time.strftime('%H:%M:%S')}] {m}", flush=True)
+
+req_log = []
+with sync_playwright() as p:
+    browser = p.chromium.launch(
+        channel="msedge", headless=False,
+        proxy={"server": "http://127.0.0.1:7890"},
+        args=["--no-sandbox", "--disable-blink-features=AutomationControlled"],
+    )
+    ctx = browser.new_context(accept_downloads=True, locale="ru-RU", viewport={"width": 1400, "height": 900})
+    page = ctx.new_page()
+
+    def on_req(r):
+        u = r.url.lower()
+        if "download" in u or "captcha" in u or "antirobot" in u:
+            req_log.append((r.method, r.url, r.post_data))
+    page.on("request", on_req)
+
+    log("打开文件面板")
+    page.goto(FILE_URL, wait_until="domcontentloaded", timeout=90000)
+    time.sleep(2)
+    # 关掉提示浮层
+    try:
+        page.click("text=×", timeout=2000)
+        log("关闭浮层")
+    except Exception:
+        pass
+
+    btn = page.locator("button:visible", has_text="Скачать").first
+    btn.scroll_into_view_if_needed()
+    log("点击按钮（监听请求）")
+    btn.click()
+    time.sleep(8)
+    for m, u, pd in req_log:
+        log(f"REQ {m} {u}")
+        if pd:
+            log(f"     post: {pd[:400]}")
+    if not req_log:
+        log("没有任何 download 相关请求被发出！")
+
+    # 直接在页面里 fetch 前端 API
+    log("=== 页面内直接调用 /public/api/download-url ===")
+    try:
+        res = page.evaluate("""
+            async () => {
+                const r = await fetch('/public/api/download-url', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({hash: 'bfDLcq07tZP5bA', path: '/sbx_x96max_plus2_4gb_atv_9_20.zip'})
+                });
+                const t = await r.text();
+                return {status: r.status, body: t.slice(0, 800)};
+            }
+        """)
+        log(f"status={res['status']}")
+        log("body=" + res["body"])
+    except Exception as e:
+        log(f"fetch 失败: {e}")
+    browser.close()

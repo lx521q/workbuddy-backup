@@ -1,0 +1,45 @@
+import time, json
+from playwright.sync_api import sync_playwright
+
+URL = "https://disk.yandex.ru/d/bfDLcq07tZP5bA"
+
+def log(m): print(f"[{time.strftime('%H:%M:%S')}] {m}", flush=True)
+
+captured = []
+def on_response(resp):
+    if "download-url" in resp.url or "download" in resp.url.lower():
+        try:
+            body = resp.text()[:2000]
+        except Exception as e:
+            body = f"<body err {e}>"
+        captured.append((resp.status, resp.url, body))
+
+with sync_playwright() as p:
+    browser = p.chromium.launch(
+        channel="msedge", headless=False,
+        proxy={"server": "http://127.0.0.1:7890"},
+        args=["--no-sandbox", "--disable-blink-features=AutomationControlled"],
+    )
+    ctx = browser.new_context(accept_downloads=True, locale="ru-RU", viewport={"width": 1400, "height": 900})
+    page = ctx.new_page()
+    page.on("response", on_response)
+    page.on("popup", lambda pop: log(f"POPUP: {pop.url}"))
+    page.on("download", lambda d: log(f"DOWNLOAD EVENT: {d.suggested_filename}"))
+
+    page.goto(URL, wait_until="domcontentloaded", timeout=90000)
+    page.wait_for_selector("text=sbx_x96max_plus2_4gb_atv_9_20.zip", timeout=60000)
+    try:
+        page.click("button:has-text('×')", timeout=2000)
+    except Exception:
+        pass
+    page.locator("text=sbx_x96max_plus2_4gb_atv_9_20.zip").first.click()
+    time.sleep(1.5)
+    page.locator("button:visible", has_text="Скачать").first.click()
+    log("点击下载，等待响应...")
+    for i in range(6):
+        time.sleep(5)
+        log(f"t+{(i+1)*5}s captured={len(captured)}")
+    for st, u, b in captured:
+        log(f"=== {st} {u}")
+        log("    " + b.replace("\n", " ")[:1200])
+    browser.close()

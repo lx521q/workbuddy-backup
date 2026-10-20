@@ -1,0 +1,56 @@
+import time, sys
+from playwright.sync_api import sync_playwright
+
+URL = "https://disk.yandex.ru/d/bfDLcq07tZP5bA"
+
+def log(m): print(f"[{time.strftime('%H:%M:%S')}] {m}", flush=True)
+
+with sync_playwright() as p:
+    browser = p.chromium.launch(
+        channel="msedge", headless=False,
+        proxy={"server": "http://127.0.0.1:7890"},
+        args=["--no-sandbox", "--disable-blink-features=AutomationControlled"],
+    )
+    ctx = browser.new_context(accept_downloads=True, locale="ru-RU", viewport={"width": 1400, "height": 900})
+    page = ctx.new_page()
+
+    reqs = []
+    page.on("request", lambda r: reqs.append(r.url) if ("downloader" in r.url or "getfile" in r.url or "download" in r.url.lower()) else None)
+    page.on("popup", lambda pop: log(f"POPUP: {pop.url}"))
+    page.on("download", lambda d: log(f"DOWNLOAD EVENT: {d.suggested_filename}"))
+
+    log("打开页面")
+    page.goto(URL, wait_until="domcontentloaded", timeout=90000)
+    page.wait_for_selector("text=sbx_x96max_plus2_4gb_atv_9_20.zip", timeout=60000)
+    try:
+        page.click("button:has-text('×')", timeout=2000)
+    except Exception:
+        pass
+
+    page.locator("text=sbx_x96max_plus2_4gb_atv_9_20.zip").first.click()
+    log("选中文件")
+    time.sleep(1.5)
+
+    # 在顶部黑色操作栏里精确找 Скачать 按钮
+    btns = page.locator("button:visible", has_text="Скачать")
+    n = btns.count()
+    log(f"可见 Скачать 按钮数量: {n}")
+    for i in range(n):
+        b = btns.nth(i)
+        try:
+            log(f"  btn[{i}] text={b.inner_text()!r}")
+        except Exception:
+            pass
+
+    target = btns.first
+    log(f"点击 btn0 ...")
+    target.click()
+    log("已点击，等待 25s 观察网络/事件...")
+    for i in range(5):
+        time.sleep(5)
+        log(f"t+{(i+1)*5}s, 捕获请求 {len(reqs)} 条")
+        for u in reqs[-3:]:
+            log("   req: " + u[:160])
+    page.screenshot(path="ya_step3.png")
+    log("截图 ya_step3.png")
+    browser.close()
