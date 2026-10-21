@@ -1252,7 +1252,6 @@
   "enabledPlugins": {
     "weixinpay@workbuddy-builtin": true,
     "tencent-docs-plugin@workbuddy-builtin": true,
-    "agent-browser@codebuddy-plugins-official": true,
     "find-skills@codebuddy-plugins-official": true,
     "ardot@workbuddy-builtin": true,
     "subscription-gate@workbuddy-builtin": true,
