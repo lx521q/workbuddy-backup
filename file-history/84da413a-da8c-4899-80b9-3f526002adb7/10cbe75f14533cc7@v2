@@ -1,0 +1,320 @@
+# -*- coding: utf-8 -*-
+"""第四项 建议对外统一的数据口径 —— 完善版（单独成文）"""
+from docx import Document
+from docx.shared import Pt, Cm, RGBColor
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.enum.table import WD_ALIGN_VERTICAL
+from docx.oxml.ns import qn, nsdecls
+from docx.oxml import parse_xml
+
+SONG = '宋体'
+HEI = '黑体'
+
+
+def _align(a):
+    return {'center': WD_ALIGN_PARAGRAPH.CENTER,
+            'left': WD_ALIGN_PARAGRAPH.LEFT,
+            'right': WD_ALIGN_PARAGRAPH.RIGHT,
+            'just': WD_ALIGN_PARAGRAPH.JUSTIFY}[a]
+
+
+def set_run_font(run, size=10.5, bold=False, font=SONG, color=None):
+    run.font.name = font
+    run.font.size = Pt(size)
+    run.font.bold = bold
+    if color:
+        run.font.color.rgb = RGBColor(*color)
+    rPr = run._element.get_or_add_rPr()
+    rFonts = rPr.find(qn('w:rFonts'))
+    if rFonts is None:
+        rFonts = parse_xml('<w:rFonts %s w:ascii="%s" w:hAnsi="%s" w:eastAsia="%s"/>'
+                           % (nsdecls('w'), font, font, font))
+        rPr.append(rFonts)
+    else:
+        rFonts.set(qn('w:ascii'), font)
+        rFonts.set(qn('w:hAnsi'), font)
+        rFonts.set(qn('w:eastAsia'), font)
+
+
+def para(doc, text, size=10.5, bold=False, font=SONG, align='just',
+         before=0, after=0, indent=False, color=None, line=1.3):
+    p = doc.add_paragraph()
+    p.alignment = _align(align)
+    pf = p.paragraph_format
+    pf.space_before = Pt(before)
+    pf.space_after = Pt(after)
+    pf.line_spacing = line
+    if indent:
+        pf.first_line_indent = Pt(size * 2)
+    r = p.add_run(text)
+    set_run_font(r, size, bold, font, color)
+    return p
+
+
+def set_cell(cell, text, size=9, bold=False, align='center', font=SONG, color=None):
+    if isinstance(text, (int, float)):
+        text = str(text)
+    cell.text = ''
+    p0 = cell.paragraphs[0]
+    for i, ln in enumerate(str(text).split('\n')):
+        p = p0 if i == 0 else cell.add_paragraph()
+        p.alignment = _align(align)
+        p.paragraph_format.space_before = Pt(1)
+        p.paragraph_format.space_after = Pt(1)
+        p.paragraph_format.line_spacing = 1.05
+        r = p.add_run(ln)
+        set_run_font(r, size, bold, font, color)
+    cell.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
+
+
+def set_cell_bg(cell, hexcolor):
+    tcPr = cell._tc.get_or_add_tcPr()
+    shd = parse_xml('<w:shd %s w:val="clear" w:color="auto" w:fill="%s"/>'
+                    % (nsdecls('w'), hexcolor))
+    tcPr.append(shd)
+
+
+def set_table_borders(table, sz=4, color='000000'):
+    borders = parse_xml(
+        '<w:tblBorders %s>'
+        '<w:top w:val="single" w:sz="%d" w:space="0" w:color="%s"/>'
+        '<w:left w:val="single" w:sz="%d" w:space="0" w:color="%s"/>'
+        '<w:bottom w:val="single" w:sz="%d" w:space="0" w:color="%s"/>'
+        '<w:right w:val="single" w:sz="%d" w:space="0" w:color="%s"/>'
+        '<w:insideH w:val="single" w:sz="%d" w:space="0" w:color="%s"/>'
+        '<w:insideV w:val="single" w:sz="%d" w:space="0" w:color="%s"/>'
+        '</w:tblBorders>'
+        % (nsdecls('w'), sz, color, sz, color, sz, color, sz, color,
+           sz, color, sz, color))
+    table._tbl.tblPr.append(borders)
+
+
+def make_table(doc, nrows, ncols, widths_cm):
+    t = doc.add_table(rows=nrows, cols=ncols)
+    t.alignment = 1
+    t.autofit = False
+    set_table_borders(t)
+    for row in t.rows:
+        for i, w in enumerate(widths_cm):
+            if i < len(row.cells):
+                row.cells[i].width = Cm(w)
+    return t
+
+
+def head_table(doc, headers, widths, size=9):
+    t = make_table(doc, 1, len(headers), widths)
+    for i, h in enumerate(headers):
+        set_cell(t.cell(0, i), h, size, True)
+        set_cell_bg(t.cell(0, i), 'D9D9D9')
+    return t
+
+
+def add_rows(t, rows, starts, aligns, size=9):
+    t.add_row()
+    ri = len(t.rows) - 1
+    for ci, v in enumerate(rows):
+        set_cell(t.cell(ri, ci), v, size, ci == 0, aligns[ci])
+    return ri
+
+
+OUT = r'C:/Users/62628/WorkBuddy/2026-08-05-10-25-06/outputs/VOC_section4_improved.docx'
+
+doc = Document()
+sec = doc.sections[0]
+sec.page_width = Cm(21.0)
+sec.page_height = Cm(29.7)
+sec.left_margin = Cm(2.0)
+sec.right_margin = Cm(1.8)
+sec.top_margin = Cm(1.9)
+sec.bottom_margin = Cm(1.9)
+
+# ============ 标题 ============
+p = doc.add_paragraph()
+p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+p.paragraph_format.space_after = Pt(2)
+r = p.add_run('四、对外统一数据口径（完善版）')
+set_run_font(r, 15, True, HEI)
+
+para(doc, '——《五六厂无组织VOC废气治理改造申请报告》配套用', size=9.5,
+     align='center', after=3, color=(89, 89, 89))
+para(doc, '用途：上报、汇报、口头答疑统一照此口径，避免出现第二套数字。', size=9,
+     align='center', after=10, color=(89, 89, 89))
+
+# ============ 4.0 使用说明 ============
+para(doc, '（一）使用说明', size=11, bold=True, font=HEI, align='left',
+     before=2, after=4)
+para(doc, '本表所列为对外唯一口径。其中“投入金额”一项尚需核实（报告写1100万、'
+          '2027年修继技改汇总表序号30写700万），核实后请在表中圈定一个数，'
+          '其余各项随之固定，不再变动。收益类数据建议优先采用“净增量口径”，'
+          '该口径剔除原有已回收量，经得起追问。',
+     size=10.5, indent=True, after=8)
+
+# ============ 4.1 项目建设内容 ============
+para(doc, '（二）项目建设内容口径', size=11, bold=True, font=HEI, align='left',
+     before=4, after=4)
+t = head_table(doc, ['序号', '项目', '统一口径', '备注'],
+               [1.0, 3.0, 7.4, 5.4])
+rows = [
+    ('1', '系统规模', '2套×70000m³/h，合计140000m³/h',
+     '五厂、六厂中间合建，两套并列运行'),
+    ('2', '主要组成', '表冷器、活性炭吸附罐（8套×2）、氮气内循环脱附系统、引风机、'
+     '气动阀门、电加热、脱附冷凝系统、凝液接收罐、外排',
+     '每套独立成套，脱附与吸附切换运行'),
+    ('3', '接入点位', '五厂无组织1#2#5#6#；六厂无组织1#3#5#6#',
+     '共8个高浓度点位，含抽聚烟区、滑车'),
+    ('4', '工艺路线', '无组织收集→表冷降温→活性炭吸附→氮气脱附→冷凝回收净剂→尾气达标外排',
+     '净剂回收后回用于生产'),
+    ('5', '处理目标', '尾气非甲烷总烃≤60mg/m³（DB37/2801.7-2019）',
+     '以环保验收监测报告为准'),
+]
+for row in rows:
+    add_rows(t, row, None, ['center', 'center', 'left', 'left'])
+
+para(doc, '', size=6, after=0)
+
+# ============ 4.2 投资与运行 ============
+para(doc, '（三）投资与运行成本口径', size=11, bold=True, font=HEI, align='left',
+     before=6, after=4)
+t = head_table(doc, ['序号', '项目', '统一口径', '计算依据'],
+               [1.0, 3.0, 6.0, 6.8])
+rows = [
+    ('1', '项目投入', '待核实：1100万（报告）／700万（汇总表序号30）',
+     '以厂家最终报价为准，两处必须统一'),
+    ('2', '单套装机功率', '150kW/套，2套合计300kW',
+     '含引风机、电加热、脱附系统'),
+    ('3', '单位电耗', '0.75元/kW·h，225元/h（2套）',
+     '150×2×0.75=225元/h'),
+    ('4', '年运行时间', '8500h', '与全厂装置年运行口径一致'),
+    ('5', '年运行费用', '191.25万元/年', '225元/h×8500h＝191.25万元'),
+]
+for row in rows:
+    add_rows(t, row, None, ['center', 'center', 'left', 'left'])
+
+para(doc, '', size=6, after=0)
+
+# ============ 4.3 收益 ============
+para(doc, '（四）收益与回收期口径（两套并列，须说明用哪套）', size=11, bold=True,
+     font=HEI, align='left', before=6, after=3)
+para(doc, '说明：报告正文的525吨为2026年1—9月实测量，年化后为700吨/年（350吨/套·年），'
+          '两者是同一件事的两种表达，不是两个数据。但525吨中含原有已回收的96吨，'
+          '新增收益应剔除这部分，故并列两套口径。',
+     size=9.5, indent=True, after=4)
+
+t = make_table(doc, 1, 6, [1.0, 4.0, 3.0, 2.8, 3.0, 2.9])
+hdrs = ['序号', '口径', '年回收溶剂', '年毛收益', '年净收益', '静态回收期']
+for i, h in enumerate(hdrs):
+    set_cell(t.cell(0, i), h, 9, True)
+    set_cell_bg(t.cell(0, i), 'D9D9D9')
+
+rows = [
+    ('1', 'A 净增量口径（建议对外采用）\n525−96＝429吨/9个月，年化572吨',
+     '572吨/年', '423.28万元', '232.03万元', '4.74年'),
+    ('2', 'B 原报告口径（不扣原有回收）\n525吨/9个月，年化700吨',
+     '700吨/年', '518.00万元', '326.75万元', '3.37年'),
+]
+for k, row in enumerate(rows):
+    t.add_row()
+    ri = len(t.rows) - 1
+    for ci, v in enumerate(row):
+        set_cell(t.cell(ri, ci), v, 9, ci == 0,
+                 'center' if ci in (0, 2, 3, 4, 5) else 'left')
+    if k == 0:
+        for ci in range(6):
+            set_cell_bg(t.cell(ri, ci), 'E2EFDA')
+
+para(doc, '', size=6, after=0)
+para(doc, '推荐表述：“改造后年新增回收净剂约572吨（年化），扣除电耗后年净收益约232万元，'
+          '静态投资回收期约4.7年（按1100万投入）；若按700万投入，回收期约3.0年。”',
+     size=10, indent=True, after=3, color=(0, 102, 51))
+para(doc, '若投入最终核定为700万，A口径回收期＝700÷232.03＝3.02年；'
+          'B口径回收期＝700÷326.75＝2.14年。', size=9.5, indent=True, after=8,
+     color=(89, 89, 89))
+
+# ============ 4.4 效益 ============
+para(doc, '（五）环保与生产效益口径', size=11, bold=True, font=HEI, align='left',
+     before=6, after=4)
+t = head_table(doc, ['序号', '效益类别', '统一口径', '说明'],
+               [1.0, 3.0, 6.4, 6.4])
+rows = [
+    ('1', '排放浓度', '五厂东 205→≤60mg/m³，五厂西 101→≤60mg/m³，六厂 80.1→≤60mg/m³',
+     '削减幅度分别为70.7%、40.6%、25.1%'),
+    ('2', '达标情况', '改造前3根烟囱全部超标（3.4倍、1.7倍、1.3倍限值），改造后全部达标',
+     '限值60mg/m³，DB37/2801.7-2019'),
+    ('3', '无组织逸散量', '由658.95吨降至229.95吨（1—9月口径），减少429吨，削减率65.1%',
+     '年化削减约572吨'),
+    ('4', '净剂总回收率', '由83.26%提升至94.16%，提高10.90个百分点',
+     '其中无组织回收率由2.44%提升至13.34%'),
+    ('5', '有组织回收', '3180.79吨（80.82%），改造前后不变',
+     '现有静电、活性炭设备能力维持'),
+    ('6', '安全隐患', '消除无组织烟气回收系统长期低效运行、油气积聚风险',
+     '兼有安全提升效益'),
+    ('7', '环保合规', '满足山东省地方标准及排污许可要求，规避超标处罚与限产风险',
+     '合规为项目首要目的'),
+]
+for row in rows:
+    add_rows(t, row, None, ['center', 'center', 'left', 'left'])
+
+para(doc, '', size=6, after=0)
+
+# ============ 4.5 关键比值 ============
+para(doc, '（六）关键指标速查（口头答疑用，只需记住这几个数）', size=11, bold=True,
+     font=HEI, align='left', before=6, after=4)
+t = head_table(doc, ['指标', '数值', '怎么算出来的'],
+               [5.0, 4.0, 7.8])
+rows = [
+    ('项目投入', '1100万（待核实）', '厂家报价／汇总表为700万'),
+    ('年运行电费', '191.25万', '150kW×2套×0.75元×8500h'),
+    ('年回收净剂（年化）', '700吨（净增572吨）', '1—9月525吨÷9×12'),
+    ('年毛收益', '518万', '700吨×0.74万元/吨'),
+    ('年净收益', '232万（净增口径）／327万（原口径）', '毛收益−电费'),
+    ('静态回收期', '4.7年（净增口径）／3.37年（原口径）', '投入÷年净收益'),
+    ('回收率提升', '83.26%→94.16%，+10.9个百分点', '含无组织2.44%→13.34%'),
+    ('逸散削减', '658.95→229.95吨，削减65.1%', '1—9月口径，年化572吨'),
+]
+for row in rows:
+    add_rows(t, row, None, ['left', 'left', 'left'])
+
+para(doc, '', size=6, after=0)
+
+# ============ 4.6 禁用语 ============
+para(doc, '（七）须避免的表述（易被追问）', size=11, bold=True, font=HEI,
+     align='left', before=6, after=4)
+t = head_table(doc, ['序号', '不要说', '应改为'],
+               [1.0, 7.6, 8.2])
+rows = [
+    ('1', '“回收525吨，年收益518万，3.37年收回”',
+     '525吨是1—9月实测量且含原有回收96吨；年化回收700吨，'
+     '净增收益232万，回收期4.7年'),
+    ('2', '“投资回报率3.37年”', '3.37年是静态投资回收期，不是回报率；'
+     '回报率（净收益率）为29.7%（1100万投入）'),
+    ('3', '“投资1100万”（未与汇总表核对）', '先说“以最终报价为准”，'
+     '报出前务必与汇总表序号30的700万对齐'),
+    ('4', '“回收量按140000m³/h×实测浓度算出来的”', '525吨来自8个高浓度收集点位的收集气，'
+     '收集口浓度远高于排放口实测（108.8mg/m³），两者不可直接反算'),
+    ('5', '“改造后无组织零排放”', '改造后仍有229.95吨（5.84%）通过门、窗、厂房、'
+     '跑冒滴漏等形式逸散，只是大幅减少'),
+]
+for row in rows:
+    add_rows(t, row, None, ['center', 'left', 'left'])
+
+para(doc, '', size=6, after=0)
+
+# ============ 4.7 一句话结论 ============
+para(doc, '（八）一句话汇报版', size=11, bold=True, font=HEI, align='left',
+     before=6, after=4)
+p = doc.add_paragraph()
+p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+p.paragraph_format.line_spacing = 1.35
+p.paragraph_format.space_after = Pt(6)
+r = p.add_run(
+    '五六厂无组织尾气3根烟囱实测205、101、80.1mg/m³，全部超山东省标60mg/m³。'
+    '拟在五、六厂中间新增2套7万风量活性炭吸附＋氮气脱附回收系统，合计14万m³/h，'
+    '接入8个高浓度点位。投资约1100万（待与汇总表700万口径核对）。'
+    '改造后排放浓度全部降至60mg/m³以下；净剂总回收率由83.26%提升至94.16%，'
+    '无组织逸散由658.95吨降至229.95吨，削减65.1%，对应年新增回收净剂约572吨。'
+    '扣除年电费191.25万后，年净收益约232万元，静态回收期约4.7年。')
+set_run_font(r, 10.5, False, SONG)
+
+doc.save(OUT)
+print('OK ->', OUT)
+print('段落', len(doc.paragraphs), '表格', len(doc.tables))
