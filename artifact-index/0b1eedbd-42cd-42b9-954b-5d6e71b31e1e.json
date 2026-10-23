@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "lastUpdated": 1792410062613,
+  "lastUpdated": 1792736791495,
   "artifacts": [
     {
       "type": "media",
@@ -393,6 +393,123 @@
         "createdByRequestId": "01a153eacc7871459e72568bf6d705ab",
         "touchedByRequestIds": [
           "01a153eacc7871459e72568bf6d705ab"
+        ]
+      }
+    },
+    {
+      "name": "15份  消防系统安全操作规程试卷.docx",
+      "title": "15份  消防系统安全操作规程试卷.docx",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 13601,
+      "createdAt": 1792727118523,
+      "updatedAt": 1792727118523,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/Desktop/15%E4%BB%BD%20%20%E6%B6%88%E9%98%B2%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E6%93%8D%E4%BD%9C%E8%A7%84%E7%A8%8B%E8%AF%95%E5%8D%B7.docx",
+      "_meta": {
+        "sourceTool": "PresentFiles",
+        "codebuddy.ai/toolName": "present_files",
+        "toolCallId": "call_4d6af500d4094e29b0ab0e90",
+        "ownerConversationId": "0b1eedbd-42cd-42b9-954b-5d6e71b31e1e",
+        "requestId": "01a166dd1c96785ebb1ba0802c9096e1",
+        "codebuddy.ai/requestId": "01a166dd1c96785ebb1ba0802c9096e1",
+        "createdByRequestId": "01a166dd1c96785ebb1ba0802c9096e1",
+        "touchedByRequestIds": [
+          "01a166dd1c96785ebb1ba0802c9096e1"
+        ]
+      }
+    },
+    {
+      "name": "make_answers.py",
+      "title": "make_answers.py",
+      "mimeType": "text/plain",
+      "contentType": "code",
+      "language": "python",
+      "size": 9316,
+      "createdAt": 1792735805474,
+      "updatedAt": 1792735805474,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/WorkBuddy/Claw/make_answers.py",
+      "_meta": {
+        "sourceTool": "Write",
+        "codebuddy.ai/toolName": "Write",
+        "toolCallId": "call_4e0866fa68634f7f858e87f0",
+        "ownerConversationId": "0b1eedbd-42cd-42b9-954b-5d6e71b31e1e",
+        "requestId": "01a1675f3a5072339108e364922f1d56",
+        "codebuddy.ai/requestId": "01a1675f3a5072339108e364922f1d56",
+        "createdByRequestId": "01a1675f3a5072339108e364922f1d56",
+        "touchedByRequestIds": [
+          "01a1675f3a5072339108e364922f1d56"
+        ]
+      }
+    },
+    {
+      "name": "消防系统安全操作规程试卷-参考答案.docx",
+      "title": "消防系统安全操作规程试卷-参考答案.docx",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 40306,
+      "createdAt": 1792735877563,
+      "updatedAt": 1792735877577,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/Desktop/%E6%B6%88%E9%98%B2%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E6%93%8D%E4%BD%9C%E8%A7%84%E7%A8%8B%E8%AF%95%E5%8D%B7-%E5%8F%82%E8%80%83%E7%AD%94%E6%A1%88.docx",
+      "_meta": {
+        "sourceTool": "PresentFiles",
+        "codebuddy.ai/toolName": "present_files",
+        "toolCallId": "call_0d529858e8a64b248e79b84e",
+        "ownerConversationId": "0b1eedbd-42cd-42b9-954b-5d6e71b31e1e",
+        "requestId": "01a1675f3a5072339108e364922f1d56",
+        "codebuddy.ai/requestId": "01a1675f3a5072339108e364922f1d56",
+        "createdByRequestId": "01a1675f3a5072339108e364922f1d56",
+        "touchedByRequestIds": [
+          "01a1675f3a5072339108e364922f1d56"
+        ]
+      }
+    },
+    {
+      "name": "make_answers_simple.py",
+      "title": "make_answers_simple.py",
+      "mimeType": "text/plain",
+      "contentType": "code",
+      "language": "python",
+      "size": 4979,
+      "createdAt": 1792736745846,
+      "updatedAt": 1792736764138,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/WorkBuddy/Claw/make_answers_simple.py",
+      "_meta": {
+        "sourceTool": "Edit",
+        "codebuddy.ai/toolName": "Edit",
+        "toolCallId": "call_aafd8b22c5ac40a397098169",
+        "ownerConversationId": "0b1eedbd-42cd-42b9-954b-5d6e71b31e1e",
+        "requestId": "01a1676ed711753e99bc0f36b4bc54e5",
+        "codebuddy.ai/requestId": "01a1676ed711753e99bc0f36b4bc54e5",
+        "createdByRequestId": "01a1676ed711753e99bc0f36b4bc54e5",
+        "touchedByRequestIds": [
+          "01a1676ed711753e99bc0f36b4bc54e5"
+        ]
+      }
+    },
+    {
+      "name": "消防系统安全操作规程试卷-参考答案（纯答案版）.docx",
+      "title": "消防系统安全操作规程试卷-参考答案（纯答案版）.docx",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 38032,
+      "createdAt": 1792736774765,
+      "updatedAt": 1792736774779,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/Desktop/%E6%B6%88%E9%98%B2%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E6%93%8D%E4%BD%9C%E8%A7%84%E7%A8%8B%E8%AF%95%E5%8D%B7-%E5%8F%82%E8%80%83%E7%AD%94%E6%A1%88%EF%BC%88%E7%BA%AF%E7%AD%94%E6%A1%88%E7%89%88%EF%BC%89.docx",
+      "_meta": {
+        "sourceTool": "PresentFiles",
+        "codebuddy.ai/toolName": "present_files",
+        "toolCallId": "call_243656d97127499fa75d2a0d",
+        "ownerConversationId": "0b1eedbd-42cd-42b9-954b-5d6e71b31e1e",
+        "requestId": "01a1676ed711753e99bc0f36b4bc54e5",
+        "codebuddy.ai/requestId": "01a1676ed711753e99bc0f36b4bc54e5",
+        "createdByRequestId": "01a1676ed711753e99bc0f36b4bc54e5",
+        "touchedByRequestIds": [
+          "01a1676ed711753e99bc0f36b4bc54e5"
         ]
       }
     }
