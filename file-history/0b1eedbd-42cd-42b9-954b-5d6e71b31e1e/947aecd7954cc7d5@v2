@@ -1,0 +1,116 @@
+# -*- coding: utf-8 -*-
+"""《消防系统安全操作规程试卷》纯答案版（无解释）"""
+from docx import Document
+from docx.shared import Pt, RGBColor
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.enum.table import WD_TABLE_ALIGNMENT
+from docx.oxml.ns import qn
+
+OUT = r"C:\Users\62628\Desktop\消防系统安全操作规程试卷-参考答案（纯答案版）.docx"
+
+doc = Document()
+style = doc.styles['Normal']
+style.font.name = 'Times New Roman'
+style.font.size = Pt(11)
+style.element.rPr.rFonts.set(qn('w:eastAsia'), '仿宋')
+
+def set_font(run, name='仿宋', size=11, bold=False):
+    run.font.name = 'Times New Roman'
+    run._element.rPr.rFonts.set(qn('w:eastAsia'), name)
+    run.font.size = Pt(size)
+    run.font.bold = bold
+
+def title(text, size=16):
+    p = doc.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    set_font(p.add_run(text), '黑体', size, bold=True)
+
+def h1(text):
+    p = doc.add_paragraph()
+    set_font(p.add_run(text), '黑体', 13, bold=True)
+
+# 答案数据
+choice = ['B','A','B','D','B','B','B','C','B','C','B','B','B','B','B','A','B','C','B','B']
+judge  = ['√','×','√','×','√','×','×','√','×','√','×','×','√','×','×','×','√','×','√','√']
+
+title('消防系统安全操作规程试卷·参考答案', 16)
+p = doc.add_paragraph()
+p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+set_font(p.add_run('（满分 100 分）'), '仿宋', 10.5)
+
+# ---- 一、单选题：表格 ----
+h1('一、单项选择题（每题 2 分，共 40 分）')
+t = doc.add_table(rows=2, cols=11)
+t.style = 'Table Grid'
+t.alignment = WD_TABLE_ALIGNMENT.CENTER
+t.cell(0, 0).text = '题号'
+t.cell(1, 0).text = '答案'
+for i in range(20):
+    c = t.cell(0, i + 1 if i < 10 else 0)
+    # 两行布局：每行 10 题
+# 直接做 2 段表格更清晰：改为 4 行 11 列
+tbl = doc.tables[0]
+# 重建：删掉默认表，做 2 组
+doc.element.body.remove(tbl._tbl)
+
+for start in (1, 11):
+    tb = doc.add_table(rows=2, cols=11)
+    tb.style = 'Table Grid'
+    tb.alignment = WD_TABLE_ALIGNMENT.CENTER
+    tb.cell(0, 0).text = '题号'
+    tb.cell(1, 0).text = '答案'
+    for j in range(10):
+        n = start + j
+        tb.cell(0, j + 1).text = str(n)
+        tb.cell(1, j + 1).text = choice[n - 1]
+        for r in (0, 1):
+            cell = tb.cell(r, j + 1)
+            cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+    tb.cell(0, 0).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+    tb.cell(1, 0).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+    for row in tb.rows:
+        for cell in row.cells:
+            for pr in cell.paragraphs:
+                for run in pr.runs:
+                    set_font(run, '仿宋', 11, bold=(pr is tb.rows[1].cells[0].paragraphs[0] or row is tb.rows[1]))
+
+# ---- 二、判断题：表格 ----
+h1('二、判断题（每题 2 分，共 40 分）')
+for start in (1, 11):
+    tb = doc.add_table(rows=2, cols=11)
+    tb.style = 'Table Grid'
+    tb.alignment = WD_TABLE_ALIGNMENT.CENTER
+    tb.cell(0, 0).text = '题号'
+    tb.cell(1, 0).text = '答案'
+    for j in range(10):
+        n = start + j
+        tb.cell(0, j + 1).text = str(n)
+        tb.cell(1, j + 1).text = judge[n - 1]
+        tb.cell(0, j + 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+        tb.cell(1, j + 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+    tb.cell(0, 0).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+    tb.cell(1, 0).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+    for row in tb.rows:
+        for cell in row.cells:
+            for pr in cell.paragraphs:
+                for run in pr.runs:
+                    set_font(run, '仿宋', 11, bold=(row is tb.rows[1]))
+
+# ---- 三、简答题：要点 ----
+h1('三、简答题（每题 10 分，共 20 分）')
+
+p = doc.add_paragraph()
+set_font(p.add_run('1. 火灾自动报警系统真实火情处置流程：'), '仿宋', 11, bold=True)
+for s in ['确认火情 → 主机切换为自动模式 → 启动声光警报、应急广播并组织疏散 → 拨打 119 报警 → 确认喷淋泵、消火栓泵、防排烟、防火卷帘、电梯迫降等联动设备动作 → 切断非消防电源 → 组织初期扑救（上风向）→ 上报领导、接应消防车、保护现场 → 火情解除后系统复位并记录。']:
+    p = doc.add_paragraph()
+    p.paragraph_format.first_line_indent = None
+    set_font(p.add_run(s), '仿宋', 11)
+
+p = doc.add_paragraph()
+set_font(p.add_run('2. 消防水泵无法正常启动应急处置：'), '仿宋', 11, bold=True)
+for s in ['检查控制柜自动状态及电源 → 切手动就地启泵（处置后恢复自动）→ 手动无效时用机械应急启动装置强启 → 联动控制室远程启动 / 启动备用泵，利用高位水箱稳压供水 → 上报领导并通知维保抢修 → 故障及处置情况记入台账。']:
+    p = doc.add_paragraph()
+    set_font(p.add_run(s), '仿宋', 11)
+
+doc.save(OUT)
+print('saved:', OUT)

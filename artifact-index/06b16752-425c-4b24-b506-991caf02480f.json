@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "lastUpdated": 1792914816521,
+  "artifacts": [
+    {
+      "name": "A_retro_futurism_cinematic_pos_2026-10-25T07-53-18.png",
+      "title": "A_retro_futurism_cinematic_pos_2026-10-25T07-53-18.png",
+      "mimeType": "image/png",
+      "contentType": "image",
+      "size": 2794164,
+      "createdAt": 1792914799271,
+      "updatedAt": 1792914799273,
+      "type": "media",
+      "uri": "file:///c:/Users/62628/WorkBuddy/2026-08-05-10-25-06/generated-images/A_retro_futurism_cinematic_pos_2026-10-25T07-53-18.png",
+      "_meta": {
+        "sourceTool": "PresentFiles",
+        "codebuddy.ai/toolName": "present_files",
+        "toolCallId": "call_09b6127eaebf43b6ad362a44",
+        "ownerConversationId": "06b16752-425c-4b24-b506-991caf02480f",
+        "requestId": "01a1720c2a267c1d9b837984b6ca43f5",
+        "codebuddy.ai/requestId": "01a1720c2a267c1d9b837984b6ca43f5",
+        "createdByRequestId": "01a1720c2a267c1d9b837984b6ca43f5",
+        "touchedByRequestIds": [
+          "01a1720c2a267c1d9b837984b6ca43f5"
+        ]
+      }
+    }
+  ]
+}

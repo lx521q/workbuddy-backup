@@ -1,0 +1,73 @@
+# -*- coding: utf-8 -*-
+"""导出 84da413a 会话为 Markdown 文档（可读版，去系统噪声）"""
+import json, datetime, re
+
+SRC = "C:/Users/62628/.workbuddy/projects/c-Users-62628-WorkBuddy-2026-08-05-10-25-06/84da413a-da8c-4899-80b9-3f526002adb7.jsonl"
+OUT = "C:/Users/62628/WorkBuddy/Claw/对话导出-淄博蓝帆新材料空间-2026.8-10.md"
+
+def clean(text):
+    """去掉系统注入块与内部噪声"""
+    # 删除各类 system-reminder / task-notification / cb_summary / command 块
+    text = re.sub(r'<system-reminder[\s\S]*?</system-reminder>', '', text)
+    text = re.sub(r'<task-notification[\s\S]*?</task-notification>', '', text)
+    text = re.sub(r'<user-prompt-submit-hook[\s\S]*?</user-prompt-submit-hook>', '', text)
+    text = re.sub(r'<cb_summary>[\s\S]*?</cb_summary>', '[会话上下文压缩摘要，略]', text)
+    text = re.sub(r'<conversation_history_summary>[\s\S]*?</conversation_history_summary>', '[会话上下文压缩摘要，略]', text)
+    text = re.sub(r'<command-name>[\s\S]*?</command-message>', '', text, flags=re.S)
+    text = re.sub(r'<local-command[\s\S]*?</local-command-stdout>', '', text, flags=re.S)
+    # 清理多余空行
+    text = re.sub(r'\n{3,}', '\n\n', text).strip()
+    return text
+
+out = []
+n_user = n_ai = n_skip = 0
+for ln in open(SRC, encoding='utf-8', errors='ignore'):
+    try:
+        d = json.loads(ln)
+    except Exception:
+        continue
+    if d.get('type') != 'message':
+        continue
+    role = d.get('role')
+    ts = d.get('timestamp', 0)
+    tstr = datetime.datetime.fromtimestamp(ts/1000).strftime('%Y-%m-%d %H:%M') if ts else ''
+    for c in (d.get('content') or []):
+        if not isinstance(c, dict):
+            continue
+        text = ''
+        if role == 'user' and c.get('type') == 'input_text':
+            text = c.get('text', '')
+        elif role == 'assistant' and c.get('type') == 'output_text':
+            text = c.get('text', '')
+        if not text:
+            continue
+        text = clean(text)
+        if not text or text == '[会话上下文压缩摘要，略]':
+            n_skip += 1
+            continue
+        if len(text) > 20000:  # 超长消息截断
+            text = text[:20000] + '\n\n…（本条过长，截断）'
+        if role == 'user':
+            n_user += 1
+            out.append(f'\n---\n\n## 👤 Lx · {tstr}\n\n{text}\n')
+        else:
+            n_ai += 1
+            out.append(f'\n### 🛠️ WorkBuddy · {tstr}\n\n{text}\n')
+
+header = f"""# 淄博蓝帆新材料空间 · 对话记录导出
+
+> **来源**：WorkBuddy 会话 `84da413a`（工作区 2026-08-05-10-25-06）
+> **时间跨度**：2026-08-05 ～ 2026-10-16
+> **导出时间**：{datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}
+> **内容**：用户消息 {n_user} 条，助手回复 {n_ai} 条（已去除系统内部记录、工具调用细节）
+> **说明**：本文档为对话完整可读版，供空间存档。原始记录仍在本地保留。
+
+"""
+with open(OUT, 'w', encoding='utf-8') as f:
+    f.write(header + '\n'.join(out))
+
+import os
+size = os.path.getsize(OUT)
+print(f'导出完成: {OUT}')
+print(f'用户消息 {n_user} 条, 助手回复 {n_ai} 条, 跳过 {n_skip} 条')
+print(f'文件大小: {size/1024/1024:.2f} MB')

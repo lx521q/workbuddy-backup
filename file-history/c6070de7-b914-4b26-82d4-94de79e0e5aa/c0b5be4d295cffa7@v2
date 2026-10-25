@@ -1,0 +1,559 @@
+# -*- coding: utf-8 -*-
+"""五六厂无组织VOC废气治理改造申请报告 —— 核算复核表"""
+import os
+from openpyxl import Workbook
+from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+from openpyxl.utils import get_column_letter
+from openpyxl.formatting.rule import FormulaRule
+
+OUT = r"C:\Users\62628\WorkBuddy\2026-10-25-15-48-52\五六厂无组织VOC改造申请报告核算复核表.xlsx"
+
+def xl_color(css):
+    v = css.lstrip("#").upper()
+    assert len(v) == 6, css
+    return "FF" + v
+
+XL_HEAD = xl_color("#4472C4")
+XL_HEAD_TXT = xl_color("#FFFFFF")
+XL_LIGHT = xl_color("#D9E2F3")
+XL_BORDER = xl_color("#BFBFBF")
+XL_GREY = xl_color("#F2F2F2")
+XL_OK_BG = xl_color("#C6EFCE")
+XL_OK_TXT = xl_color("#006100")
+XL_WARN_BG = xl_color("#FFEB9C")
+XL_WARN_TXT = xl_color("#9C6500")
+XL_BAD_BG = xl_color("#FFC7CE")
+XL_BAD_TXT = xl_color("#9C0006")
+XL_CALC = xl_color("#F5F8FC")
+XL_NAVY = xl_color("#1F3864")
+
+thin = Side(style="thin", color=XL_BORDER)
+BORDER = Border(left=thin, right=thin, top=thin, bottom=thin)
+
+wb = Workbook()
+
+
+def style_header(ws, row, ncol, fill=XL_HEAD, txt=XL_HEAD_TXT):
+    for c in range(1, ncol + 1):
+        cell = ws.cell(row=row, column=c)
+        cell.fill = PatternFill("solid", fgColor=fill)
+        cell.font = Font(name="微软雅黑", size=10, bold=True, color=txt)
+        cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+        cell.border = BORDER
+
+
+def style_body(ws, r0, r1, ncol, fill=None):
+    for r in range(r0, r1 + 1):
+        for c in range(1, ncol + 1):
+            cell = ws.cell(row=r, column=c)
+            cell.border = BORDER
+            cell.font = Font(name="微软雅黑", size=10)
+            if fill:
+                cell.fill = PatternFill("solid", fgColor=fill)
+            if c == 1:
+                cell.alignment = Alignment(horizontal="center", vertical="center")
+            else:
+                cell.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
+
+
+def set_widths(ws, widths):
+    for i, w in enumerate(widths, 1):
+        ws.column_dimensions[get_column_letter(i)].width = w
+
+
+def band(ws, row, ncol, text, fill=XL_LIGHT, color=XL_NAVY, size=10):
+    ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=ncol)
+    c = ws.cell(row=row, column=1, value=text)
+    c.fill = PatternFill("solid", fgColor=fill)
+    c.font = Font(name="微软雅黑", size=size, bold=True, color=color)
+    c.alignment = Alignment(horizontal="left", vertical="center")
+    ws.row_dimensions[row].height = 22
+
+
+def title_row(ws, ncol, text, sub):
+    ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=ncol)
+    t = ws.cell(row=1, column=1, value=text)
+    t.font = Font(name="微软雅黑", size=14, bold=True, color=XL_HEAD_TXT)
+    t.fill = PatternFill("solid", fgColor=XL_HEAD)
+    t.alignment = Alignment(horizontal="center", vertical="center")
+    ws.row_dimensions[1].height = 30
+    ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=ncol)
+    s = ws.cell(row=2, column=1, value=sub)
+    s.font = Font(name="微软雅黑", size=9, color=xl_color("#404040"))
+    s.fill = PatternFill("solid", fgColor=XL_GREY)
+    s.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
+    ws.row_dimensions[2].height = 30
+
+
+# =====================================================================
+# Sheet 1：核算复核结论总表
+# =====================================================================
+ws1 = wb.active
+ws1.title = "核算复核结论总表"
+title_row(ws1, 8,
+          "五六厂无组织VOC废气治理改造申请报告（实际浓度）核算复核表",
+          "复核对象：五六厂无组织VOC废气治理改造申请报告(实际浓度).docx（2026年10月20日）　|　"
+          "复核范围：项目投入、运行核算及投入回报、净剂总体回收对比测算、总结四个板块全部算式与数据闭合性　|　"
+          "方法：逐项独立复算，凡与文档不一致处给出复算过程与修正建议")
+
+band(ws1, 3, 8, "一、总体判断")
+ws1["A4"] = "总体结论"
+ws1["B4"] = ("表内算术全部正确——电耗、电费、回收收入、合计收益、回收期、各项占比、改造前后总量闭合，"
+             "未发现任何计算错误。但存在 4 项须修正的口径问题："
+             "①含税/不含税单价倍率 1.1573 ≠ 13%增值税的 1.13；"
+             "②总结段每箱成本 0.15元/0.03元 与含税、不含税标签互相颠倒；"
+             "③回收收益按年回收总量 367 吨全额计入，未体现改造前既有装置已回收的 96 吨；"
+             "④正文\"2套系统可产出回收油275.25吨\"无法由所列实测浓度推出。"
+             "其中 ③④ 直接决定 6.43年/8.86年 这一核心结论能否成立，须在报批前修正。")
+ws1.merge_cells("B4:H4")
+ws1["A4"].font = Font(name="微软雅黑", size=10, bold=True)
+ws1["B4"].font = Font(name="微软雅黑", size=10, color=XL_BAD_TXT)
+ws1["A4"].fill = PatternFill("solid", fgColor=XL_BAD_BG)
+ws1["B4"].fill = PatternFill("solid", fgColor=XL_BAD_BG)
+ws1["B4"].alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
+for c in range(1, 9):
+    ws1.cell(row=4, column=c).border = BORDER
+ws1.row_dimensions[4].height = 86
+
+hdr1 = ["序号", "所在章节", "核算项目", "文档数据 / 表述", "复核算式", "复算结果", "判定", "处理建议"]
+for i, h in enumerate(hdr1, 1):
+    ws1.cell(row=6, column=i, value=h)
+style_header(ws1, 6, 8)
+
+rows1 = [
+    ("1", "项目投入表", "2套设备处理量合计", "2套70000m³/h，合计140000m³/h",
+     "70000×2", "140000 m³/h", "一致", "表述清楚，无需修改"),
+    ("2", "项目投入表", "投资总额", "1100万元 + 100万元",
+     "1100+100", "1200万元", "一致", "与总结段\"总投资1200万元\"一致，且与回收期分母1200万匹配"),
+    ("3", "运行核算表", "单套年用电量", "127.5万度/套",
+     "150kW×8500h÷10000", "127.5 万度/套", "一致", "与表下注\"年运行时间8500h\"自洽"),
+    ("4", "运行核算表", "年运行电费", "-191.25万",
+     "127.5×2×0.75", "-191.25 万元", "一致", "算式正确"),
+    ("5", "运行核算表", "年回收溶剂量", "五厂153吨、六厂214吨",
+     "153+214；并与275.25×12/9=367 交叉验证", "367 吨（两处一致）", "一致",
+     "与净剂对比表275.25吨互相印证，说明年度化按12/9推算，口径自洽"),
+    ("6", "运行核算表", "含税回收收入", "+378.01万",
+     "367×1.03", "378.01 万元", "一致", "算式正确"),
+    ("7", "运行核算表", "不含税回收收入", "+326.63万",
+     "367×0.89", "326.63 万元", "一致", "算式正确"),
+    ("8", "运行核算表", "含税与不含税单价倍率", "含税1.03万/吨、不含税0.89万/吨",
+     "1.03÷0.89", "1.1573（13%增值税应为1.1300）", "不一致",
+     "隐含税率15.73%，不是13%。修正：不含税0.89→含税应为1.0057≈1.01万/吨；"
+     "或含税1.03→不含税应为0.9115≈0.91万/吨。取其一，并同步重算收入、合计收益、两个回收期"),
+    ("9", "运行核算表", "合计年收益（含税）", "+186.76万",
+     "378.01-191.25", "186.76 万元", "一致", "算式正确"),
+    ("10", "运行核算表", "合计年收益（不含税）", "+135.38万",
+     "326.63-191.25", "135.38 万元", "一致", "算式正确"),
+    ("11", "运行核算表", "预估投入回报（含税）", "6.43年",
+     "1200÷186.76", "6.4254 年", "一致", "算式正确；但须在第8、12项修正后重算"),
+    ("12", "运行核算表", "预估投入回报（不含税）", "8.86年",
+     "1200÷135.38", "8.8639 年", "一致", "算式正确；但须在第8、12项修正后重算"),
+    ("13", "净剂回收对比", "改造前总量闭合", "总投料3935.74吨",
+     "3180.79+96+658.95", "3935.74 吨", "一致", "三分类之和与总投料完全闭合"),
+    ("14", "净剂回收对比", "改造前有组织回收率", "80.82%",
+     "3180.79÷3935.74×100", "80.8181%", "一致", "正确"),
+    ("15", "净剂回收对比", "改造前无组织回收率", "2.44%",
+     "96÷3935.74×100", "2.4392%", "一致", "正确"),
+    ("16", "净剂回收对比", "改造前排放及逸散占比", "16.74%",
+     "658.95÷3935.74×100", "16.7427%", "一致", "正确"),
+    ("17", "净剂回收对比", "改造前烟气回收总体回收率", "83.26%",
+     "(3180.79+96)÷3935.74×100", "83.2573%", "一致", "正确"),
+    ("18", "净剂回收对比", "改造后总量闭合", "总投料3935.74吨",
+     "3180.79+275.25+479.7", "3935.74 吨", "一致", "闭合正确"),
+    ("19", "净剂回收对比", "改造后无组织回收率", "7%",
+     "275.25÷3935.74×100", "6.9936%", "一致", "四舍五入正确"),
+    ("20", "净剂回收对比", "改造后排放及逸散占比", "12.18%",
+     "479.7÷3935.74×100", "12.1883%", "一致", "建议写 12.19%（文档为截尾）"),
+    ("21", "净剂回收对比", "改造后总回收率", "87.82%",
+     "(3180.79+275.25)÷3935.74×100", "87.8117%", "一致", "建议写 87.81%；与83.26%相比提升4.55个百分点，表述正确"),
+    ("22", "净剂回收对比", "改造前后减排量", "未单列（隐含在表内）",
+     "658.95-479.7；并与275.25-96 交叉验证", "179.25 吨（1-9月），折年约239吨", "补充建议",
+     "无组织回收增量与排放逸散减量完全相等（均179.25吨），说明改造前后物料平衡闭合。"
+     "建议在正文或表中明确列出该减排量——这是本次改造最直接的环保效益，目前未点明"),
+    ("23", "正文 / 改造后测算", "275.25吨产出与实测浓度的闭合性", "\"根据实测VOC、风量数据…可产出回收油275.25吨\"",
+     "140000m³/h×273天×24h=9.1728亿m³；275.25吨÷该气量",
+     "需平均进口浓度300.05mg/m³（95%捕集为315.79mg/m³），高于最高实测值205mg/m³",
+     "需说明",
+     "275.25吨无法由文档所列任一实测浓度直接推出：按205mg/m³即使100%满量捕集上限也只有188.04吨，"
+     "按101mg/m³为92.65吨，按80.1mg/m³为73.47吨。若275.25吨是含改造前96吨的总量口径，"
+     "则新系统净增179.25吨，在205mg/m³、95%捕集率下恰好成立——需补充："
+     "①8个接入点位各自的实测浓度与对应支管风量；②捕集/脱附效率取值依据；③275.25吨是总量还是增量的口径说明"),
+    ("24", "运行核算表 / 收益口径", "367吨是否应扣除改造前已有回收量", "年回收367吨全额计入项目收益",
+     "改造后275.25 - 改造前96 = 179.25吨（1-9月），年化239吨",
+     "增量口径下：含税年收益=239×1.03-191.25=54.92万；不含税=239×0.89-191.25=21.46万",
+     "需说明",
+     "改造前既有装置已回收入库96吨（年化约128吨），该部分收益不是本项目增量。"
+     "按增量口径重算：含税回收期=1200÷54.92=21.85年，不含税=1200÷21.46=55.92年，均远超10年折旧期。"
+     "须明确367吨是否已扣除存量；若未扣除，投资回报被显著高估，项目经济性结论需重新论证"),
+    ("25", "总结段", "每箱成本降低额与含税/不含税的对应关系", "\"每箱成本降低0.15元（不含税）/0.03元（含税）\"",
+     "年折旧=1200÷10=120万；含税：(186.76-120)÷455.60=0.1465元/箱；不含税：(135.38-120)÷455.60=0.0338元/箱",
+     "0.15元对应含税口径，0.03元对应不含税口径", "标注颠倒",
+     "文档把两个数值与含税/不含税标签对调了。含税收益高、单位成本降幅理应更大，"
+     "应改为\"0.15元（含税）/0.03元（不含税）\"。数值本身计算正确，仅标签需互换"),
+    ("26", "全文 / 标准引用", "\"均超过山东省地方标准限值60mg/m³\"", "205、101、80.1 mg/m³ 均超60mg/m³",
+     "查DB37/2801.7-2019：表1 有组织排放浓度限值（非重点行业）60mg/m³；"
+     "表2 厂界监控点无组织浓度限值2.0mg/m³；GB37822-2019附录A 厂区内监控点 NMHC 1h均≤6、任意一次≤20mg/m³",
+     "60mg/m³ 是有组织排气筒浓度限值，不能直接用于无组织排放判定", "引用不严谨",
+     "所测对象是\"无组织排气烟囱\"及\"设备进气管道\"浓度，属无组织排放监控范畴，"
+     "应引用 DB37/2801.7-2019 表2（厂界2.0mg/m³）或 GB37822-2019 附录A（厂区内6/20mg/m³）。"
+     "按正确标准，超标倍数远大于现有表述，改造必要性论证反而更强"),
+    ("27", "正文 / 达标排放", "改造后出口浓度与排放速率核算", "\"实现净剂回收、尾气达标排放\"（无量化）",
+     "排放速率=浓度×风量；单套70000m³/h×60mg/m³",
+     "若按60mg/m³计，单套排放速率4.2kg/h、2套合计8.4kg/h，超15m排气筒3kg/h限值",
+     "需补充",
+     "报告仅定性写\"达标排放\"，未给出口浓度与排放速率，而浓度与速率是双控指标。"
+     "须补充：改造后出口VOCs浓度预测值、排气筒高度、以及排放速率核算；"
+     "若达60mg/m³则速率必然超限，需提高排气筒高度或把出口浓度压到21.4mg/m³以下"),
+    ("28", "项目投入表 / 规模", "140000m³/h 与8个接入点位的匹配性", "8个点位（五厂1#2#5#6#、六厂1#3#5#6#）",
+     "设备\"活性炭吸附罐8套×2\"=16罐，与8点位×2套吻合；单点位风量=70000÷4=17500m³/h",
+     "17500 m³/h/点位", "需说明",
+     "罐数配置与点位数自洽，但需补各点位实测风量与罩口控制风速（GB/T 16758要求≥0.3m/s），"
+     "否则总风量与点位实际排风量的匹配性无法验证"),
+    ("29", "运行核算表", "年运行时间8500h 的可达性", "按年运行时间8500h计算",
+     "8500÷8760", "97.03%（全年仅停机260h）", "需说明",
+     "需扣除检修、活性炭更换（吸附饱和须定期换）、氮气脱附切换等停机时间；"
+     "同时说明换炭费用是否已含在运行费用中（目前未列）"),
+    ("30", "运行核算表 / 费用完整性", "年运行费用仅含电费", "年运行费用 -191.25万（仅电费）",
+     "列出缺口：氮气补充、活性炭更换、制冷/冷凝水、运维人工、检测费",
+     "至少4项经常性费用未计入", "需补充",
+     "氮气内循环脱附需持续补充氮气，活性炭按周期更换属刚性支出，直接压低净收益。"
+     "建议在运行费用表增列，或注明\"其他费用暂未计入\"并做敏感性测算"),
+]
+r = 7
+for row in rows1:
+    for i, v in enumerate(row, 1):
+        ws1.cell(row=r, column=i, value=v)
+    r += 1
+last1 = r - 1
+style_body(ws1, 7, last1, 8)
+for rr in range(7, last1 + 1):
+    cc = ws1.cell(row=rr, column=7)
+    cc.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+    cc.font = Font(name="微软雅黑", size=10, bold=True)
+
+for verdict, bg, fg in (
+    ("一致", XL_OK_BG, XL_OK_TXT),
+    ("需说明", XL_WARN_BG, XL_WARN_TXT),
+    ("需补充", XL_WARN_BG, XL_WARN_TXT),
+    ("补充建议", XL_WARN_BG, XL_WARN_TXT),
+    ("引用不严谨", XL_WARN_BG, XL_WARN_TXT),
+    ("不一致", XL_BAD_BG, XL_BAD_TXT),
+    ("标注颠倒", XL_BAD_BG, XL_BAD_TXT),
+):
+    ws1.conditional_formatting.add(
+        f"G7:G{last1}",
+        FormulaRule(formula=[f'$G7="{verdict}"'],
+                    fill=PatternFill("solid", fgColor=bg),
+                    font=Font(name="微软雅黑", size=10, bold=True, color=fg)))
+
+set_widths(ws1, [6, 16, 24, 34, 42, 30, 12, 62])
+ws1.freeze_panes = "D7"
+ws1.auto_filter.ref = f"A6:H{last1}"
+ws1.sheet_view.zoomScale = 90
+ws1.page_setup.orientation = "landscape"
+ws1.print_title_rows = "6:6"
+
+# =====================================================================
+# Sheet 2：关键测算（模型型）
+# =====================================================================
+ws2 = wb.create_sheet("关键测算")
+title_row(ws2, 6,
+          "关键测算模型：回收量口径与投资回报敏感性（可调参数联动）",
+          "浅蓝底为输入假设（可直接改数），下方计算区与结论区全部由公式联动。"
+          "本模型用于回答一个问题：回收收益按\"改造后总量367吨\"还是按\"扣除存量后的增量239吨\"计入，"
+          "对6.43年/8.86年投资回报结论有多大影响。")
+
+band(ws2, 3, 6, "一、输入假设（可修改）")
+for i, h in enumerate(["参数", "符号", "数值", "单位", "取值来源", "备注"], 1):
+    ws2.cell(row=4, column=i, value=h)
+style_header(ws2, 4, 6)
+
+inputs = [
+    ("总处理风量", "Q", 140000, "m³/h", "文档：2套70000m³/h", ""),
+    ("单套整机功率", "P", 150, "kW", "文档：380V/150Kw", "是否含辅机待确认"),
+    ("年运行时间", "H", 8500, "h", "文档表下注", "按8500h计"),
+    ("电价", "e", 0.75, "元/度", "文档", ""),
+    ("年回收量（文档口径·总量）", "T_t", 367, "吨", "文档：153+214", "是否含存量见第30项"),
+    ("改造前无组织回收量（1-9月）", "T_o", 96, "吨", "文档", "既有装置已回收并入库"),
+    ("改造后无组织回收量（1-9月）", "T_n", 275.25, "吨", "文档", "改造后无组织总量"),
+    ("1-9月折算月数", "m", 9, "月", "文档：1-9月", ""),
+    ("降粘剂单价（含税）", "p1", 1.03, "万元/吨", "文档", "对应含税金额口径"),
+    ("降粘剂单价（不含税）", "p0", 0.89, "万元/吨", "文档", "对应不含税金额口径"),
+    ("法定增值税率", "r", 0.13, "—", "13%", "用于校验文档单价倍率"),
+    ("项目总投资", "I", 1200, "万元", "文档：1100+100", ""),
+    ("会计折旧年限", "D", 10, "年", "文档总结段", ""),
+    ("五六车间年产量", "Qb", 455.60, "万箱", "文档总结段", "2026年预计"),
+    ("实测最高进口浓度", "C1", 205, "mg/m³", "五厂东烟囱实测", "三处实测最高值"),
+    ("实测中档进口浓度", "C2", 101, "mg/m³", "五厂西烟囱实测", ""),
+    ("实测最低进口浓度", "C3", 80.1, "mg/m³", "六厂烟囱实测", ""),
+    ("1-9月自然运行天数", "d9", 273, "天", "2026年1-9月共273天", "反算275.25吨来源用"),
+    ("捕集/脱附效率假设", "η", 0.95, "—", "复核假设值", "厂家实际值待提供"),
+]
+r = 5
+for name, sym, val, unit, src, note in inputs:
+    ws2.cell(row=r, column=1, value=name)
+    ws2.cell(row=r, column=2, value=sym)
+    c = ws2.cell(row=r, column=3, value=val)
+    c.number_format = "#,##0.00"
+    ws2.cell(row=r, column=4, value=unit)
+    ws2.cell(row=r, column=5, value=src)
+    ws2.cell(row=r, column=6, value=note)
+    r += 1
+IN0, IN1 = 5, r - 1
+style_body(ws2, IN0, IN1, 6, fill=XL_LIGHT)
+for rr in range(IN0, IN1 + 1):
+    c3 = ws2.cell(row=rr, column=3)
+    c3.alignment = Alignment(horizontal="right", vertical="center")
+    c3.font = Font(name="微软雅黑", size=10, bold=True, color=XL_NAVY)
+    ws2.cell(row=rr, column=2).alignment = Alignment(horizontal="center", vertical="center")
+
+REF = {}
+for rr in range(IN0, IN1 + 1):
+    REF[ws2.cell(row=rr, column=2).value] = f"$C${rr}"
+Q, P, H, E = REF["Q"], REF["P"], REF["H"], REF["e"]
+Tt, To, Tn, Mm = REF["T_t"], REF["T_o"], REF["T_n"], REF["m"]
+p1, p0, Rr, Inv = REF["p1"], REF["p0"], REF["r"], REF["I"]
+Dep, Qb = REF["D"], REF["Qb"]
+C1, C2, C3, d9, eta = REF["C1"], REF["C2"], REF["C3"], REF["d9"], REF["η"]
+
+r += 1
+band(ws2, r, 6, "二、计算区（公式联动，勿手改）")
+r += 1
+for i, h in enumerate(["计算项", "算式", "结果", "单位", "说明", "对照文档值"], 1):
+    ws2.cell(row=r, column=i, value=h)
+style_header(ws2, r, 6)
+r += 1
+CAL0 = r
+
+# (名称, 文字算式, Excel公式, 格式, 单位, 说明, 对照文档值)
+calcs = [
+    ("单套年用电量", "P×H÷10000", f"={P}*{H}/10000", "#,##0.00", "万度", "整机功率×年运行时间", "127.5"),
+    ("年运行电费", "上行×2×e", None, "#,##0.00", "万元", "两套合计电费", "-191.25"),
+    ("年回收量（增量口径）", "(Tn-To)×12÷m", None, "#,##0.00", "吨", "扣除改造前已有量后年化", "文档未列"),
+    ("增量含税收入", "上行×p1", None, "#,##0.00", "万元", "增量年回收量×含税单价", "文档未列"),
+    ("增量不含税收入", "上行×p0", None, "#,##0.00", "万元", "增量年回收量×不含税单价", "文档未列"),
+    ("增量年净收益（含税）", "增量含税收入 - 电费", None, "#,##0.00", "万元", "", "186.76（总量口径）"),
+    ("增量年净收益（不含税）", "增量不含税收入 - 电费", None, "#,##0.00", "万元", "", "135.38（总量口径）"),
+    ("增量口径回收期（含税）", "I ÷ 增量含税净收益", None, "#,##0.00", "年", "负值或0则显示不成立", "6.43（总量口径）"),
+    ("增量口径回收期（不含税）", "I ÷ 增量不含税净收益", None, "#,##0.00", "年", "负值或0则显示不成立", "8.86（总量口径）"),
+    ("文档单价倍率校验", "p1 ÷ p0", None, "0.0000", "—", "13%增值税应为1.1300", "文档隐含1.1573"),
+    ("按13%修正的含税单价", "p0×(1+r)", None, "#,##0.0000", "万元/吨", "以不含税价反推含税价", "文档1.03"),
+    ("修正单价后·含税年收益（总量口径）", "Tt×修正含税单价 - 电费", None, "#,##0.00", "万元", "", "186.76"),
+    ("修正单价后·回收期（总量口径）", "I ÷ 上行", None, "#,##0.00", "年", "", "6.43"),
+    ("275.25吨·按205mg所需捕集率", "Tn×1e6 ÷ (Q×d9×24×C1×1e-3)", None, "0.00%", "—", ">100%即该浓度推不出275.25吨", "—"),
+    ("275.25吨·按101mg所需捕集率", "Tn×1e6 ÷ (Q×d9×24×C2×1e-3)", None, "0.00%", "—", "同上", "—"),
+    ("275.25吨·按80.1mg所需捕集率", "Tn×1e6 ÷ (Q×d9×24×C3×1e-3)", None, "0.00%", "—", "同上", "—"),
+    ("275.25吨·按205mg的100%捕集上限", "Q×d9×24×C1×1e-3", None, "#,##0.00", "吨", "实测最高浓度下的理论极限", "—"),
+    ("净增量（1-9月）", "Tn - To", None, "#,##0.00", "吨", "与排放逸散减量相等", "—"),
+    ("达标所需平均进口浓度（95%捕集）", "Tn×1e6 ÷ (Q×d9×24×η×1e-3)", None, "#,##0.00", "mg/m³", "与实测205mg对比", "—"),
+    ("净增量按205mg·95%捕集所需捕集率", "净增量×1e6 ÷ (Q×d9×24×C1×1e-3)", None, "0.00%", "—", "≈95%即说明增量口径成立", "—"),
+    ("每箱年折旧", "I ÷ D ÷ Qb", None, "#,##0.0000", "元/箱", "", "—"),
+    ("每箱净降成本（含税口径）", "增量含税净收益÷Qb - 每箱年折旧", None, "#,##0.0000", "元/箱", "标签应为\"含税\"", "文档标为不含税"),
+    ("每箱净降成本（不含税口径）", "增量不含税净收益÷Qb - 每箱年折旧", None, "#,##0.0000", "元/箱", "标签应为\"不含税\"", "文档标为含税"),
+    ("改造后净减排量（1-9月）", "(To+改造前逸散) 减 改造后逸散", None, "#,##0.00", "吨", "与净增量相等，物料平衡闭合", "文档未单列"),
+]
+
+ROWS = {}
+for i, (name, expr, _f, fmt, unit, note, cmp_) in enumerate(calcs):
+    rr = CAL0 + i
+    ROWS[name] = rr
+    ws2.cell(row=rr, column=1, value=name)
+    ws2.cell(row=rr, column=2, value=expr)
+    ws2.cell(row=rr, column=4, value=unit)
+    ws2.cell(row=rr, column=5, value=note)
+    ws2.cell(row=rr, column=6, value=cmp_)
+    cc = ws2.cell(row=rr, column=3)
+    cc.number_format = fmt
+    cc.alignment = Alignment(horizontal="right", vertical="center")
+    cc.font = Font(name="微软雅黑", size=10, bold=True, color=XL_NAVY)
+
+R_ = ROWS
+ELEC = R_["年运行电费"]
+INC = R_["年回收量（增量口径）"]
+
+ws2.cell(row=R_["年运行电费"], column=3).value = f"=C{R_['单套年用电量']}*2*{E}"
+ws2.cell(row=R_["年回收量（增量口径）"], column=3).value = f"=({Tn}-{To})*12/{Mm}"
+ws2.cell(row=R_["增量含税收入"], column=3).value = f"=C{INC}*{p1}"
+ws2.cell(row=R_["增量不含税收入"], column=3).value = f"=C{INC}*{p0}"
+ws2.cell(row=R_["增量年净收益（含税）"], column=3).value = f"=C{R_['增量含税收入']}-C{ELEC}"
+ws2.cell(row=R_["增量年净收益（不含税）"], column=3).value = f"=C{R_['增量不含税收入']}-C{ELEC}"
+ws2.cell(row=R_["增量口径回收期（含税）"], column=3).value = (
+    f'=IF(OR(C{R_["增量年净收益（含税）"]}="",C{R_["增量年净收益（含税）"]}<=0),'
+    f'"不成立",{Inv}/C{R_["增量年净收益（含税）"]})')
+ws2.cell(row=R_["增量口径回收期（不含税）"], column=3).value = (
+    f'=IF(OR(C{R_["增量年净收益（不含税）"]}="",C{R_["增量年净收益（不含税）"]}<=0),'
+    f'"不成立",{Inv}/C{R_["增量年净收益（不含税）"]})')
+ws2.cell(row=R_["文档单价倍率校验"], column=3).value = f"={p1}/{p0}"
+ws2.cell(row=R_["按13%修正的含税单价"], column=3).value = f"={p0}*(1+{Rr})"
+ws2.cell(row=R_["修正单价后·含税年收益（总量口径）"], column=3).value = (
+    f"={Tt}*C{R_['按13%修正的含税单价']}-C{ELEC}")
+ws2.cell(row=R_["修正单价后·回收期（总量口径）"], column=3).value = (
+    f'=IF(OR(C{R_["修正单价后·含税年收益（总量口径）"]}="",'
+    f'C{R_["修正单价后·含税年收益（总量口径）"]}<=0),"不成立",'
+    f'{Inv}/C{R_["修正单价后·含税年收益（总量口径）"]})')
+ws2.cell(row=R_["275.25吨·按205mg所需捕集率"], column=3).value = (
+    f"={Tn}*1000000/({Q}*{d9}*24*{C1}*0.001)")
+ws2.cell(row=R_["275.25吨·按101mg所需捕集率"], column=3).value = (
+    f"={Tn}*1000000/({Q}*{d9}*24*{C2}*0.001)")
+ws2.cell(row=R_["275.25吨·按80.1mg所需捕集率"], column=3).value = (
+    f"={Tn}*1000000/({Q}*{d9}*24*{C3}*0.001)")
+ws2.cell(row=R_["275.25吨·按205mg的100%捕集上限"], column=3).value = (
+    f"={Q}*{d9}*24*{C1}*0.001/1000000")
+ws2.cell(row=R_["净增量（1-9月）"], column=3).value = f"={Tn}-{To}"
+ws2.cell(row=R_["达标所需平均进口浓度（95%捕集）"], column=3).value = (
+    f"={Tn}*1000000/({Q}*{d9}*24*{eta}*0.001)")
+ws2.cell(row=R_["净增量按205mg·95%捕集所需捕集率"], column=3).value = (
+    f"=C{R_['净增量（1-9月）']}*1000000/({Q}*{d9}*24*{C1}*0.001)")
+ws2.cell(row=R_["每箱年折旧"], column=3).value = f"={Inv}/{Dep}/{Qb}"
+ws2.cell(row=R_["每箱净降成本（含税口径）"], column=3).value = (
+    f"=C{R_['增量年净收益（含税）']}/{Qb}-C{R_['每箱年折旧']}")
+ws2.cell(row=R_["每箱净降成本（不含税口径）"], column=3).value = (
+    f"=C{R_['增量年净收益（不含税）']}/{Qb}-C{R_['每箱年折旧']}")
+ws2.cell(row=R_["改造后净减排量（1-9月）"], column=3).value = (
+    f"=((3935.74-3180.79-96)-(3935.74-3180.79-275.25))")
+
+CAL1 = CAL0 + len(calcs) - 1
+style_body(ws2, CAL0, CAL1, 6, fill=XL_CALC)
+for i in range(len(calcs)):
+    rr = CAL0 + i
+    ws2.cell(row=rr, column=2).alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
+    ws2.cell(row=rr, column=2).font = Font(name="微软雅黑", size=9, color=xl_color("#595959"))
+    ws2.cell(row=rr, column=6).alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+    ws2.cell(row=rr, column=6).font = Font(name="微软雅黑", size=9, color=xl_color("#595959"))
+
+r = CAL1 + 2
+band(ws2, r, 6, "三、结论对比（自动生成）")
+r += 1
+for i, h in enumerate(["对比维度", "文档口径（总量367吨）", "增量口径（扣除存量）", "差异", "判读", ""], 1):
+    ws2.cell(row=r, column=i, value=h)
+style_header(ws2, r, 6)
+r += 1
+RES0 = r
+
+res = [
+    ("年净收益（含税，万元）",
+     f"={p1}*{Tt}-C{ELEC}", f"=C{R_['增量年净收益（含税）']}",
+     "增量口径下净收益缩水至约1/4"),
+    ("年净收益（不含税，万元）",
+     f"={p0}*{Tt}-C{ELEC}", f"=C{R_['增量年净收益（不含税）']}",
+     "增量口径下净收益接近盈亏平衡"),
+    ("投资回收期（含税，年）",
+     f"={Inv}/B{RES0}", f"=C{R_['增量口径回收期（含税）']}",
+     "增量口径下远超10年折旧期，项目经济性不成立"),
+    ("投资回收期（不含税，年）",
+     f"={Inv}/B{RES0+1}", f"=C{R_['增量口径回收期（不含税）']}",
+     "同上，且更严重"),
+]
+for i, (dim, fdoc, fnew, judge) in enumerate(res):
+    rr = RES0 + i
+    ws2.cell(row=rr, column=1, value=dim)
+    ws2.cell(row=rr, column=2, value=fdoc)
+    ws2.cell(row=rr, column=3, value=fnew)
+    ws2.cell(row=rr, column=4, value=f"=C{rr}-B{rr}")
+    ws2.cell(row=rr, column=5, value=judge)
+    for cc in (2, 3, 4):
+        cell = ws2.cell(row=rr, column=cc)
+        cell.number_format = "#,##0.00"
+        cell.alignment = Alignment(horizontal="right", vertical="center")
+        cell.font = Font(name="微软雅黑", size=10, bold=True, color=XL_NAVY)
+RES1 = RES0 + len(res) - 1
+style_body(ws2, RES0, RES1, 6)
+
+r = RES1 + 2
+band(ws2, r, 6, "四、口径提示", fill=XL_WARN_BG, color=XL_WARN_TXT, size=11)
+r += 1
+ws2.merge_cells(start_row=r, start_column=1, end_row=r, end_column=6)
+c = ws2.cell(row=r, column=1)
+c.value = ("本表按文档表述建立\"年回收367吨（含改造前既有装置已回收的96吨存量）\"的总量口径。"
+           "若经核实367吨已扣除存量，则总量口径成立，上表\"增量口径\"一列仅作保守参考；"
+           "反之须按增量列修正投资回报结论，并补充论证项目自身的经济性来源（如降本、减少排污权、"
+           "产能保障等非回收收益）。这是本次报告最需要决策层明确的一处口径。")
+c.font = Font(name="微软雅黑", size=10, bold=True, color=XL_WARN_TXT)
+c.fill = PatternFill("solid", fgColor=XL_WARN_BG)
+c.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
+for cc in range(1, 7):
+    ws2.cell(row=r, column=cc).border = BORDER
+ws2.row_dimensions[r].height = 58
+
+set_widths(ws2, [32, 30, 16, 11, 46, 22])
+ws2.sheet_view.zoomScale = 95
+
+# =====================================================================
+# Sheet 3：待补充数据清单
+# =====================================================================
+ws3 = wb.create_sheet("待补充数据清单")
+title_row(ws3, 6,
+          "报批前需补充的数据与依据清单",
+          "按对结论的影响程度排序。第1~3项直接决定投资回报数字与论证逻辑能否闭合，必须在报批前补齐；"
+          "第4~6项影响数字准确性；第7~10项为合规与完整性补充。")
+
+hdr3 = ["序号", "影响程度", "需补充的数据 / 依据", "用途（对应报告哪个结论）", "建议来源", "状态"]
+for i, h in enumerate(hdr3, 1):
+    ws3.cell(row=3, column=i, value=h)
+style_header(ws3, 3, 6)
+
+rows3 = [
+    ("1", "关键", "年回收367吨的口径说明：是否已扣除改造前既有装置回收入库的96吨",
+     "决定6.43年/8.86年回收期是否成立；按增量口径重算为21.85年/55.92年",
+     "运行车间台账 + 设备部核算", "待确认"),
+    ("2", "关键", "8个接入点位（五厂无组织1#2#5#6#、六厂无组织1#3#5#6#）各自的实测浓度与对应支管风量；"
+     "以及275.25吨是\"改造后无组织总量\"还是\"2套新系统产出\"的明确说明",
+     "正文\"可产出回收油275.25吨\"的唯一支撑；现有三个烟囱浓度均推不出该回收量",
+     "烟气治理厂家 VOCs-FID 实测原始记录", "待补充"),
+    ("3", "关键", "无组织排放适用标准条款：厂界监控点限值（DB37/2801.7-2019 表2，2.0mg/m³）"
+     "或厂区内监控点限值（GB37822-2019 附录A，NMHC 1h均≤6、任意一次≤20mg/m³）；"
+     "并说明六厂、五厂是否属重点行业",
+     "\"均超过山东省地方标准限值60mg/m³\"的表述；60mg/m³ 实为有组织排气筒浓度限值",
+     "排污许可证载明标准 + 环保管理部确认", "待补充"),
+    ("4", "重要", "含税/不含税单价口径确认：按13%增值税推导（不含税0.89→含税1.01，或含税1.03→不含税0.91）",
+     "运行核算表含税/不含税两行收入、合计年收益与两个回收期",
+     "财务部 + 采购/销售合同价", "待确认"),
+    ("5", "重要", "改造后出口VOCs浓度预测值、排气筒高度、排放速率核算；以及排放速率限值适用档次",
+     "\"尾气达标排放\"目前只有定性表述；浓度与排放速率为双控指标，60mg/m³下速率必然超限",
+     "烟气治理厂家设计文件 + 环保管理部", "待补充"),
+    ("6", "重要", "活性炭吸附/脱附效率（捕集率）取值依据；氮气消耗量与补充成本、活性炭更换周期与费用、"
+     "运维人工、检测费",
+     "275.25吨反算所需捕集率；运行费用目前仅含电费，缺口项直接压低年净收益",
+     "厂家技术方案与运维报价 + 车间编制", "待补充"),
+    ("7", "一般", "各接入点位排风罩形式、控制风速（GB/T 16758 要求≥0.3m/s）、罩口面积、实测支管风量",
+     "验证140000m³/h总风量与8个点位实际排风量的匹配性", "现场勘查 + 厂家设计图", "待补充"),
+    ("8", "一般", "单套150kW是否含氮气循环泵、冷却水泵等辅机；8500h/年的可达性依据（检修、换炭、脱附切换停机）",
+     "运行费用与回收量共用的时间基数；8500h折合97.03%连续运行", "厂家设备清单 + 运行记录", "待补充"),
+    ("9", "一般", "改造前后VOCs排放量测算及主要污染物排放总量替代指标核算",
+     "环保审批必查项；目前仅给回收率变化，未给排放量与总量指标", "环保管理部 + 环评单位", "待补充"),
+    ("10", "一般", "净剂回收油品质指标（纯度、色度、酸价）与回用于生产的适配性、是否可100%按降粘剂1.03万/吨计价",
+     "回收收入单价假设的支撑；回收油若不能直接回用，须按废液处置口径重估价值",
+     "检测报告 + 生产技术部门确认", "待补充"),
+]
+r = 4
+for row in rows3:
+    for i, v in enumerate(row, 1):
+        ws3.cell(row=r, column=i, value=v)
+    r += 1
+last3 = r - 1
+style_body(ws3, 4, last3, 6)
+for rr in range(4, last3 + 1):
+    for cc in (2, 6):
+        cell = ws3.cell(row=rr, column=cc)
+        cell.alignment = Alignment(horizontal="center", vertical="center")
+        cell.font = Font(name="微软雅黑", size=10, bold=True)
+
+for level, bg, fg in (
+    ("关键", XL_BAD_BG, XL_BAD_TXT),
+    ("重要", XL_WARN_BG, XL_WARN_TXT),
+    ("一般", XL_GREY, xl_color("#404040")),
+):
+    ws3.conditional_formatting.add(
+        f"B4:B{last3}",
+        FormulaRule(formula=[f'$B4="{level}"'],
+                    fill=PatternFill("solid", fgColor=bg),
+                    font=Font(name="微软雅黑", size=10, bold=True, color=fg)))
+
+set_widths(ws3, [6, 10, 50, 46, 30, 12])
+ws3.freeze_panes = "C4"
+ws3.auto_filter.ref = f"A3:F{last3}"
+ws3.sheet_view.zoomScale = 95
+
+wb.properties.title = "五六厂无组织VOC改造申请报告核算复核表"
+wb.save(OUT)
+print("saved:", OUT)
