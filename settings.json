@@ -1292,7 +1292,7 @@
     "legacyOwnerUid": "176fb40b-ad53-4b53-93dd-c744cab86c43"
   },
   "autoLaunchDesired": true,
-  "officeFileAssociationsRepairMarker": "v9:win32:5.9.2:D:\\Software\\WorkBuddy\\WorkBuddy.exe:WorkBuddy:machine:1792831874000:aac,csv,doc,docm,docx,dot,dotm,dotx,html,jpeg,jpg,m4a,md,mp3,pdf,png,pot,potm,potx,ppt,pptm,pptx,txt,wav,webp,wps,wpt,xls,xlsm,xlsx,xlt,xltm,xltx",
+  "officeFileAssociationsRepairMarker": "v9:win32:5.9.3:D:\\Software\\WorkBuddy\\WorkBuddy.exe:WorkBuddy:machine:1793093492000:aac,csv,doc,docm,docx,dot,dotm,dotx,html,jpeg,jpg,m4a,md,mp3,pdf,png,pot,potm,potx,ppt,pptm,pptx,txt,wav,webp,wps,wpt,xls,xlsm,xlsx,xlt,xltm,xltx",
   "autoLaunchDefaultApplied": true,
   "officeMarkdownDefaultClaimAttempted": true,
   "pluginConfigs": {}

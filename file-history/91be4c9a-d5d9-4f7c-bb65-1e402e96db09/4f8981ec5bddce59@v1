@@ -1,0 +1,375 @@
+# 自动化执行记录 — WorkBuddy 配置同步推送（GitHub）
+
+## 2026-10-27 16:30 执行（双通道）
+- Git 通道：✅ 成功，commit `8ac2289`（sync: 2026-10-27 16:31:21），main 与 origin/main 一致，无积压
+- 网盘通道：✅ 成功，未触发冲突保护。OneDrive 镜像 386 文件变更（7.43 MB），夸克镜像同量；.last-push 分别为 16:32:06 / 16:32:07
+- 备注：双通道全绿，无遗留问题
+
+## 2026-10-26 16:30 执行（双通道）
+- Git 通道：✅ 成功，commit `50b1061..252f84f` 推上 GitHub（11 文件变更 +539/-3，新增 2 sessions、3 file-history、1 artifact-index），无积压
+- 网盘通道：✅ 成功，未触发冲突保护。OneDrive 镜像 392 文件变更（7.48 MB），夸克镜像 384 文件变更；.last-push 分别为 16:31:35 / 16:31:36
+- 备注：双通道全绿，无遗留问题
+
+## 2026-10-25 16:30 执行（双通道）
+- Git 通道：✅ 成功，commit `e40c23a..50b1061` 推上 GitHub（新增 9 sessions、workspace-memory/2026-10-25.md 等），main 与 origin/main 一致
+- 网盘通道：✅ 成功，未触发冲突保护。OneDrive 镜像 386 文件变更（7.23 MB），夸克镜像同量；.last-push 分别为 16:30:52 / 16:30:53
+- 备注：首次加入 cloud-push 网盘通道执行；robocopy 表格中文乱码为编码显示问题，不影响同步结果
+
+## 2026-10-25 08:11 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：✅ 成功
+- 本地 Commit：`e40c23a`（sync: 2026-10-25 08:11:29 - Lx-3600），7 个文件变更（+405/-8），新增 1 个 file-history、3 个 sessions（10200/16996/17992），其余为更新
+- 远程推送：`94bf6fc..e40c23a main -> main` → https://github.com/lx521q/workbuddy-backup.git
+- 验证：`git status -sb` 显示 main 与 origin/main 一致，无积压
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略
+
+## 2026-10-23 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：✅ 成功
+- 本地 Commit：`94bf6fc`（sync: 2026-10-23 16:30:34 - Lx-3600），11 个文件变更（+698/-2），新增 4 个 file-history、2 个 sessions（17296/27676）、workspace-memory/2026-10-23.md，其余为更新
+- 远程推送：`2a07542..94bf6fc main -> main` → https://github.com/lx521q/workbuddy-backup.git
+- 验证：`git status -sb` 显示 main 与 origin/main 一致，无积压
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略
+
+## 2026-10-22 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：✅ 成功
+- 本地 Commit：`2a07542`（sync: 2026-10-22 16:30:35 - Lx-3600），15 个文件变更（+915/-4），新增 `.workbuddy/memory/2026-10-21.md`、6 个 file-history、2 个 sessions（10548/28888），其余为更新
+- 远程推送：`4ee9e7e..2a07542 main -> main` → https://github.com/lx521q/workbuddy-backup.git
+- 验证：昨日积压的 commit `20a9521`（10-21）已随本次一并推上远程，`git status -sb` 显示 main 与 origin/main 一致，积压清零
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略
+
+## 2026-10-21 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：⚠️ 部分失败（本地提交成功，远程推送失败——网络层异常，重试 1 次仍失败）
+- 本地 Commit：`20a9521`（sync: 2026-10-21 16:30:52 - Lx-3600），16 个文件变更（+700/-3），新增 `.workbuddy/memory/2026-10-20.md`、8 个 file-history、2 个 sessions（19324/29312），其余为更新
+- 远程推送：❌ 失败 — 第一次 `Recv failure: Connection was reset`；重试 1 次 `Connection timed out after 300018 milliseconds`（5 分钟超时）
+- 验证：`git status -sb` 显示 `main...origin/main [ahead 1]`，本地积压 1 个 commit（`20a9521`），下次执行时若网络恢复可一并推上
+- 备注：与 10-18/10-16 网络抖动模式一致，非权限问题；LF/CRLF 警告为 Windows 环境正常提示，可忽略
+
+## 2026-10-20 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：✅ 成功
+- 本地 Commit：`4ee9e7e`（sync: 2026-10-20 16:30:32 - Lx-3600），32 个文件变更（+2198/-4），新增 23 个 file-history、3 个 sessions（28652/29488/9356）、1 个 workspace-memory 日志（2026-10-19.md），其余为更新
+- 远程推送：`c1f638e..4ee9e7e main -> main` → https://github.com/lx521q/workbuddy-backup.git
+- 验证：本地与远程一致，无积压
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略
+
+## 2026-10-19 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：✅ 成功
+- 本地 Commit：`c1f638e`（sync: 2026-10-19 16:30:42 - Lx-3600），6 个文件变更（+378/-8），新增 3 个 file-history，其余为更新
+- 远程推送：`be8c1b5..c1f638e main -> main` → https://github.com/lx521q/workbuddy-backup.git
+- 验证：昨日积压的 commit `bef781e`（10-18）已随本次一并推上远程，积压清零
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略
+
+## 2026-10-18 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：⚠️ 部分失败（本地提交成功，远程推送失败）
+- 本地 Commit：`bef781e`（sync: 2026-10-18 16:31:09 - Lx-3600），7 个文件变更（+366/-7），新增 2 个 file-history、1 个 sessions（22896），其余为更新
+- 远程推送：❌ 失败 — 第一次 `Recv failure: Connection was reset`；约 30 秒后重试 1 次 `Failed to connect to github.com:443 after 21054 ms`（GitHub 入口网络层异常，非权限问题）
+- 验证：`git status -sb` 显示 `main...origin/main [ahead 1]`，本地积压 1 个 commit（`bef781e`），下次执行时若网络恢复可一并推上
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略
+
+## 2026-10-18 08:02 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：✅ 成功
+- 本地 Commit：`be8c1b5`（sync: 2026-10-18 08:04:00 - Lx-3600），9 个文件变更（+360/-4），新增 1 个 file-history、4 个 sessions（16520/18528/19184/20580），其余为更新
+- 远程推送：`18b3c90..be8c1b5 main -> main` → https://github.com/lx521q/workbuddy-backup.git
+- 验证：`git status -sb` 显示 main 与 origin/main 一致，**积压清零**
+- 关键点：10-10 至 10-16 连续失败遗留的 7 个 commit（f795ced/e9a60ac/7fa7874/e5932c8/3bcf607/9e1c0f2/565c826）已随本次一并推上远程，近 8 天积压全部清除，网络已自行恢复
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略
+
+## 2026-10-16 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：⚠️ 部分失败（本地提交成功，远程推送 5 分钟连接超时）
+- 本地 Commit：`565c826`（sync: 2026-10-16 16:31:04 - Lx-3600），17 个文件变更（+628/-5）
+  - 新增：`.workbuddy/memory/2026-10-15.md`、5 个 file-history、6 个 sessions（16140/23244/23388/24168/24936/3160），其余为更新
+- 远程推送：❌ 失败 — `Connection timed out after 300036 milliseconds`（与 10-03 同一超时模式）
+- 验证：`git status -sb` 显示 `main...origin/main [ahead 7]`，本地积压 7 个 commit：`565c826`（本次）、`9e1c0f2`（10-15）、`3bcf607`（10-14）、`e5932c8`（10-13）、`7fa7874`（10-12 16:30）、`e9a60ac`（10-12 08:03）、`f795ced`（10-10），下次执行时若网络恢复可一并推上
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略；连续多日 push 阶段网络异常（自 10-10 起仅失败），建议留意代理/网络环境变化
+
+## 2026-10-15 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：⚠️ 部分失败（本地提交成功，远程推送挂起）
+- 本地 Commit：`9e1c0f2`（sync: 2026-10-15 16:30:32 - Lx-3600），15 个文件变更（+405/-4），新增 4 个 file-history、7 个 sessions
+- 远程推送：❌ 挂起 — push 阶段超过 17 分钟无任何输出/进展（与 10-12 08:03 同一模式：连接可达但 push 传输停滞），后台进程保留继续等待
+- 验证：`git status -sb` 显示 `main...origin/main [ahead 6]`，本地积压 6 个 commit：`9e1c0f2`（本次）、`3bcf607`（10-14 16:33，该次执行无记录但已提交）、`e5932c8`（10-13）、`7fa7874`（10-12 16:30）、`e9a60ac`（10-12 08:03）、`f795ced`（10-10）
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略；连续多日 push 阶段长时间停滞，网络层问题持续存在
+
+## 2026-10-10 16:39 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：⚠️ 部分失败（本地提交成功，远程推送失败——网络连不上 GitHub，已重试 1 次仍失败）
+- 本地 Commit：`f795ced`（sync: 2026-10-10 16:39:30 - Lx-3600），11 个文件变更（+883/-2）
+  - 新增：`.workbuddy/memory/2026-10-09.md`、3 个 file-history、4 个 sessions（12444/14648/22624/9380），其余为更新
+- 远程推送：❌ 失败 — 第一次 `Recv failure: Connection was reset`；约 30 秒后手动重试 1 次仍失败 `Failed to connect to github.com:443 after 21086 ms: Could not connect to server`（GitHub 入口网络层异常，非权限问题）
+- 验证：`git status -sb` 显示 `main...origin/main [ahead 1]`，本地积压 1 个未推送 commit（`f795ced`），下次执行时若网络恢复可一并推上
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略；脚本对"无 push 成功"仍输出"同步完成"是历史行为
+
+## 2026-10-09 16:45 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：✅ 成功
+- 本地 Commit：`18b3c90`（sync: 2026-10-09 16:45:35 - Lx-3600），14 个文件变更（+942/-2）
+  - 新增：`.workbuddy/memory/2026-10-08.md`、1 个 artifact-index（bafceb44）、4 个 file-history（7b1f9650/9f96f2e4/b8dd2f78/bafceb44）、5 个 sessions（14580/20916/21312/28640/4084），其余为更新
+- 远程推送：`e7fad9e..18b3c90 main -> main` → https://github.com/lx521q/workbuddy-backup.git
+- 验证：推送成功，本地与远程一致，昨日 10-08 积压的 1 个 commit `b305cda` 已一并推上远程，积压清零
+- 耗时：约 15 秒（网络通畅，commit + push 均快速完成）
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略
+
+## 2026-10-08 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：⚠️ 部分失败（本地提交成功，远程推送失败——TLS 连接被服务端异常关闭）
+- 本地 Commit：`b305cda`（sync: 2026-10-08 16:30:39 - Lx-3600），8 个文件变更（+587/-2）
+  - 新增：2 个 file-history、4 个 sessions（20940/23968/2584/7192），其余为更新
+- 远程推送：❌ 失败 — `fatal: unable to access 'https://github.com/lx521q/workbuddy-backup.git/': schannel: server closed abruptly (missing close_notify)`（Windows schannel TLS 传输中被服务端中断，属网络层抖动，非权限问题）
+- 验证：`git status -sb` 显示 `main...origin/main [ahead 1]`，本地积压 1 个未推送 commit（`b305cda`）
+- 关键点：远程当前停留在 `e7fad9e`（10-07 16:30:56 版本）——该次推送实际成功但执行记录未写入本文件；本次仅积压 1 个 commit，下次执行时若网络恢复可一并推上
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略；脚本对"无 push 成功"仍输出"同步完成"是历史行为
+
+## 2026-10-07 07:55 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：✅ 成功
+- 本地 Commit：`de7d6d1`（sync: 2026-10-07 07:55:52 - Lx-3600），10 个文件变更（+278/-17）
+  - 新增：`.workbuddy/memory/2026-10-03.md`、1 个 file-history、3 个 sessions（21044/21076/21128），其余为更新
+- 远程推送：`480ec48..de7d6d1 main -> main` → https://github.com/lx521q/workbuddy-backup.git
+- 验证：`git status -sb` 显示 main 与 origin/main 一致，无 ahead/behind，**积压清零**
+- 关键点：10-01 至 10-03 连续三次推送失败遗留的 3 个 commit（`19cc8dc`、`71b4080`、`087f0a4`）已随本次一并推上远程，积压全部清除
+- 耗时：约 15 秒（网络通畅，commit + push 均快速完成）
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略
+
+---
+
+## 2026-10-03 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：⚠️ 部分失败（本地提交成功，远程推送超时）
+- 本地 Commit：`19cc8dc`（sync: 2026-10-03 16:30:45 - Lx-3600），22 个文件变更（+1635/-11）
+  - 新增：9 个 file-history、9 个 sessions（11676/14660/19584/20712/20764/24336/26208/27752/27752 等），其余为更新
+- 远程推送：❌ 失败 — `fatal: unable to access 'https://github.com/lx521q/workbuddy-backup.git/': Connection timed out after 300003 milliseconds`（5 分钟超时）
+- 验证：`git status -sb` 显示 `main...origin/main [ahead 3]`，本地积压 3 个未推送 commit：
+  - `19cc8dc`（本次 10-03 16:30）
+  - `71b4080`（10-01 16:31）
+  - `087f0a4`（9-30 16:30）
+- 耗时：约 5 分 1 秒（commit 阶段正常，push 阶段 5 分钟超时）
+- 备注：脚本对"无 push 成功"仍输出"同步完成"是历史行为，实际未推送；远程仍停留在 `480ec48` / 9-29 版本，三个 commit 均留在本地，下次执行时若网络恢复可一并推上
+- 备注2：LF/CRLF 警告为 Windows 环境正常提示，可忽略
+
+## 2026-10-01 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：⚠️ 部分失败（本地提交成功，远程推送连接被重置）— 与 9-27 同一失败模式（Connection was reset）
+- 本地 Commit：`71b4080`（sync: 2026-10-01 16:31:13 - Lx-3600），11 个文件变更（+648/-9）
+  - 新增：3 个 file-history、3 个 sessions（11640/216/3600）、`.workbuddy/memory/2026-09-30.md`，其余为更新
+- 远程推送：❌ 失败 — `fatal: unable to access 'https://github.com/lx521q/workbuddy-backup.git/': Recv failure: Connection was reset`
+- 验证：`git status -sb` 显示 `main...origin/main [ahead 2]`，本地积压 2 个未推送 commit：
+  - `71b4080`（本次 10-01 16:31）
+  - `087f0a4`（9-30 16:30，昨日遗留）
+- 耗时：不足 1 分钟（commit 阶段正常，push 阶段立即被重置）
+- 备注：脚本对"无 push 成功"仍输出"同步完成"是历史行为，实际未推送；远程仍停留在 `480ec48` / 9-29 版本，两个 commit 均留在本地，下次执行时若网络恢复可一并推上
+- 备注2：LF/CRLF 警告为 Windows 环境正常提示，可忽略
+
+## 2026-09-30 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：⚠️ 部分失败（本地提交成功，远程推送连接失败）
+- 本地 Commit：`087f0a4`（sync: 2026-09-30 16:30:45 - Lx-3600），10 个文件变更（+614/-2）
+  - 新增：3 个 file-history、4 个 sessions（8960/12236/21184/21776），其余为更新
+- 远程推送：❌ 失败 — `fatal: unable to access 'https://github.com/lx521q/workbuddy-backup.git/': Failed to connect to github.com:443 after 21082 ms: Could not connect to server`
+- 验证：`git status -sb` 显示 `main...origin/main [ahead 1]`，本地积压 1 个未推送 commit
+- 耗时：约 42 秒（commit 阶段正常，push 阶段 21 秒连接失败）
+- 备注：脚本对"无 push 成功"仍输出"同步完成"是历史行为，实际未推送；commit `087f0a4` 已留在本地，下次执行时若网络恢复可一并推上（远程仍停留在 `480ec48` / 9-29 版本）
+- 备注2：LF/CRLF 警告为 Windows 环境正常提示，可忽略
+
+## 2026-09-29 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：✅ 成功
+- 本地 Commit：`480ec48`（sync: 2026-09-29 16:31:04 - Lx-3600），10 个文件变更（+580/-2）
+  - 新增：3 个 file-history、4 个 sessions（22308/22824/25140/2756），其余为更新
+- 远程推送：`fe3d813..480ec48 main -> main` → https://github.com/lx521q/workbuddy-backup.git
+- 验证：`git status -sb` 显示 main 与 origin/main 一致，无 ahead/behind，无积压
+- 耗时：约 10 秒（近期最快一次，网络非常通畅）
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略
+
+## 2026-09-28 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：✅ 成功
+- 本地 Commit：`fe3d813`（sync: 2026-09-28 16:31:10 - Lx-3600），9 个文件变更（+236/-2）
+  - 新增：2 个 file-history、4 个 sessions（10664/17116/24872/25392），其余为更新
+- 远程推送：`f92b0d3..fe3d813 main -> main` → https://github.com/lx521q/workbuddy-backup.git
+- 验证：`git status -sb` 显示 main 与 origin/main 一致，无 ahead/behind，无积压
+- 关键点：昨天（9-27）两次推送失败的遗留 commit `15ea9c4` 和 `85576a4` 已随本次一并推上远程，积压清零（连续两日 Connection was reset 属临时网络抖动，次日已自行恢复）
+- 耗时：不足 1 分钟，网络通畅
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略
+
+## 2026-09-27 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：⚠️ 部分失败（本地提交成功，远程推送连接被重置）— 与今早 07:56 同一失败模式
+- 本地 Commit：`15ea9c4`（sync: 2026-09-27 16:31:15 - Lx-3600），14 个文件变更（+826/-6）
+  - 新增：6 个 file-history、3 个 sessions（14092/14744/27664），其余为更新
+- 远程推送：❌ 失败 — `fatal: unable to access 'https://github.com/lx521q/workbuddy-backup.git/': Recv failure: Connection was reset`
+- 验证：`git status -sb` 显示 `main...origin/main [ahead 2]`，本地积压 2 个未推送 commit：
+  - `15ea9c4`（本次 16:31）
+  - `85576a4`（今早 07:57，上次遗留）
+- 耗时：34 秒（commit 阶段正常，push 阶段立即被重置，未消耗长等待）
+- 备注：脚本对"无 push 成功"仍输出"同步完成"是历史行为，实际未推送；两个 commit 均已留在本地，下次执行时若网络恢复可一并推上（远程仍停留在 `f92b0d3` / 9-25 版本）
+- 备注2：同日两次推送均遭 Connection was reset（07:56 与 16:30），GitHub 入口网络层连续异常，建议留意；LF/CRLF 警告为 Windows 环境正常提示，可忽略
+
+## 2026-09-27 07:56 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：⚠️ 部分失败（本地提交成功，远程推送连接被重置）
+- 本地 Commit：`85576a4`（sync: 2026-09-27 07:57:06 - Lx-3600），8 个文件变更（+191/-2）
+  - 新增：1 个 file-history、4 个 sessions（5104/5824/6140/17980），其余为更新
+- 远程推送：❌ 失败 — `fatal: unable to access 'https://github.com/lx521q/workbuddy-backup.git/': Recv failure: Connection was reset`（GitHub 连接被重置）
+- 耗时：不足 1 分钟（commit 阶段正常，push 阶段连接重置）
+- 备注：commit `85576a4` 已留在本地但未推上远程，下次执行时若网络恢复可随同推送
+- 备注2：LF/CRLF 警告为 Windows 环境正常提示，可忽略
+
+## 2026-09-25 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：✅ 成功
+- 本地 Commit：`f92b0d3`（sync: 2026-09-25 16:31:07 - Lx-3600），15 个文件变更（+1943/-8）
+  - 新增：1 个 artifact-index（2d420646）、4 个 file-history、4 个 sessions（20164/20192/21376/24536），其余为更新
+- 远程推送：`6685bb3..f92b0d3 main -> main` → https://github.com/lx521q/workbuddy-backup.git
+- 验证：`git status -sb` 显示 main 与 origin/main 一致，无 ahead/behind，无积压
+- 耗时：不足 1 分钟，网络通畅
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略
+
+## 2026-09-24 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：✅ 成功
+- 本地 Commit：`6685bb3`（sync: 2026-09-24 16:30:38 - Lx-3600），13 个文件变更（+733/-2）
+  - 新增：1 个 artifact-index（962fb483）、5 个 file-history、4 个 sessions（2432/8048/16820/29380），其余为更新
+- 远程推送：`2ea2a98..6685bb3 main -> main` → https://github.com/lx521q/workbuddy-backup.git
+- 耗时：不足 1 分钟，网络通畅
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略
+
+## 2026-09-23 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：✅ 成功
+- 本地 Commit：`2ea2a98`（sync: 2026-09-23 16:30:54 - Lx-3600），11 个文件变更（+417/-2）
+  - 新增：1 个 artifact-index（d8bd2fc1）、3 个 file-history、4 个 sessions（11628/14556/23164/27700），其余为更新
+- 远程推送：`70f442b..2ea2a98 main -> main` → https://github.com/lx521q/workbuddy-backup.git
+- 耗时：不足 1 分钟，网络通畅
+- 关键点：9-22 超时遗留的本地 commit `a46d331` 已随本次一并推上远程，积压清零
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略
+
+
+
+## 2026-09-22 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：⚠️ 部分失败（本地提交成功，远程推送连接超时）
+- 本地 Commit：`a46d331`（sync: 2026-09-22 16:40:32 - Lx-3600），16 个文件变更（+810/-15）
+  - 新增：`.workbuddy/memory/2026-09-21.md`、1 个 artifact-index（18255f93）、6 个 file-history、3 个 sessions（26964/27096/9688），其余为更新
+- 远程推送：❌ 失败 — `Failed to connect to github.com:443 after 21054 ms`（21 秒连接超时，访问 https://github.com/lx521q/workbuddy-backup.git）
+- 耗时：1 分 0 秒（commit 阶段正常，21 秒全部消耗在 git push 网络等待上）
+- 备注：commit `a46d331` 已留在本地但未推上远程，下次执行时若网络恢复可随同推送
+- 备注2：与 9-17 超时失败模式不同（9-17 是 commit 后 push 等待 5 分钟超时；本次是 push 阶段 21 秒就连接失败，疑似 GitHub 入口网络层抖动）
+- 备注3：LF/CRLF 警告涉及 200+ 文件，属 Windows 环境正常提示，可忽略
+
+## 2026-09-21 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：✅ 成功
+- Commit：`70f442b`（sync: 2026-09-21 16:31:08 - Lx-3600），24 个文件变更（+1524/-13）
+  - 新增：14 个 file-history、6 个 sessions（412/5260/7976/17072/20048/20320），其余为更新
+- 远程推送：`d5e613f..70f442b main -> main` → https://github.com/lx521q/workbuddy-backup.git
+- 耗时：不足 1 分钟，网络通畅
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略
+
+## 2026-09-20 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：✅ 成功
+- Commit：`d5e613f`（sync: 2026-09-20 16:30:57 - Lx-3600），10 个文件变更（+158/-2）
+  - 新增：2 个 file-history、5 个 sessions（12012/13616/17660/20268/2132），其余为更新
+- 远程推送：`7098827..d5e613f main -> main` → https://github.com/lx521q/workbuddy-backup.git
+- 耗时：不足 1 分钟，网络通畅
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略
+
+## 2026-09-18 18:07 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：✅ 成功（本次为正常 16:30 定时之外的一次执行，由自动化触发于 18:07）
+- Commit：`7098827`（sync: 2026-09-18 18:07:34 - Lx-3600），11 个文件变更（+281/-3）
+  - 新增：4 个 sessions（10804/23052/23844/3028）、3 个 file-history，其余为更新
+- 远程推送：`c6aadd0..7098827 main -> main` → https://github.com/lx521q/workbuddy-backup.git
+- 耗时：不足 1 分钟，网络通畅
+- 关键点：昨天（9-17）推送超时的遗留 commit `f18fda1` 已随本次一并推上远程，积压清零
+- 验证：`git log` 显示 7098827 → f18fda1 → c6aadd0 连续在案；`git status -sb` 显示 main 与 origin/main 一致，无 ahead/behind
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略
+
+## 2026-09-17 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：⚠️ 部分失败（本地提交成功，远程推送超时）
+- 本地 Commit：`f18fda1`（sync: 2026-09-17 16:30:54 - Lx-3600），21 个文件变更（+422/-16）
+  - 新增：4 个 artifact-index、3 个 file-history、7 个 sessions、`.workbuddy/memory/2026-09-16.md`
+- 远程推送：❌ 失败 — `Connection timed out after 300052 milliseconds`（5 分钟超时，访问 https://github.com/lx521q/workbuddy-backup.git）
+- 耗时：5 分 3 秒（基本全部消耗在 git push 网络等待上）
+- 备注：commit `f18fda1` 已留在本地但未推上远程，下次执行时若网络恢复可随同推送
+- 备注2：脚本对"无 push 成功"仍输出"同步完成"是历史行为，不影响实际未推送状态
+- 备注3：本次 LF/CRLF 警告涉及 200+ 文件（artifact-index、file-history、sessions 全部），属 Windows 环境正常提示，可忽略
+
+## 2026-09-16 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：✅ 成功
+- Commit：`c6aadd0`（sync: 2026-09-16 16:30:44 - Lx-3600），24 个文件变更（+543/-17）
+- 新增内容：4 个 artifact-index、4 个 file-history、11 个 sessions
+- 远程推送：`e57157a..c6aadd0 main -> main` → https://github.com/lx521q/workbuddy-backup.git
+- 耗时：约 14 秒（本次网络通畅，明显快于以往）
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略；已验证 `git status -sb` 显示 main 与 origin/main 一致
+- 备注2：9-10 至 9-15 无执行记录（用户行程期间电脑未运行定时任务），本次为恢复后首次推送，将 9-16 前积累的变更一并推上
+
+## 2026-09-09 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：✅ 成功
+- Commit：`e57157a`（sync: 2026-09-09 16:30:43 - Lx-3600），20 个文件变更（+286/-5）
+- 新增内容：3 个 artifact-index、4 个 file-history、8 个 sessions
+- 远程推送：`41c265c..e57157a main -> main` → https://github.com/lx521q/workbuddy-backup.git
+- 耗时：约 2 分钟
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略
+
+## 2026-09-08 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：✅ 成功
+- Commit：`41c265c`（sync: 2026-09-08 16:30:26 - Lx-3600），17 个文件变更（+189/-7）
+- 新增内容：2 个 artifact-index、2 个 file-history、7 个 sessions
+- 远程推送：`85c2620..41c265c main -> main` → https://github.com/lx521q/workbuddy-backup.git
+- 耗时：约 2 分钟
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略
+
+## 2026-09-07 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：✅ 成功
+- Commit：`85c2620`（sync: 2026-09-07 16:30:54 - Lx-3600），25 个文件变更（+548/-7）
+- 远程推送：`80499e5..85c2620 main -> main` → https://github.com/lx521q/workbuddy-backup.git
+- 耗时：约 3 分钟
+- 同步内容：skills、scripts、SOUL/IDENTITY/USER/settings.json、sessions、file-history、artifact-index、workspace-memory、workbuddy.db（SQLite 一致性快照）
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略；本次未生成新文件但有大量 sessions/file-history 增量更新
+
+## 2026-09-04 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：✅ 成功
+- Commit：`f62c0e6`（sync: 2026-09-04 16:30:34 - Lx-3600），14 个文件变更（+217/-12），主要是新增 sessions、artifact-index 及 workspace-memory 更新
+- 远程推送：`f9e8a31..f62c0e6 main -> main` → https://github.com/lx521q/workbuddy-backup.git
+- 耗时：约 12.5 分钟（git push 网络等待占大头，属正常现象，非故障）
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略；下次执行时如遇网络超时可自然重试
+
+## 2026-10-12 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：⚠️ 部分失败（本地提交成功，远程推送失败）
+- 本地 Commit：`7fa7874`（sync: 2026-10-12 16:30:57 - Lx-3600），9 个文件变更（+104/-6），新增 2 个 file-history、2 个 sessions（19012/26536）
+- 远程推送：❌ 失败 — 第一次 `Recv failure: Connection was reset`；重试 1 次 `Failed to connect to github.com:443 after 21519 ms`
+- 验证：`git status -sb` 显示 `main...origin/main [ahead 3]`，本地积压 3 个 commit：`7fa7874`（本次）、`e9a60ac`（10-12 08:03 遗留）、`f795ced`（10-10 遗留），下次执行时若网络恢复可一并推上
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略
+
+## 2026-10-13 16:30 执行
+- 命令：`bash ~/.workbuddy-sync/sync.sh push`
+- 结果：⚠️ 部分失败（本地提交成功，远程推送失败——GitHub 连接被重置）
+- 本地 Commit：`e5932c8`（sync: 2026-10-13 16:30:36 - Lx-3600），17 个文件变更（+450/-6）
+  - 新增：`.workbuddy/memory/2026-10-12.md`、3 个 file-history、7 个 sessions（13412/13716/14260/23088/24696/24988/29412），其余为更新
+- 远程推送：❌ 失败 — `fatal: unable to access 'https://github.com/lx521q/workbuddy-backup.git/': Recv failure: Connection was reset`（与 10-12 同一失败模式，GitHub 入口网络层连续异常）
+- 验证：`git status -sb` 显示 `main...origin/main [ahead 4]`，本地积压 4 个未推送 commit：
+  - `e5932c8`（本次 10-13 16:30）
+  - `7fa7874`（10-12 16:30）
+  - `e9a60ac`（10-12 08:03）
+  - `f795ced`（10-10 16:39）
+- 备注：LF/CRLF 警告为 Windows 环境正常提示，可忽略；脚本对"无 push 成功"仍输出"同步完成"是历史行为
+
+## 2026-10-12 08:03 同步推送
+- 本地同步+提交成功（commit e9a60ac，9 文件，含 3 个新 session）
+- git push 超过 25 分钟无进展，疑似网络传输停滞（ls-remote 可达，但 push 挂起）
+- 处理：记录为未完成，后台进程继续保留；下次执行重试推送。本地领先 origin/main 2 个提交
