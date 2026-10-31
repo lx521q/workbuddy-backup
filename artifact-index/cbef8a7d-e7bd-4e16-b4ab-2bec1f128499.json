@@ -1,0 +1,90 @@
+{
+  "version": 1,
+  "lastUpdated": 1793435456526,
+  "artifacts": [
+    {
+      "name": "SOUL.md",
+      "title": "SOUL.md",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 1462,
+      "createdAt": 1786069170098,
+      "updatedAt": 1793435456286,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/.workbuddy-sync/SOUL.md",
+      "_meta": {
+        "sourceTool": "WorkspaceWatcher",
+        "ownerConversationId": "cbef8a7d-e7bd-4e16-b4ab-2bec1f128499",
+        "requestId": "01a1911523e87ecc8982808c411be1e3",
+        "codebuddy.ai/requestId": "01a1911523e87ecc8982808c411be1e3",
+        "createdByRequestId": "01a1911523e87ecc8982808c411be1e3",
+        "touchedByRequestIds": [
+          "01a1911523e87ecc8982808c411be1e3"
+        ]
+      }
+    },
+    {
+      "name": "IDENTITY.md",
+      "title": "IDENTITY.md",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 385,
+      "createdAt": 1786069170374,
+      "updatedAt": 1793435456318,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/.workbuddy-sync/IDENTITY.md",
+      "_meta": {
+        "sourceTool": "WorkspaceWatcher",
+        "ownerConversationId": "cbef8a7d-e7bd-4e16-b4ab-2bec1f128499",
+        "requestId": "01a1911523e87ecc8982808c411be1e3",
+        "codebuddy.ai/requestId": "01a1911523e87ecc8982808c411be1e3",
+        "createdByRequestId": "01a1911523e87ecc8982808c411be1e3",
+        "touchedByRequestIds": [
+          "01a1911523e87ecc8982808c411be1e3"
+        ]
+      }
+    },
+    {
+      "name": "USER.md",
+      "title": "USER.md",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 557,
+      "createdAt": 1786069170659,
+      "updatedAt": 1793435456351,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/.workbuddy-sync/USER.md",
+      "_meta": {
+        "sourceTool": "WorkspaceWatcher",
+        "ownerConversationId": "cbef8a7d-e7bd-4e16-b4ab-2bec1f128499",
+        "requestId": "01a1911523e87ecc8982808c411be1e3",
+        "codebuddy.ai/requestId": "01a1911523e87ecc8982808c411be1e3",
+        "createdByRequestId": "01a1911523e87ecc8982808c411be1e3",
+        "touchedByRequestIds": [
+          "01a1911523e87ecc8982808c411be1e3"
+        ]
+      }
+    },
+    {
+      "name": "BOOTSTRAP.md",
+      "title": "BOOTSTRAP.md",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 1892,
+      "createdAt": 1786069170937,
+      "updatedAt": 1793435456383,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/.workbuddy-sync/BOOTSTRAP.md",
+      "_meta": {
+        "sourceTool": "WorkspaceWatcher",
+        "ownerConversationId": "cbef8a7d-e7bd-4e16-b4ab-2bec1f128499",
+        "requestId": "01a1911523e87ecc8982808c411be1e3",
+        "codebuddy.ai/requestId": "01a1911523e87ecc8982808c411be1e3",
+        "createdByRequestId": "01a1911523e87ecc8982808c411be1e3",
+        "touchedByRequestIds": [
+          "01a1911523e87ecc8982808c411be1e3"
+        ]
+      }
+    }
+  ]
+}
