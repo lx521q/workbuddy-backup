@@ -1,5 +1,10 @@
 # 自动化执行记录 — WorkBuddy 配置同步推送（GitHub）
 
+## 2026-11-06 16:30 执行（双通道）
+- Git 通道：⚠️ 本地提交成功、远程推送失败。commit `b544238`（sync: 2026-11-06 16:34:07），9 文件变更（+720/-5，新增 2 artifact-index、2 file-history、2 sessions/16956·25664）。push 报 `Recv failure: Connection was reset`；手动重试 1 次 `Failed to connect to github.com:443 after 21164 ms`。`main...origin/main [ahead 1]` 积压 1 个 commit，待下次网络恢复随批推上
+- 网盘通道：✅ 成功，未触发冲突保护。OneDrive 镜像 802 文件/414 文件变更（8.41 MB，目录 199 个）；夸克镜像同量；.last-push 分别为 16:34:46 / 16:34:47
+- 备注：Git 通道 GitHub 入口网络抖动（与 10-04 等历史同模式，非权限问题）；网盘通道为主力已保全数据
+
 ## 2026-11-05 16:30 执行（双通道）
 - Git 通道：✅ 成功，commit `d06cc04`（sync: 2026-11-05 16:30:42），10 文件变更（+717/-9，新增 1 artifact-index、2 file-history、2 sessions/20056·26104）。推上 GitHub `86581a1..d06cc04`，昨日（11-04）积压的网络失败 commit 已随本次一并补推，`main...origin/main` 一致，积压清零
 - 网盘通道：✅ 成功，未触发冲突保护。OneDrive 镜像 796 文件/386 文件变更（8.26 MB，目录 197 个）；夸克镜像同量；.last-push 分别为 16:30:58 / 16:30:59
