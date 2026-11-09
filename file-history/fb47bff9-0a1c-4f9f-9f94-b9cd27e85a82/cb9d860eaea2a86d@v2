@@ -1,0 +1,10 @@
+# 2026-10-31
+
+## 智能家居设备台账整理（HA 抓取）
+- 用户的 Home Assistant 地址：`http://192.168.31.7:8123`（从 Edge/Chrome 书签确认），家里局域网 192.168.31.x。
+- 办公电脑当前在 192.168.3.x 网段，ping 与 8123 端口均不通，无法直接读取 HA —— 需回家网络环境或提供远程访问。
+- 已交付工具：`ha-inventory/ha_inventory.py`（纯标准库，无第三方依赖；本机 pip 无外网装不了 requests/openpyxl）。
+  - 抓 area/device/entity registry + states，输出 4 sheet xlsx：设备台账 / 实体明细 / 待处理问题 / 汇总。
+  - 诊断规则：未分配房间、空壳设备、全部离线、部分离线、名称不规范、缺厂商型号、实体重名、设备已禁用。
+  - 支持 `--mock` 自检；凭据读取优先级 命令行 > 环境变量 > 同目录 ha.env。
+- xlsx 由自写 OOXML（zipfile + inlineStr 单元格）生成，已用 Excel COM 验证可正常打开。

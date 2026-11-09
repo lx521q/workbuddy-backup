@@ -1,0 +1,543 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Home Assistant 设备台账生成器（零依赖，纯标准库）
+
+用途：把 HA 里的 区域 / 设备 / 实体 / 实时状态 抓下来，整理成一份可读的设备台账
+      + 一份"待处理问题"清单（未分区、离线、僵尸、重名、已禁用等）。
+
+用法：
+  1) 在家里的局域网内运行（HA 地址一般是 http://192.168.31.7:8123）
+  2) 准备长期访问令牌：HA 网页 -> 左下角头像 -> 安全 -> 长期访问令牌 -> 创建
+  3) 任选一种方式给凭据：
+       - 在脚本同目录放 ha.env，内容两行：
+             HA_URL=http://192.168.31.7:8123
+             HA_TOKEN=eyJ0eXAi...
+       - 或命令行： python ha_inventory.py --url http://192.168.31.7:8123 --token xxx
+       - 或环境变量 HA_URL / HA_TOKEN
+  4) 输出：设备台账_日期.xlsx
+
+自检（不需要 HA）：python ha_inventory.py --mock
+"""
+
+import argparse
+import json
+import os
+import re
+import sys
+import zipfile
+from datetime import datetime
+from urllib import request as urlrequest
+from urllib.error import HTTPError, URLError
+from xml.sax.saxutils import escape
+
+# ---------------------------------------------------------------- 数据抓取
+
+def load_env(path="ha.env"):
+    cfg = {}
+    if os.path.isfile(path):
+        for line in open(path, encoding="utf-8"):
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            k, v = line.split("=", 1)
+            cfg[k.strip()] = v.strip().strip('"').strip("'")
+    return cfg
+
+
+class HA:
+    def __init__(self, base, token):
+        self.base = base.rstrip("/")
+        self.token = token
+
+    def get(self, path):
+        req = urlrequest.Request(self.base + path)
+        req.add_header("Authorization", "Bearer " + self.token)
+        req.add_header("Content-Type", "application/json")
+        with urlrequest.urlopen(req, timeout=25) as r:
+            return json.loads(r.read().decode("utf-8"))
+
+    def try_get(self, path):
+        try:
+            return self.get(path)
+        except Exception as e:  # 旧版本 HA 可能没有某些 registry 接口
+            print("  ! %s 不可用：%s" % (path, e))
+            return []
+
+
+def fetch(ha):
+    print("连接 %s ..." % ha.base)
+    api = ha.get("/api/")
+    print("  HA 返回：%s" % api.get("message", "ok"))
+    data = {}
+    data["config"] = ha.get("/api/config")
+    print("  版本：%s" % data["config"].get("version"))
+    data["areas"] = ha.try_get("/api/config/area_registry/list")
+    data["devices"] = ha.try_get("/api/config/device_registry/list")
+    data["entities"] = ha.try_get("/api/config/entity_registry/list")
+    data["states"] = ha.get("/api/states")
+    print("  区域 %d / 设备 %d / 实体 %d / 状态 %d"
+          % (len(data["areas"]), len(data["devices"]),
+             len(data["entities"]), len(data["states"])))
+    return data
+
+# ---------------------------------------------------------------- 整理逻辑
+
+OFFLINE = ("unavailable", "unknown")
+
+
+def integration_of(entity_entry, device):
+    for key in ("platform",):
+        if entity_entry.get(key):
+            return entity_entry[key]
+    ids = device.get("identifiers") or []
+    if ids:
+        first = ids[0]
+        if isinstance(first, (list, tuple)) and first:
+            return first[0]
+    for ce in device.get("config_entries") or []:
+        return "entry:" + str(ce)[:8]
+    return ""
+
+
+def human_ts(iso):
+    if not iso:
+        return ""
+    try:
+        dt = datetime.fromisoformat(iso.replace("Z", "+00:00"))
+        dt = dt.astimezone()
+        delta = (datetime.now().astimezone() - dt).total_seconds()
+        if delta < 3600:
+            return "%d 分钟前" % max(1, int(delta / 60))
+        if delta < 86400:
+            return "%d 小时前" % int(delta / 3600)
+        return dt.strftime("%m-%d %H:%M")
+    except Exception:
+        return iso[:16]
+
+
+def build(data):
+    area_name = {a["area_id"]: a.get("name", a["area_id"]) for a in data["areas"]}
+    states = {s["entity_id"]: s for s in data["states"]}
+
+    ents_by_device = {}
+    ent_area = {}
+    for e in data["entities"]:
+        eid = e["entity_id"]
+        ent_area[eid] = e.get("area_id")
+        if e.get("device_id"):
+            ents_by_device.setdefault(e["device_id"], []).append(e)
+
+    # 只保留"真实实体"（state 存在的），避免把禁用/僵尸实体算进设备活跃度
+    def live(e):
+        return not e.get("disabled_by") and e["entity_id"] in states
+
+    devices_rows = []
+    for d in data["devices"]:
+        ents = [e for e in ents_by_device.get(d["id"], []) if live(e)]
+        all_ents = ents_by_device.get(d["id"], [])
+        area_id = d.get("area_id")
+        if not area_id:
+            for e in all_ents:
+                if ent_area.get(e["entity_id"]):
+                    area_id = ent_area[e["entity_id"]]
+                    break
+        name = d.get("name_by_user") or d.get("name") or "(未命名设备)"
+
+        online = 0
+        offline_eids = []
+        last = ""
+        doms = set()
+        for e in ents:
+            st = states[e["entity_id"]]
+            doms.add(e["entity_id"].split(".")[0])
+            if st.get("state") in OFFLINE:
+                offline_eids.append(e["entity_id"])
+            else:
+                online += 1
+            lc = st.get("last_changed") or ""
+            if lc > last:
+                last = lc
+
+        if not ents:
+            health = "无活跃实体"
+        elif online == 0:
+            health = "全部离线"
+        elif offline_eids:
+            health = "部分离线 %d/%d" % (len(offline_eids), len(ents))
+        else:
+            health = "正常"
+
+        devices_rows.append({
+            "id": d["id"],
+            "area": area_name.get(area_id, "(未分配房间)" if not area_id else area_id),
+            "name": name,
+            "manufacturer": d.get("manufacturer") or "",
+            "model": d.get("model") or "",
+            "integration": integration_of(all_ents[0], d) if all_ents else "",
+            "domains": "/".join(sorted(doms)),
+            "n_ent": len(ents),
+            "n_all": len(all_ents),
+            "health": health,
+            "last": human_ts(last),
+            "offline_eids": offline_eids,
+            "disabled": bool(d.get("disabled_by")),
+            "via": d.get("via_device_id") or "",
+            "sw": d.get("sw_version") or "",
+        })
+
+    # 有房间的排前面，未分配房间的统一沉到末尾
+    devices_rows.sort(key=lambda r: (r["area"] == "(未分配房间)", r["area"], r["name"]))
+
+    # 实体明细
+    dev_by_id = {d["id"]: d for d in data["devices"]}
+    ent_rows = []
+    for e in data["entities"]:
+        eid = e["entity_id"]
+        st = states.get(eid)
+        d = dev_by_id.get(e.get("device_id") or "")
+        dev_name = ""
+        if d:
+            dev_name = d.get("name_by_user") or d.get("name") or ""
+        aid = e.get("area_id") or (d or {}).get("area_id")
+        ent_rows.append({
+            "eid": eid,
+            "name": (st or {}).get("attributes", {}).get("friendly_name")
+                    or e.get("name") or e.get("original_name") or "",
+            "domain": eid.split(".")[0],
+            "device": dev_name,
+            "area": area_name.get(aid, ""),
+            "state": (st or {}).get("state", "(无状态)"),
+            "last": human_ts((st or {}).get("last_changed", "")),
+            "flag": "、".join([x for x in [
+                "已禁用" if e.get("disabled_by") else "",
+                "已隐藏" if e.get("hidden_by") else "",
+                "诊断类" if e.get("entity_category") else "",
+                "无状态数据" if st is None else "",
+            ] if x]),
+        })
+    ent_rows.sort(key=lambda r: (r["area"], r["device"], r["eid"]))
+
+    # 问题清单
+    issues = []
+    for r in devices_rows:
+        if r["disabled"]:
+            issues.append(("设备已禁用", r["name"], "该设备在 HA 中被禁用，若已换新应删除以免混淆"))
+            continue
+        if r["area"] == "(未分配房间)":
+            issues.append(("未分配房间", r["name"],
+                           "没归到任何区域，界面和语音控制都会找不到，建议先分区"))
+        if r["health"] == "无活跃实体":
+            issues.append(("空壳设备", r["name"],
+                           "注册了设备但没有任何活跃实体，多为集成残留或设备已移除"))
+        elif r["health"] == "全部离线":
+            issues.append(("全部离线", r["name"],
+                           "所有实体 unavailable：设备断电/断网，或已被替换掉"))
+        elif r["health"].startswith("部分离线") and r["offline_eids"]:
+            issues.append(("部分离线", r["name"], "离线实体：" + "、".join(r["offline_eids"][:5])))
+        if re.search(r"(未命名|unnamed|^[A-Za-z0-9]{8,}$)", r["name"] or ""):
+            issues.append(("名称不规范", r["name"], "设备名是默认值或乱码串，不利于识别与语音控制"))
+        if not r["manufacturer"] and not r["model"]:
+            issues.append(("缺厂商型号", r["name"], "台账缺关键信息，影响后续配件与保修追溯"))
+
+    # 同一房间内实体重名
+    seen = {}
+    for r in ent_rows:
+        k = (r["area"], r["name"])
+        if r["name"]:
+            seen.setdefault(k, []).append(r["eid"])
+    for (area, name), eids in seen.items():
+        if len(eids) > 1:
+            issues.append(("实体重名", "%s / %s" % (area or "未分区", name),
+                           "同一区域有 %d 个同名实体，语音控制会歧义：%s"
+                           % (len(eids), "、".join(eids))))
+
+    # 汇总
+    by_area = {}
+    for r in devices_rows:
+        a = by_area.setdefault(r["area"], {"dev": 0, "ent": 0, "bad": 0})
+        a["dev"] += 1
+        a["ent"] += r["n_ent"]
+        if r["health"] != "正常":
+            a["bad"] += 1
+    by_manu = {}
+    for r in devices_rows:
+        m = r["manufacturer"] or "(未知厂商)"
+        by_manu[m] = by_manu.get(m, 0) + 1
+
+    summary = {
+        "areas": len(data["areas"]),
+        "devices": len(devices_rows),
+        "entities_live": sum(1 for k in states if "." in k),
+        "entities_reg": len(ent_rows),
+        "online": sum(1 for r in devices_rows if r["health"] == "正常"),
+        "problem_dev": sum(1 for r in devices_rows if r["health"] != "正常"),
+        "issues": len(issues),
+        "version": data["config"].get("version", ""),
+        "time": datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "by_area": by_area,
+        "by_manu": by_manu,
+    }
+    return devices_rows, ent_rows, issues, summary
+
+# ---------------------------------------------------------------- XLSX 写出（无第三方库）
+
+COLW = {"A": 14, "B": 26, "C": 14, "D": 22, "E": 16, "F": 18, "G": 12, "H": 14, "I": 12, "J": 12}
+
+def col_letter(i):
+    s = ""
+    i += 1
+    while i:
+        i, r = divmod(i - 1, 26)
+        s = chr(65 + r) + s
+    return s
+
+
+def sheet_xml(rows, widths=None, header=True):
+    out = ['<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
+           '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">']
+    ncol = max(len(r) for r in rows) if rows else 1
+    nrow = len(rows)
+    out.append('<dimension ref="A1:%s%d"/>' % (col_letter(ncol - 1), max(1, nrow)))
+    out.append('<sheetViews><sheetView workbookViewId="0">'
+               '<pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/>'
+               '</sheetView></sheetViews>')
+    out.append('<sheetFormatPr defaultRowHeight="16"/>')
+    if widths:
+        out.append("<cols>")
+        for i, w in enumerate(widths):
+            out.append('<col min="%d" max="%d" width="%s" customWidth="1"/>' % (i + 1, i + 1, w))
+        out.append("</cols>")
+    out.append("<sheetData>")
+    for ri, row in enumerate(rows, start=1):
+        out.append('<row r="%d"%s>' % (ri, ' ht="20" customHeight="1"' if (header and ri == 1) else ""))
+        for ci, val in enumerate(row):
+            ref = "%s%d" % (col_letter(ci), ri)
+            style = 1 if (header and ri == 1) else 2
+            text = "" if val is None else str(val)
+            if text == "":
+                out.append('<c r="%s" s="%d"/>' % (ref, style))
+                continue
+            if isinstance(val, (int, float)) and not isinstance(val, bool):
+                out.append('<c r="%s" s="%d"><v>%s</v></c>' % (ref, style, val))
+            else:
+                out.append('<c r="%s" s="%d" t="inlineStr"><is><t xml:space="preserve">%s</t></is></c>'
+                           % (ref, style, escape(text)))
+        out.append("</row>")
+    out.append("</sheetData>")
+    if rows:
+        out.append('<autoFilter ref="A1:%s%d"/>' % (col_letter(ncol - 1), nrow))
+    out.append("</worksheet>")
+    return "".join(out)
+
+
+CONTENT_TYPES_HEAD = (
+    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+    '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+    '<Default Extension="xml" ContentType="application/xml"/>'
+    '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>'
+    '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'
+)
+ROOT_RELS = (
+    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>'
+    '</Relationships>'
+)
+STYLES = (
+    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+    '<fonts count="2">'
+    '<font><sz val="11"/><color theme="1"/><name val="微软雅黑"/><family val="2"/></font>'
+    '<font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="微软雅黑"/><family val="2"/></font>'
+    '</fonts>'
+    '<fills count="3">'
+    '<fill><patternFill patternType="none"/></fill>'
+    '<fill><patternFill patternType="gray125"/></fill>'
+    '<fill><patternFill patternType="solid"><fgColor rgb="FF2F5597"/><bgColor indexed="64"/></patternFill></fill>'
+    '</fills>'
+    '<borders count="2"><border/>'
+    '<border><left style="thin"><color rgb="FFD9D9D9"/></left><right style="thin"><color rgb="FFD9D9D9"/></right>'
+    '<top style="thin"><color rgb="FFD9D9D9"/></top><bottom style="thin"><color rgb="FFD9D9D9"/></bottom></border>'
+    '</borders>'
+    '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>'
+    '<cellXfs count="3">'
+    '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>'
+    '<xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment vertical="center"/></xf>'
+    '<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment vertical="center" wrapText="0"/></xf>'
+    '</cellXfs>'
+    '<cellStyles count="1"><cellStyle name="常规" xfId="0" builtinId="0"/></cellStyles>'
+    '</styleSheet>'
+)
+
+
+def write_xlsx(path, sheets):
+    """sheets: [(name, rows, widths)]"""
+    n = len(sheets)
+    ct = CONTENT_TYPES_HEAD + "".join(
+        '<Override PartName="/xl/worksheets/sheet%d.xml" '
+        'ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>' % (i + 1)
+        for i in range(n)) + "</Types>"
+    wb = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+          '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" '
+          'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>'
+          + "".join('<sheet name="%s" sheetId="%d" r:id="rId%d"/>' % (escape(s[0]), i + 1, i + 1)
+                    for i, s in enumerate(sheets))
+          + "</sheets></workbook>")
+    wb_rels = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+               '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+               + "".join('<Relationship Id="rId%d" '
+                         'Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" '
+                         'Target="worksheets/sheet%d.xml"/>' % (i + 1, i + 1) for i in range(n))
+               + '<Relationship Id="rId%d" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>' % (n + 1)
+               + "</Relationships>")
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
+        z.writestr("[Content_Types].xml", ct)
+        z.writestr("_rels/.rels", ROOT_RELS)
+        z.writestr("xl/workbook.xml", wb)
+        z.writestr("xl/_rels/workbook.xml.rels", wb_rels)
+        z.writestr("xl/styles.xml", STYLES)
+        for i, (name, rows, widths) in enumerate(sheets):
+            z.writestr("xl/worksheets/sheet%d.xml" % (i + 1), sheet_xml(rows, widths))
+
+
+def export(devices_rows, ent_rows, issues, summary, out):
+    s1 = [["房间", "设备名称", "厂商", "型号", "集成/平台", "实体类型", "活跃实体数", "健康状态", "最近活动"]]
+    for r in devices_rows:
+        s1.append([r["area"], r["name"], r["manufacturer"], r["model"], r["integration"],
+                   r["domains"], r["n_ent"], r["health"], r["last"]])
+
+    s2 = [["实体ID", "显示名称", "类型", "所属设备", "房间", "当前状态", "最近变化", "标记"]]
+    for r in ent_rows:
+        s2.append([r["eid"], r["name"], r["domain"], r["device"], r["area"],
+                   r["state"], r["last"], r["flag"]])
+
+    s3 = [["问题类型", "对象", "说明"]]
+    for it in issues:
+        s3.append(list(it))
+
+    s4 = [["项目", "数值"], ["HA 版本", summary["version"]], ["生成时间", summary["time"]],
+          ["区域数", summary["areas"]], ["设备数", summary["devices"]],
+          ["注册实体数", summary["entities_reg"]], ["在线实体数", summary["entities_live"]],
+          ["状态正常的设备", summary["online"]], ["有问题的设备", summary["problem_dev"]],
+          ["待处理问题条数", summary["issues"]], ["", ""], ["按房间分布", ""]]
+    for a, v in sorted(summary["by_area"].items(), key=lambda x: -x[1]["dev"]):
+        s4.append([a, "设备 %d 台 / 实体 %d 个 / 异常 %d" % (v["dev"], v["ent"], v["bad"])])
+    s4.append(["", ""])
+    s4.append(["按厂商分布", ""])
+    for m, c in sorted(summary["by_manu"].items(), key=lambda x: -x[1]):
+        s4.append([m, "%d 台" % c])
+
+    write_xlsx(out, [
+        ("设备台账", s1, [14, 26, 14, 22, 18, 16, 11, 14, 12]),
+        ("实体明细", s2, [30, 24, 12, 24, 12, 16, 12, 18]),
+        ("待处理问题", s3, [16, 40, 60]),
+        ("汇总", s4, [22, 42]),
+    ])
+
+# ---------------------------------------------------------------- 示例数据（自检用）
+
+def mock_data():
+    areas = [{"area_id": i, "name": n} for i, n in enumerate(
+        ["客厅", "主卧", "次卧", "厨房", "卫生间", "阳台", "玄关"])]
+    devices, entities, states = [], [], []
+    seed = [
+        ("客厅", "小米电视 Master", "Xiaomi", "L65M9-AN", "xiaomi_miot", 6, "正常"),
+        ("客厅", "米家空调伴侣", "Xiaomi", "KTBL11LM", "xiaomi_miot", 4, "正常"),
+        ("客厅", "Aqara 网关 M2", "Aqara", "ZHWG11LM", "zha", 2, "正常"),
+        ("客厅", "Yeelight 吸顶灯", "Yeelight", "YLXD76YL", "yeelight", 5, "部分离线 1/5"),
+        ("客厅", "智能窗帘电机", "Aqara", "ZNCLDJ12LM", "xiaomi_miot", 3, "正常"),
+        ("主卧", "Aqara 温湿度传感器", "Aqara", "WSDCGQ11LM", "zha", 3, "正常"),
+        ("主卧", "米家智能灯带", "Xiaomi", "MJDDLSD003QW", "xiaomi_miot", 3, "正常"),
+        ("主卧", "旧空调伴侣(已换)", "Xiaomi", "KTBL01LM", "xiaomi_miot", 4, "全部离线"),
+        ("卫生间", "智能马桶 Pro", "九牧", "ZD-7200", "xiaomi_miot", 5, "正常"),
+        ("卫生间", "浴霸智能面板", "Aqara", "QBKG23LM", "zha", 3, "正常"),
+        ("厨房", "智能燃气报警器", "Honeywell", "JTQ-801", "xiaomi_miot", 2, "正常"),
+        ("厨房", "烟雾传感器", "Aqara", "JTYJ-GD-01LM", "zha", 2, "正常"),
+        ("阳台", "晾衣架电机", "绿米", "LSA-01", "xiaomi_miot", 3, "部分离线 2/3"),
+        ("玄关", "智能门锁", "Aqara", "ZNMS16LM", "zha", 7, "正常"),
+        ("(未分配房间)", "unnamed_device_3f2a", "", "", "esphome", 1, "正常"),
+        ("(未分配房间)", "旧插座(残留)", "Xiaomi", "ZNCZ02LM", "xiaomi_miot", 0, "无活跃实体"),
+    ]
+    aid = {a["name"]: a["area_id"] for a in areas}
+    for i, (area, name, manu, model, plat, n, health) in enumerate(seed):
+        did = "dev%02d" % i
+        area_id = aid.get(area)
+        devices.append({"id": did, "name": name, "name_by_user": name,
+                        "manufacturer": manu, "model": model,
+                        "area_id": area_id, "identifiers": [[plat, did]],
+                        "disabled_by": None, "via_device_id": None, "sw_version": "1.%d" % i})
+        doms = ["light", "switch", "sensor", "binary_sensor", "cover", "climate"]
+        for j in range(max(n, 1) if n else 1):
+            eid = "%s.%s_%d" % (doms[j % len(doms)], did, j)
+            entities.append({"entity_id": eid, "device_id": did, "platform": plat,
+                             "area_id": None, "name": None, "original_name": "%s %d" % (name, j),
+                             "disabled_by": None, "hidden_by": None, "entity_category": None})
+            st = "on"
+            if name == "旧空调伴侣(已换)":
+                st = "unavailable"
+            elif name == "晾衣架电机" and j < 2:
+                st = "unavailable"
+            elif name == "Yeelight 吸顶灯" and j == 0:
+                st = "unavailable"
+            states.append({"entity_id": eid, "state": st,
+                           "attributes": {"friendly_name": "%s %d" % (name, j)},
+                           "last_changed": "2026-10-31T00:%02d:00+08:00" % (i + j)})
+    return {"areas": areas, "devices": devices, "entities": entities, "states": states,
+            "config": {"version": "2025.10.1 (示例数据)"}}
+
+# ---------------------------------------------------------------- main
+
+def main():
+    ap = argparse.ArgumentParser(description="Home Assistant 设备台账生成器")
+    ap.add_argument("--url")
+    ap.add_argument("--token")
+    ap.add_argument("--out")
+    ap.add_argument("--mock", action="store_true", help="用示例数据自检输出格式")
+    args = ap.parse_args()
+
+    if args.mock:
+        data = mock_data()
+        print("使用示例数据自检（非真实设备）")
+    else:
+        env = load_env(os.path.join(os.path.dirname(os.path.abspath(__file__)), "ha.env"))
+        base = args.url or os.environ.get("HA_URL") or env.get("HA_URL")
+        token = args.token or os.environ.get("HA_TOKEN") or env.get("HA_TOKEN")
+        if not base or not token:
+            print("缺少 HA 地址或令牌。三种给法：\n"
+                  "  1) 脚本同目录建 ha.env（HA_URL=... / HA_TOKEN=...）\n"
+                  "  2) 命令行 --url --token\n"
+                  "  3) 环境变量 HA_URL / HA_TOKEN\n"
+                  "先用 --mock 看输出格式。")
+            sys.exit(2)
+        try:
+            data = fetch(HA(base, token))
+            json.dump({"config": data["config"],
+                       "areas": data["areas"], "devices": data["devices"],
+                       "entities": data["entities"]},
+                      open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                        "ha_raw_snapshot.json"), "w", encoding="utf-8"),
+                      ensure_ascii=False, indent=1)
+        except HTTPError as e:
+            print("HA 返回 %s：%s" % (e.code, "令牌无效或无权限" if e.code == 401 else e.reason))
+            sys.exit(1)
+        except (URLError, OSError) as e:
+            print("连不上 %s（%s）。确认：本机与 HA 在同一局域网？HA 在运行？端口 8123 开放？"
+                  % (base, e))
+            sys.exit(1)
+
+    devices_rows, ent_rows, issues, summary = build(data)
+    out = args.out or ("设备台账_%s%s.xlsx" % (datetime.now().strftime("%Y%m%d"),
+                                              "_示例" if args.mock else ""))
+    out = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.basename(out))
+    export(devices_rows, ent_rows, issues, summary, out)
+    print("\n已生成：%s" % out)
+    print("设备 %d 台，其中异常 %d 台；待处理问题 %d 条"
+          % (summary["devices"], summary["problem_dev"], summary["issues"]))
+    for it in issues[:12]:
+        print("  - [%s] %s" % (it[0], it[1]))
+
+
+if __name__ == "__main__":
+    main()
