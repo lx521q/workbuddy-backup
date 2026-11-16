@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>第 1 周训练计划 · 减脂 · 82→75 kg</title>
+<style>
+  :root{
+    --bg:#f3f5f7;
+    --card:#ffffff;
+    --ink:#16202a;
+    --ink2:#3d4c5a;
+    --muted:#6d7c8a;
+    --line:#e4e9ee;
+    --teal:#0f766e;
+    --teal-soft:#e7f4f1;
+    --blue:#1d4ed8;
+    --blue-soft:#e8eefc;
+    --amber:#b45309;
+    --amber-soft:#fdf4e6;
+    --gray-soft:#eef1f4;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(16,32,42,.05),0 6px 18px rgba(16,32,42,.05);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    font-size:15px;line-height:1.6;
+    padding-bottom:96px;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 14px}
+
+  /* ---------- 顶部 ---------- */
+  header.top{padding:22px 0 10px}
+  .kicker{font-size:12px;letter-spacing:.14em;color:var(--teal);font-weight:700;text-transform:uppercase}
+  h1{margin:6px 0 4px;font-size:24px;letter-spacing:-.4px}
+  .sub{color:var(--muted);font-size:13.5px}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:16px 0 12px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:11px 12px;box-shadow:var(--shadow)}
+  .stat b{display:block;font-size:19px;letter-spacing:-.3px;line-height:1.25}
+  .stat span{font-size:11.5px;color:var(--muted)}
+  .stat.accent b{color:var(--teal)}
+
+  /* ---------- 进度条 ---------- */
+  .prog{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:13px 14px;box-shadow:var(--shadow)}
+  .prog .row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+  .prog .row b{font-size:15px}
+  .prog .row span{font-size:12.5px;color:var(--muted)}
+  .bar{height:9px;background:var(--gray-soft);border-radius:99px;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#0f766e,#2f9e8c);border-radius:99px;transition:width .35s ease}
+
+  /* ---------- 标签 ---------- */
+  .tabs{display:flex;gap:8px;margin:16px 0 14px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{
+    flex:0 0 auto;border:1px solid var(--line);background:var(--card);color:var(--ink2);
+    border-radius:11px;padding:9px 13px;font-size:13.5px;font-weight:600;cursor:pointer;
+    font-family:inherit;line-height:1.35;text-align:left;transition:.15s;
+  }
+  .tab small{display:block;font-weight:500;font-size:11px;color:var(--muted)}
+  .tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .tab.on small{color:rgba(255,255,255,.62)}
+  .tab .today{color:var(--amber);font-size:11px;font-weight:700}
+  .tab.on .today{color:#ffd79a}
+
+  /* ---------- 训练日 ---------- */
+  .dayhead{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin:2px 0 12px}
+  .pill{font-size:12px;padding:4px 10px;border-radius:99px;font-weight:600;background:var(--gray-soft);color:var(--ink2)}
+  .pill.teal{background:var(--teal-soft);color:var(--teal)}
+  .pill.blue{background:var(--blue-soft);color:var(--blue)}
+  .pill.warn{background:var(--amber-soft);color:var(--amber)}
+
+  .ex{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:11px;box-shadow:var(--shadow)}
+  .ex.done{background:#fbfdfc;border-color:#cfe6e1}
+  .ex-h{display:flex;gap:10px;align-items:flex-start}
+  .num{flex:0 0 26px;height:26px;border-radius:8px;background:var(--gray-soft);color:var(--muted);
+       font-size:12.5px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:2px}
+  .ex.done .num{background:var(--teal);color:#fff}
+  .ex-title{flex:1;min-width:0}
+  .ex-title h3{margin:0;font-size:16.5px;letter-spacing:-.2px}
+  .big{display:flex;align-items:baseline;gap:6px;margin:3px 0 0;flex-wrap:wrap}
+  .big b{font-size:20px;color:var(--teal);letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+  .big span{font-size:12.5px;color:var(--muted)}
+  .loadline{font-size:12.5px;color:var(--ink2);margin-top:5px}
+  .loadline em{font-style:normal;background:var(--amber-soft);color:var(--amber);padding:1px 6px;border-radius:5px;font-size:11.5px;font-weight:600}
+
+  /* 组数按钮 */
+  .sets{display:flex;gap:8px;margin:12px 0 10px;flex-wrap:wrap}
+  .set{
+    flex:1 1 0;min-width:74px;border:1.5px solid var(--line);background:#fff;border-radius:10px;
+    padding:9px 6px;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--ink2);
+    cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:center;gap:6px;
+  }
+  .set .dot{width:13px;height:13px;border-radius:50%;border:1.5px solid #c2ccd4;transition:.15s}
+  .set.on{background:var(--teal);border-color:var(--teal);color:#fff}
+  .set.on .dot{background:#fff;border-color:#fff}
+
+  .cue{font-size:13px;color:var(--ink2);border-left:2.5px solid var(--teal-soft);padding-left:9px;margin:0 0 8px}
+  details{border-top:1px dashed var(--line);padding-top:9px;margin-top:2px}
+  summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(--blue);list-style:none;display:flex;align-items:center;gap:5px}
+  summary::-webkit-details-marker{display:none}
+  summary::before{content:"▸";display:inline-block;transition:.2s;font-size:11px}
+  details[open] summary::before{transform:rotate(90deg)}
+  .steps{margin:9px 0 0;padding-left:0;list-style:none;counter-reset:s}
+  .steps li{counter-increment:s;position:relative;padding-left:24px;margin-bottom:6px;font-size:13.5px;color:var(--ink2)}
+  .steps li::before{
+    content:counter(s);position:absolute;left:0;top:1px;width:17px;height:17px;border-radius:50%;
+    background:var(--blue-soft);color:var(--blue);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center
+  }
+  .err{margin:9px 0 0;font-size:12.5px;color:var(--amber);background:var(--amber-soft);border-radius:9px;padding:8px 10px}
+  .restbtn{
+    margin-top:10px;width:100%;border:1px solid var(--line);background:#fff;border-radius:10px;
+    padding:8px;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--ink2);cursor:pointer
+  }
+  .restbtn:active{background:var(--gray-soft)}
+
+  .note{background:var(--card);border:1px dashed var(--line);border-radius:var(--radius);padding:12px 14px;font-size:13px;color:var(--ink2);margin:4px 0 12px}
+
+  /* ---------- 折叠区 ---------- */
+  .fold{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:11px;box-shadow:var(--shadow);overflow:hidden;padding:0}
+  .fold>summary{padding:14px;font-size:14.5px;color:var(--ink);font-weight:700;border-top:none}
+  .fold>summary::before{color:var(--teal)}
+  .fold .body{padding:0 14px 14px;border-top:1px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
+  th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:11.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+  td b{color:var(--teal);font-variant-numeric:tabular-nums}
+  .body h4{margin:14px 0 6px;font-size:13px;color:var(--ink)}
+  .body p{margin:6px 0;font-size:13px;color:var(--ink2)}
+  .body ul{margin:6px 0;padding-left:18px;font-size:13px;color:var(--ink2)}
+  .body li{margin-bottom:4px}
+
+  /* ---------- 计时器 ---------- */
+  .timerbar{
+    position:fixed;left:0;right:0;bottom:0;z-index:50;transform:translateY(110%);
+    transition:transform .28s cubic-bezier(.2,.8,.3,1);padding:0 12px 12px;
+  }
+  .timerbar.show{transform:translateY(0)}
+  .timerbar .inner{
+    max-width:760px;margin:0 auto;background:var(--ink);color:#fff;border-radius:14px;
+    padding:12px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 10px 30px rgba(16,32,42,.28)
+  }
+  .timerbar .t{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.5px;min-width:74px}
+  .timerbar .lbl{flex:1;font-size:12.5px;color:rgba(255,255,255,.72);line-height:1.4}
+  .timerbar button{
+    background:rgba(255,255,255,.14);border:none;color:#fff;border-radius:9px;padding:8px 12px;
+    font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer
+  }
+  .timerbar button.stop{background:#fff;color:var(--ink)}
+
+  footer{padding:18px 0 8px;font-size:12px;color:var(--muted);line-height:1.7}
+  footer b{color:var(--ink2)}
+  .clear{display:block;margin:10px 0 0;background:none;border:1px solid var(--line);border-radius:10px;
+         padding:9px 14px;font-family:inherit;font-size:12.5px;color:var(--muted);cursor:pointer}
+  @media(max-width:400px){
+    .stats{grid-template-columns:1fr 1fr}
+    .stats .stat:last-child{grid-column:span 2}
+    h1{font-size:21px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="kicker">第 1 周 · 减脂 · 新手</div>
+    <h1>82 kg → 75 kg</h1>
+    <div class="sub">178 cm / 30 岁 / 男 · 每周 4 练 · 不跑步</div>
+
+    <div class="stats">
+      <div class="stat accent"><b>2355</b><span>每日目标 kcal</span></div>
+      <div class="stat"><b>148 g</b><span>蛋白质 / 天</span></div>
+      <div class="stat"><b>0.38 kg</b><span>理论周减重</span></div>
+    </div>
+
+    <div class="prog">
+      <div class="row">
+        <b>本周完成度</b>
+        <span id="progTxt">0 / 57 组</span>
+      </div>
+      <div class="bar"><i id="progBar"></i></div>
+      <div class="row" style="margin:7px 0 0">
+        <span>脂肪 74 g · 碳水 275 g</span>
+        <span id="progPct">0%</span>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs"></nav>
+  <div id="dayView"></div>
+
+  <!-- 有氧 -->
+  <div class="note">
+    <b>有氧：每周 3 次 × 25 分钟</b>（快走 / 爬楼，能说话但不喘）。不跑步不影响减脂，走路不算偷懒。<br>
+    办公室那天可以压到 40 分钟版：每组间歇缩到 60 秒，或平板支撑减一组。做完算完成。
+  </div>
+
+  <details class="fold">
+    <summary>饮食怎么吃（2355 kcal 配额）</summary>
+    <div class="body">
+      <table>
+        <tr><th>餐</th><th>蛋白</th><th>参考份量</th></tr>
+        <tr><td>早</td><td><b>35 g</b></td><td>鸡蛋 2 个 + 牛奶/无糖豆浆 300 ml + 燕麦 50 g（干重）</td></tr>
+        <tr><td>午</td><td><b>45 g</b></td><td>米饭 150 g（熟重）+ 瘦肉/鸡胸 150 g + 蔬菜 300 g，少油</td></tr>
+        <tr><td>加餐</td><td><b>25 g</b></td><td>希腊酸奶 150 g 或牛奶 + 坚果 15 g</td></tr>
+        <tr><td>晚</td><td><b>43 g</b></td><td>主食 100 g（熟重）+ 鱼/豆腐 150 g + 蔬菜 300 g</td></tr>
+      </table>
+      <h4>不用称重就用手掌法</h4>
+      <p>蛋白 = 1 掌心 ｜ 主食 = 1 拳 ｜ 蔬菜 = 2 捧</p>
+      <h4>替换原则（别死守食谱）</h4>
+      <ul>
+        <li>蛋白类随便换：鸡胸 / 鱼 / 虾 / 瘦牛肉 / 鸡蛋 / 豆腐，按同份量换</li>
+        <li>主食等量换：米饭 ↔ 面 ↔ 红薯 ↔ 玉米</li>
+        <li>油是隐形大头：一天烹调用油控制在 25 g 以内（约 2.5 瓷勺）</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="fold">
+    <summary>睡眠与恢复</summary>
+    <div class="body">
+      <ul>
+        <li>目标 <b>7–9 小时</b>，23:30 前躺下</li>
+        <li>睡前 90 分钟：不吃高糖、不刷手机</li>
+        <li>晚上练完至少留 90 分钟再睡，否则入睡变慢</li>
+        <li>连续两晚睡不足 6 小时，当天训练降到 2 组，别硬顶</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="fold">
+    <summary>第 2–4 周会怎么变（先知道，不慌）</summary>
+    <div class="body">
+      <table>
+        <tr><th>周</th><th>方向</th><th>可预期变化</th></tr>
+        <tr><td>W2</td><td>渐进负荷：俯卧撑 8→12 次封顶后改下斜；壶铃深蹲做到 12 次后加离心 3 秒</td><td>深蹲后两天大腿前侧明显酸</td></tr>
+        <tr><td>W3</td><td>容量峰值：每个动作加 1 组</td><td>体重可能 2–3 天不动，那是水不是脂肪。这周也是最容易放弃的一周</td></tr>
+        <tr><td>W4</td><td>减载 / 测试周：组数减半，测最大次数</td><td>之后按新体重重算基线</td></tr>
+      </table>
+      <p style="margin-top:10px">第 2 周起按你的实际完成率调，比一次性发 4 周通用模板准。</p>
+    </div>
+  </details>
+
+  <details class="fold">
+    <summary>周日复盘表（1 分钟填完）</summary>
+    <div class="body">
+      <table>
+        <tr><th>体重</th><th>腰围</th><th>完成几次</th><th>睡眠均值</th><th>饥饿感 1-5</th><th>卡点</th></tr>
+        <tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td></tr>
+      </table>
+      <p style="margin-top:10px">下一个里程碑：<b>81.3 kg</b>（每减 0.7 kg 一个里程碑，共 7 kg）。</p>
+    </div>
+  </details>
+
+  <footer>
+    <b>强度口径</b>：RIR 3 —— 每组结束时还能再做 3 次。第一次练完把「实际做了几次」记下来，这就是校准。<br>
+    <b>负荷来源</b>：去脂体重 64.2 kg（体脂 21.8%，Deurenberg 公式估算；由 178 cm / 82 kg / 30 岁 / 男 推出）。<br>
+    <b>器材上限</b>：标注「器材上限」的动作，是脚本按可调哑铃算出的重量超出你手上的 3 kg，改用自重或高次数替代，强度上限低一些。<br><br>
+    本计划为通用健康成年人参考，特殊人群（孕妇 / 慢病 / 术后 / BMI 异常）请先就医；训练中出现心慌、头晕、关节痛立即停止并咨询医生。<br>
+    <button class="clear" id="clearBtn">清空本周打勾记录</button>
+  </footer>
+</div>
+
+<div class="timerbar" id="timerbar">
+  <div class="inner">
+    <div class="t" id="timerT">1:30</div>
+    <div class="lbl" id="timerLbl">间歇</div>
+    <button id="timerStop">停</button>
+  </div>
+</div>
+
+<script>
+const PLAN = [
+  {
+    id:"d2", day:"周一", time:"20:00", place:"家", theme:"下肢 · 壶铃", kind:"teal", est:"约 55 分钟",
+    moves:[
+      { n:"高脚杯深蹲", sets:3, reps:"8-12", load:"10 kg 壶铃", ok:true, rest:90,
+        cue:"抱铃于胸前，肘在膝内侧，全程挺胸",
+        steps:[
+          "双手捧住壶铃两侧把手，抱在锁骨下方，肘尖朝下内收。",
+          "双脚略宽于肩，脚尖外撇 15–20°，全脚掌踩实。",
+          "屈髋同时屈膝下蹲，臀部向下向后，蹲到大腿接近与地面平行。",
+          "脚跟发力起身，起身末段夹臀，不要弓背。"
+        ],
+        err:"常见错误：塌腰、膝盖内扣、脚跟离地。蹲不下去先减小幅度，别硬压。"},
+      { n:"壶铃罗马尼亚硬拉", sets:3, reps:"15-20", load:"10 kg 壶铃 · 双手", ok:false, rest:90,
+        cue:"壶铃贴腿下滑，臀向后推，背始终是直的",
+        steps:[
+          "双手握壶铃立于体前，双脚与髋同宽，膝盖微屈后固定住角度。",
+          "臀部向后推，壶铃沿大腿前侧下滑，感受大腿后侧被拉长。",
+          "下到躯干接近水平、或后侧张力到极限即停（不要靠弯腰贪幅度）。",
+          "夹臀把身体拉回站直，顶部收紧 1 秒。"
+        ],
+        err:"常见错误：弓背、用腰发力、壶铃离开身体。这组重量偏轻，用 3 秒慢下补强度。"},
+      { n:"保加利亚分腿蹲", sets:3, reps:"8-12", load:"徒手 / 持 3 kg", ok:false, rest:90,
+        cue:"重心压在前腿脚跟，前膝对脚尖",
+        steps:[
+          "后脚背搭在沙发或椅子边缘，前脚向前迈一大步（约一条腿长）。",
+          "躯干保持直立，重心落在前脚脚跟。",
+          "垂直下沉，后膝朝地面接近，前膝方向对准脚尖。",
+          "前腿发力起身。每侧做完再换边。"
+        ],
+        err:"常见错误：前脚离太近导致膝盖前顶疼、身体前倾塌腰。新手先完全徒手。"},
+      { n:"单腿臀桥", sets:3, reps:"8-12", load:"自重", ok:false, rest:60,
+        cue:"骨盆保持水平，不旋转，顶到髋伸到底",
+        steps:[
+          "仰卧屈膝，一脚踩地，另一条腿抬起或伸直。",
+          "收腹，踩地那只脚的脚跟发力顶髋。",
+          "顶到躯干与大腿成一条线，顶峰夹臀 1 秒。",
+          "慢下到臀部接近地面，不落地。每侧一组。"
+        ],
+        err:"常见错误：用腰硬顶、骨盆左右倾斜、下巴抬起。"},
+      { n:"死虫式", sets:3, reps:"10 / 侧", load:"自重", ok:false, rest:60,
+        cue:"腰始终贴地，对侧手脚缓慢伸展",
+        steps:[
+          "仰卧，双臂垂直指向天花板，髋膝各屈 90°。",
+          "轻收下巴，腰部压向地面，全程不许离地。",
+          "对侧手和腿同时缓慢向远处伸展到接近地面。",
+          "回到起始位，换另一侧。全程呼吸不憋。"
+        ],
+        err:"常见错误：腰离地、速度过快。腰一离地就减小幅度。"}
+    ]
+  },
+  {
+    id:"d1", day:"周二", time:"12:30", place:"办公室", theme:"上肢 · 推拉", kind:"blue", est:"约 45 分钟",
+    moves:[
+      { n:"俯卧撑", sets:3, reps:"8-12", load:"自重", ok:true, rest:90,
+        cue:"身体一条线，肘不外翻，胸贴地再起",
+        steps:[
+          "双手撑地略宽于肩，手指朝前，头、背、臀、脚跟成一条线。",
+          "屈肘下沉，肘与身体夹角约 45°（不是 90° 外张）。",
+          "胸部接近地面（一拳距离）再推起，肩胛保持稳定。",
+          "做不动就膝盖着地，或把双手撑在办公桌边缘降低难度。"
+        ],
+        err:"常见错误：塌腰撅臀、幅度只做一半、脖子先探下去。"},
+      { n:"反向划船（桌沿）", sets:3, reps:"8-12", load:"自重", ok:true, rest:90,
+        cue:"身体绷直，胸碰桌沿再起；桌子一定要稳",
+        steps:[
+          "找一张<b>牢固、无轮子、非玻璃台面</b>的桌子，仰卧到桌沿下方。",
+          "双手抓桌沿，握距略宽于肩，脚跟着地，身体绷成一条直线。",
+          "肩胛先收紧，把胸口拉向桌沿，肘向身体两侧后方走。",
+          "慢速下放到手臂伸直。身体越水平越难，脚下垫高更易。"
+        ],
+        err:"安全：先用手压测桌子是否会翻，承重不确定就换柜子或改用弹力带。常见错误：只用手臂拉、塌腰。"},
+      { n:"pike 俯卧撑", sets:3, reps:"8-12", load:"自重", ok:true, rest:90,
+        cue:"臀高抬成倒 V，头顶朝地面下沉",
+        steps:[
+          "俯卧撑起始位，然后把臀部高抬，身体成倒 V 形，脚可以略垫高。",
+          "屈肘，让头顶朝双手前方的地面下沉。",
+          "前臂接近垂直地面时推起，回到倒 V。",
+          "肩部发力为主，不是胸。"
+        ],
+        err:"常见错误：慢慢做成普通俯卧撑、脖子先落地。沉不下去就减小幅度。"},
+      { n:"哑铃肩上推", sets:3, reps:"15-20", load:"3 kg / 手", ok:false, rest:60,
+        cue:"手腕在肘正上方，不塌腰借力",
+        steps:[
+          "坐姿或站姿，双手各持 3 kg 哑铃，举到耳侧，掌心朝前。",
+          "收腹、肋骨收住，不要塌腰。",
+          "沿略微向内的弧线推起，手臂接近伸直但不锁死。",
+          "用 3 秒慢下到肘约 90°。走满 15–20 次，最后一组做到接近力竭。"
+        ],
+        err:"器材上限：3 kg 对肩推偏轻，靠次数和慢速离心补强度。别甩腰借力。"},
+      { n:"平板支撑", sets:3, reps:"30-45 秒", load:"自重", ok:false, rest:60,
+        cue:"收腹夹臀，身体一条线，别塌腰",
+        steps:[
+          "肘在肩正下方，前臂平行撑地，脚尖点地。",
+          "收腹、夹臀，肋骨下沉，身体从头到脚跟成一条线。",
+          "正常呼吸，不憋气。撑到姿势开始变形就停。",
+          "质量优先：30 秒标准 > 60 秒塌腰。"
+        ],
+        err:"常见错误：塌腰、臀部抬高、耸肩、憋气。"}
+    ]
+  },
+  {
+    id:"d3", day:"周四", time:"12:30", place:"办公室", theme:"上肢 · 肩与握力", kind:"blue", est:"约 40 分钟",
+    moves:[
+      { n:"俯卧撑", sets:3, reps:"8-12", load:"自重", ok:true, rest:90,
+        cue:"身体一条线，肘不外翻，胸贴地再起",
+        steps:[
+          "双手撑地略宽于肩，身体成一条直线，核心收紧。",
+          "屈肘下沉，肘与躯干约 45°。",
+          "胸部接近地面再推起。",
+          "比周二多做一个就算进步，记在复盘表里。"
+        ],
+        err:"常见错误：塌腰、幅度不足。宁可膝盖着地也要做满幅度。"},
+      { n:"反向划船（桌沿）", sets:3, reps:"8-12", load:"自重", ok:true, rest:90,
+        cue:"身体绷直，胸碰桌沿再起",
+        steps:[
+          "仰卧到牢固桌子下方，双手抓桌沿，握距略宽于肩。",
+          "身体绷直，脚跟着地。",
+          "肩胛收紧，胸口拉向桌沿。",
+          "慢下到手臂伸直。"
+        ],
+        err:"桌子承重务必先确认。常见错误：塌腰、耸肩、只用手臂。"},
+      { n:"靠墙倒立撑", sets:3, reps:"4-6", load:"自重", ok:true, rest:90,
+        cue:"脚跟靠墙，头下放到底再推起；做不动先做 pike",
+        steps:[
+          "背对墙，双手撑地距墙约一条腿长，脚沿墙走上去成倒立。",
+          "身体尽量垂直，收腹，不要塌腰成香蕉形。",
+          "屈肘，头顶朝地面下沉到接近地面。",
+          "推起回到起始位。做不动这个动作，就换成 pike 俯卧撑 3×8-12。"
+        ],
+        err:"安全：周围清空、地面不要打滑，先确认能安全下来。有高血压或头晕史者跳过此动作。"},
+      { n:"农夫行走", sets:3, reps:"60 步", load:"3 kg / 手", ok:false, rest:60,
+        cue:"肩下沉、肋骨收住，小步快走不晃",
+        steps:[
+          "双手各持 3 kg 哑铃，垂于身体两侧。",
+          "肩膀下沉远离耳朵，肋骨收住，视线平视前方。",
+          "小步快走 60 步，身体不左右晃、不耸肩。",
+          "走完原地站 10 秒再放下。"
+        ],
+        err:"器材上限：3 kg 对握力刺激有限，可改单手提、另一手不扶，走 40–50 步。"}
+    ]
+  },
+  {
+    id:"d4", day:"周六", time:"上午", place:"家", theme:"下肢 · 单腿主导", kind:"teal", est:"约 55 分钟",
+    moves:[
+      { n:"徒手深蹲（离心 3 秒）", sets:3, reps:"8-12", load:"自重", ok:true, rest:90,
+        cue:"慢下 3 秒，蹲到最低停 1 秒再起",
+        steps:[
+          "双脚与肩同宽或略宽，脚尖略外撇。",
+          "用 3 秒缓慢下蹲，臀部向后向下。",
+          "蹲到最低停 1 秒，保持挺胸、脚跟不离地。",
+          "正常速度起身，末段夹臀。"
+        ],
+        err:"离心 3 秒让自重也够累。常见错误：下蹲加速、脚跟抬起。"},
+      { n:"壶铃相扑硬拉", sets:3, reps:"15-20", load:"10 kg 壶铃", ok:false, rest:90,
+        cue:"宽站距，膝向外顶，起身时夹臀",
+        steps:[
+          "宽站距（约 1.5 倍肩宽），脚尖外撇约 45°，壶铃放在两脚之间。",
+          "屈髋屈膝下沉，挺胸，双手握住壶铃把手。",
+          "脚跟发力起身，膝盖始终向外顶、不内扣。",
+          "站直夹臀，再控制着放回。"
+        ],
+        err:"脚本给的是 22.5–30 kg，你只有 10 kg，所以用 15–20 次和 3 秒慢下补强度。"},
+      { n:"走步箭步蹲", sets:3, reps:"8-12", load:"持 3 kg / 手", ok:false, rest:90,
+        cue:"步幅够大，后膝轻触地，躯干直立",
+        steps:[
+          "双手各持 3 kg 哑铃垂于体侧，站直。",
+          "向前迈一大步，步幅要够大（前后脚约 2 个小腿长）。",
+          "下沉到后膝接近地面，前膝对脚尖。",
+          "前脚发力起身，后脚跟上向前迈，交替前进。"
+        ],
+        err:"常见错误：步幅太小膝盖前顶疼、身体前倾。空间不够就原地交替做。"},
+      { n:"单腿臀桥", sets:3, reps:"8-12", load:"自重", ok:false, rest:60,
+        cue:"骨盆保持水平，不旋转",
+        steps:[
+          "仰卧屈膝，一脚踩地，另一腿抬起。",
+          "脚跟发力顶髋到躯干与大腿成一条线。",
+          "顶峰夹臀 1 秒，慢下。",
+          "每侧一组。"
+        ],
+        err:"常见错误：骨盆倾斜、用腰顶。"},
+      { n:"平板支撑", sets:3, reps:"30-45 秒", load:"自重", ok:false, rest:60,
+        cue:"收腹夹臀，身体一条线",
+        steps:[
+          "肘在肩正下方，前臂撑地，脚尖点地。",
+          "收腹夹臀，身体成一条线。",
+          "正常呼吸，姿势变形即停。"
+        ],
+        err:"常见错误：塌腰、抬臀。"}
+    ]
+  }
+];
+
+const KEY = "lx_w1_2026_11_16";
+const store = JSON.parse(localStorage.getItem(KEY) || "{}");
+let cur = 0;
+const todayIdx = (new Date().getDay() + 6) % 7; // 周一=0
+const todayMap = [0, 1, null, 2, null, 3, null]; // 周一/周二/周四/周六
+
+function totalSets(){ return PLAN.reduce((a,d)=>a+d.moves.reduce((b,m)=>b+m.sets,0),0); }
+
+function renderTabs(){
+  const tabs = document.getElementById("tabs");
+  tabs.innerHTML = PLAN.map((d,i)=>{
+    const isToday = todayMap[todayIdx] === i;
+    return `<button class="tab ${i===cur?"on":""}" data-i="${i}">
+      ${d.day}${isToday?' <span class="today">今天</span>':''}
+      <small>${d.place} · ${d.theme}</small>
+    </button>`;
+  }).join("");
+  tabs.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{ cur=+b.dataset.i; renderTabs(); renderDay(); });
+}
+
+function renderDay(){
+  const d = PLAN[cur];
+  const done = d.moves.reduce((a,m,i)=>a+m.sets,0);
+  let html = `<div class="dayhead">
+      <span class="pill ${d.kind}">${d.day} ${d.time}</span>
+      <span class="pill">${d.place}</span>
+      <span class="pill">${d.theme}</span>
+      <span class="pill">${d.est}</span>
+    </div>`;
+
+  d.moves.forEach((m,mi)=>{
+    let onCount = 0;
+    const btns = Array.from({length:m.sets},(_,si)=>{
+      const on = !!store[`${d.id}-${mi}-${si}`];
+      if(on) onCount++;
+      return `<button class="set ${on?"on":""}" data-k="${d.id}-${mi}-${si}"><span class="dot"></span>第 ${si+1} 组</button>`;
+    }).join("");
+
+    html += `<article class="ex ${onCount===m.sets?"done":""}">
+      <div class="ex-h">
+        <div class="num">${mi+1}</div>
+        <div class="ex-title">
+          <h3>${m.n}</h3>
+          <div class="big"><b>${m.sets} × ${m.reps}</b><span>${m.sets} 组 × ${m.reps}${m.reps.includes("秒")||m.reps.includes("步")||m.reps.includes("侧")?"":" 次"}</span></div>
+          <div class="loadline">负荷 ${m.load} · 间歇 ${m.rest} 秒 ${m.ok?"":"<em>器材上限</em>"}</div>
+        </div>
+      </div>
+      <div class="sets">${btns}</div>
+      <p class="cue">${m.cue}</p>
+      <details>
+        <summary>怎么做 · 分步与常见错误</summary>
+        <ol class="steps">${m.steps.map(s=>`<li>${s}</li>`).join("")}</ol>
+        <div class="err">${m.err}</div>
+      </details>
+      <button class="restbtn" data-rest="${m.rest}" data-name="${m.n}">间歇计时 ${m.rest} 秒</button>
+    </article>`;
+  });
+
+  document.getElementById("dayView").innerHTML = html;
+
+  document.querySelectorAll(".set").forEach(b=>{
+    b.onclick = ()=>{
+      const k = b.dataset.k;
+      if(store[k]) delete store[k]; else store[k]=1;
+      localStorage.setItem(KEY, JSON.stringify(store));
+      renderDay(); updateProg();
+    };
+  });
+  document.querySelectorAll(".restbtn").forEach(b=>{
+    b.onclick = ()=> startRest(+b.dataset.rest, b.dataset.name);
+  });
+}
+
+function updateProg(){
+  let done=0; const tot=totalSets();
+  PLAN.forEach(d=>d.moves.forEach((m,mi)=>{
+    for(let si=0;si<m.sets;si++) if(store[`${d.id}-${mi}-${si}`]) done++;
+  }));
+  const pct = Math.round(done/tot*100);
+  document.getElementById("progTxt").textContent = `${done} / ${tot} 组`;
+  document.getElementById("progPct").textContent = pct + "%";
+  document.getElementById("progBar").style.width = pct + "%";
+}
+
+/* 间歇计时 */
+let tid=null, left=0;
+const tb = document.getElementById("timerbar");
+const tT = document.getElementById("timerT");
+const tL = document.getElementById("timerLbl");
+
+function fmt(s){ return Math.floor(s/60) + ":" + String(s%60).padStart(2,"0"); }
+function startRest(sec, name){
+  clearInterval(tid);
+  left = sec;
+  tT.textContent = fmt(left);
+  tL.textContent = name + " · 间歇中";
+  tb.classList.add("show");
+  tid = setInterval(()=>{
+    left--;
+    tT.textContent = fmt(Math.max(left,0));
+    if(left<=0){
+      clearInterval(tid); tid=null;
+      tT.textContent = "0:00";
+      tL.textContent = "时间到 · 下一组";
+      beep();
+      if(navigator.vibrate) navigator.vibrate([180,90,180]);
+      setTimeout(()=>tb.classList.remove("show"), 5000);
+    }
+  },1000);
+}
+function beep(){
+  try{
+    const C = window.AudioContext || window.webkitAudioContext;
+    const ctx = new C();
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.type="sine"; o.frequency.value=880;
+    g.gain.setValueAtTime(.0001, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(.25, ctx.currentTime+.02);
+    g.gain.exponentialRampToValueAtTime(.0001, ctx.currentTime+.45);
+    o.start(); o.stop(ctx.currentTime+.5);
+  }catch(e){}
+}
+document.getElementById("timerStop").onclick = ()=>{
+  clearInterval(tid); tid=null; tb.classList.remove("show");
+};
+document.getElementById("clearBtn").onclick = ()=>{
+  if(!confirm("清空本周所有打勾记录？")) return;
+  Object.keys(store).forEach(k=>delete store[k]);
+  localStorage.setItem(KEY,"{}");
+  renderDay(); updateProg();
+};
+
+renderTabs(); renderDay(); updateProg();
+</script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "lastUpdated": 1794799556199,
+  "artifacts": [
+    {
+      "name": "fitness_progress.md",
+      "title": "fitness_progress.md",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 2204,
+      "createdAt": 1794799352016,
+      "updatedAt": 1794799552805,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/.workbuddy-sync/fitness_progress.md",
+      "_meta": {
+        "sourceTool": "WorkspaceWatcher",
+        "codebuddy.ai/toolName": "Edit",
+        "toolCallId": "call_00_6lSgkv2ALdQB5wa6c13w9559",
+        "ownerConversationId": "3b58c903-67b3-4267-89c1-dac308865dcd",
+        "requestId": "01a1e25fa42c7bc08a9e0bd99a385b40",
+        "codebuddy.ai/requestId": "01a1e25fa42c7bc08a9e0bd99a385b40",
+        "createdByRequestId": "01a1e25fa42c7bc08a9e0bd99a385b40",
+        "touchedByRequestIds": [
+          "01a1e25fa42c7bc08a9e0bd99a385b40",
+          "01a1e26288f47a3081ebddd1dab10471"
+        ]
+      }
+    },
+    {
+      "name": "fitness-plan-w1.html",
+      "title": "fitness-plan-w1.html",
+      "mimeType": "text/html",
+      "contentType": "document",
+      "size": 30260,
+      "createdAt": 1794799533699,
+      "updatedAt": 1794799543586,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/.workbuddy-sync/fitness-plan-w1.html",
+      "_meta": {
+        "sourceTool": "PresentFiles",
+        "ownerConversationId": "3b58c903-67b3-4267-89c1-dac308865dcd",
+        "requestId": "01a1e26288f47a3081ebddd1dab10471",
+        "codebuddy.ai/requestId": "01a1e26288f47a3081ebddd1dab10471",
+        "createdByRequestId": "01a1e26288f47a3081ebddd1dab10471",
+        "touchedByRequestIds": [
+          "01a1e26288f47a3081ebddd1dab10471"
+        ],
+        "codebuddy.ai/toolName": "present_files",
+        "toolCallId": "call_00_ET_SDNvbHYgUtLvCHodyOgm4482"
+      }
+    }
+  ]
+}

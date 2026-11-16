@@ -7,16 +7,18 @@
       "~/.xiaoe-cloud",
       "~/.config/wecom/",
       "~/.lark-cli",
+      "~/Library/Application Support/lark-cli/",
       "~/.lark-channel/",
       "~/Library/Application Support/beisencli/",
       "~/.dws",
+      "~/Library/Application Support/dws-cli/",
       "/tmp/dws-cache",
       "~/.tmeet",
       "~/Library/Application Support/tmeet"
     ],
     "orderedRules": {
       "file": {
-        "presetVersion": 4,
+        "presetVersion": 5,
         "customized": false,
         "rules": [
           {
@@ -427,7 +429,7 @@
           {
             "id": "file-preset-46",
             "source": "preset",
-            "path": "~/.workbuddy/.policy-cache.json",
+            "path": "~/.workbuddy/device-id.machine",
             "isDirectory": false,
             "read": "allow",
             "write": "ask",
@@ -436,7 +438,7 @@
           {
             "id": "file-preset-47",
             "source": "preset",
-            "path": "~/.workbuddy/projects/*/*.jsonl",
+            "path": "~/.workbuddy/.policy-cache.json",
             "isDirectory": false,
             "read": "allow",
             "write": "ask",
@@ -445,7 +447,7 @@
           {
             "id": "file-preset-48",
             "source": "preset",
-            "path": "~/.workbuddy/projects/*/*.meta.json",
+            "path": "~/.workbuddy/projects/*/*.jsonl",
             "isDirectory": false,
             "read": "allow",
             "write": "ask",
@@ -454,7 +456,7 @@
           {
             "id": "file-preset-49",
             "source": "preset",
-            "path": "~/.workbuddy/projects/*/*.file-rollback.ndjson",
+            "path": "~/.workbuddy/projects/*/*.meta.json",
             "isDirectory": false,
             "read": "allow",
             "write": "ask",
@@ -463,16 +465,16 @@
           {
             "id": "file-preset-50",
             "source": "preset",
-            "path": ".",
-            "isDirectory": true,
+            "path": "~/.workbuddy/projects/*/*.file-rollback.ndjson",
+            "isDirectory": false,
             "read": "allow",
-            "write": "allow",
-            "delete": "allow"
+            "write": "ask",
+            "delete": "ask"
           },
           {
             "id": "file-preset-51",
             "source": "preset",
-            "path": "~/.codebuddy/debug/",
+            "path": ".",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -481,7 +483,7 @@
           {
             "id": "file-preset-52",
             "source": "preset",
-            "path": "~/.codebuddy/statsig/",
+            "path": "~/.codebuddy/debug/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -490,7 +492,7 @@
           {
             "id": "file-preset-53",
             "source": "preset",
-            "path": "~/.workbuddy/plugins/",
+            "path": "~/.codebuddy/statsig/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -499,7 +501,7 @@
           {
             "id": "file-preset-54",
             "source": "preset",
-            "path": "~/.workbuddy/skills/",
+            "path": "~/.workbuddy/plugins/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -508,7 +510,7 @@
           {
             "id": "file-preset-55",
             "source": "preset",
-            "path": "~/.workbuddy/skills-marketplace/",
+            "path": "~/.workbuddy/skills/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -517,7 +519,7 @@
           {
             "id": "file-preset-56",
             "source": "preset",
-            "path": "~/.workbuddy/connectors/",
+            "path": "~/.workbuddy/skills-marketplace/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -526,7 +528,7 @@
           {
             "id": "file-preset-57",
             "source": "preset",
-            "path": "~/.workbuddy/connectors-marketplace/",
+            "path": "~/.workbuddy/connectors/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -535,7 +537,7 @@
           {
             "id": "file-preset-58",
             "source": "preset",
-            "path": "~/.workbuddy/binaries/",
+            "path": "~/.workbuddy/connectors-marketplace/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -544,7 +546,7 @@
           {
             "id": "file-preset-59",
             "source": "preset",
-            "path": "~/.workbuddy/plans/",
+            "path": "~/.workbuddy/binaries/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -553,7 +555,7 @@
           {
             "id": "file-preset-60",
             "source": "preset",
-            "path": "~/.codebuddy/skills/",
+            "path": "~/.workbuddy/plans/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -562,7 +564,7 @@
           {
             "id": "file-preset-61",
             "source": "preset",
-            "path": "~/.claude/",
+            "path": "~/.codebuddy/skills/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -571,7 +573,7 @@
           {
             "id": "file-preset-62",
             "source": "preset",
-            "path": "~/.codex/",
+            "path": "~/.claude/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -580,7 +582,7 @@
           {
             "id": "file-preset-63",
             "source": "preset",
-            "path": "~/.openclaw/",
+            "path": "~/.codex/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -589,7 +591,7 @@
           {
             "id": "file-preset-64",
             "source": "preset",
-            "path": "~/.hermes/",
+            "path": "~/.openclaw/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -598,7 +600,7 @@
           {
             "id": "file-preset-65",
             "source": "preset",
-            "path": "~/.agents/skills/",
+            "path": "~/.hermes/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -607,7 +609,7 @@
           {
             "id": "file-preset-66",
             "source": "preset",
-            "path": "~/tmp/",
+            "path": "~/.agents/skills/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -616,7 +618,7 @@
           {
             "id": "file-preset-67",
             "source": "preset",
-            "path": "~/.cache/",
+            "path": "~/tmp/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -625,7 +627,7 @@
           {
             "id": "file-preset-68",
             "source": "preset",
-            "path": "~/.local/",
+            "path": "~/.cache/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -634,7 +636,7 @@
           {
             "id": "file-preset-69",
             "source": "preset",
-            "path": "~/.npm/",
+            "path": "~/.local/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -643,7 +645,7 @@
           {
             "id": "file-preset-70",
             "source": "preset",
-            "path": "~/.pnpm-store/",
+            "path": "~/.npm/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -652,7 +654,7 @@
           {
             "id": "file-preset-71",
             "source": "preset",
-            "path": "~/.cargo/",
+            "path": "~/.pnpm-store/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -661,7 +663,7 @@
           {
             "id": "file-preset-72",
             "source": "preset",
-            "path": "~/.rustup/",
+            "path": "~/.cargo/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -670,7 +672,7 @@
           {
             "id": "file-preset-73",
             "source": "preset",
-            "path": "~/go/",
+            "path": "~/.rustup/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -679,7 +681,7 @@
           {
             "id": "file-preset-74",
             "source": "preset",
-            "path": "~/.gradle/",
+            "path": "~/go/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -688,7 +690,7 @@
           {
             "id": "file-preset-75",
             "source": "preset",
-            "path": "~/.m2/",
+            "path": "~/.gradle/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -697,7 +699,7 @@
           {
             "id": "file-preset-76",
             "source": "preset",
-            "path": "~/.nuget/",
+            "path": "~/.m2/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -706,7 +708,7 @@
           {
             "id": "file-preset-77",
             "source": "preset",
-            "path": "~/.bun/",
+            "path": "~/.nuget/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -715,7 +717,7 @@
           {
             "id": "file-preset-78",
             "source": "preset",
-            "path": "~/.deno/",
+            "path": "~/.bun/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -724,7 +726,7 @@
           {
             "id": "file-preset-79",
             "source": "preset",
-            "path": "~/.npm-global/",
+            "path": "~/.deno/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -733,7 +735,7 @@
           {
             "id": "file-preset-80",
             "source": "preset",
-            "path": "~/.pyenv/",
+            "path": "~/.npm-global/",
             "isDirectory": true,
             "read": "allow",
             "write": "allow",
@@ -742,6 +744,15 @@
           {
             "id": "file-preset-81",
             "source": "preset",
+            "path": "~/.pyenv/",
+            "isDirectory": true,
+            "read": "allow",
+            "write": "allow",
+            "delete": "allow"
+          },
+          {
+            "id": "file-preset-82",
+            "source": "preset",
             "path": "**\\$RECYCLE.BIN\\**",
             "isDirectory": false,
             "read": "allow",
@@ -749,7 +760,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-82",
+            "id": "file-preset-83",
             "source": "preset",
             "path": "~/appdata/local/temp/",
             "isDirectory": true,
@@ -758,7 +769,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-83",
+            "id": "file-preset-84",
             "source": "preset",
             "path": "~/appdata/local/pip/cache/",
             "isDirectory": true,
@@ -767,7 +778,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-84",
+            "id": "file-preset-85",
             "source": "preset",
             "path": "~/appdata/roaming/python/",
             "isDirectory": true,
@@ -776,7 +787,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-85",
+            "id": "file-preset-86",
             "source": "preset",
             "path": "~/appdata/roaming/pip/",
             "isDirectory": true,
@@ -785,7 +796,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-86",
+            "id": "file-preset-87",
             "source": "preset",
             "path": "~/appdata/roaming/npm-cache/",
             "isDirectory": true,
@@ -794,7 +805,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-87",
+            "id": "file-preset-88",
             "source": "preset",
             "path": "~/appdata/roaming/nuget/",
             "isDirectory": true,
@@ -803,7 +814,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-88",
+            "id": "file-preset-89",
             "source": "preset",
             "path": "~/appdata/local/pnpm-store/",
             "isDirectory": true,
@@ -812,7 +823,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-89",
+            "id": "file-preset-90",
             "source": "preset",
             "path": "~/appdata/local/codex/",
             "isDirectory": true,
@@ -821,7 +832,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-90",
+            "id": "file-preset-91",
             "source": "preset",
             "path": "~/appdata/local/hermes/",
             "isDirectory": true,
@@ -830,7 +841,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-91",
+            "id": "file-preset-92",
             "source": "preset",
             "path": "~/.agent-browser/",
             "isDirectory": true,
@@ -839,7 +850,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-92",
+            "id": "file-preset-93",
             "source": "preset",
             "path": "~/.browser-use/",
             "isDirectory": true,
@@ -848,7 +859,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-93",
+            "id": "file-preset-94",
             "source": "preset",
             "path": "~/.config/browseruse/",
             "isDirectory": true,
@@ -857,7 +868,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-94",
+            "id": "file-preset-95",
             "source": "preset",
             "path": "~/appdata/local/ms-playwright/",
             "isDirectory": true,
@@ -866,7 +877,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-95",
+            "id": "file-preset-96",
             "source": "preset",
             "path": "~/appdata/local/google/chrome/",
             "isDirectory": true,
@@ -875,7 +886,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-96",
+            "id": "file-preset-97",
             "source": "preset",
             "path": "~/appdata/local/google/chrome for testing/",
             "isDirectory": true,
@@ -884,7 +895,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-97",
+            "id": "file-preset-98",
             "source": "preset",
             "path": "~/appdata/local/microsoft/windows/caches/",
             "isDirectory": true,
@@ -893,7 +904,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-98",
+            "id": "file-preset-99",
             "source": "preset",
             "path": "~/.python_history",
             "isDirectory": false,
@@ -902,7 +913,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-99",
+            "id": "file-preset-100",
             "source": "preset",
             "path": "~/.node_repl_history",
             "isDirectory": false,
@@ -911,7 +922,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-100",
+            "id": "file-preset-101",
             "source": "preset",
             "path": "~/.wget-hsts",
             "isDirectory": false,
@@ -920,7 +931,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-101",
+            "id": "file-preset-102",
             "source": "preset",
             "path": "~/appdata/local/microsoft/powershell/",
             "isDirectory": true,
@@ -929,7 +940,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-102",
+            "id": "file-preset-103",
             "source": "preset",
             "path": "~/appdata/local/packages/",
             "isDirectory": true,
@@ -938,7 +949,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-103",
+            "id": "file-preset-104",
             "source": "preset",
             "path": "C:\\Windows\\System32\\lxss\\",
             "isDirectory": true,
@@ -947,7 +958,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-104",
+            "id": "file-preset-105",
             "source": "preset",
             "path": "**\\.git\\**",
             "isDirectory": false,
@@ -956,7 +967,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-105",
+            "id": "file-preset-106",
             "source": "preset",
             "path": "**\\.githooks\\**",
             "isDirectory": false,
@@ -965,7 +976,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-106",
+            "id": "file-preset-107",
             "source": "preset",
             "path": "~/appdata/local/npm-cache/",
             "isDirectory": true,
@@ -974,7 +985,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-107",
+            "id": "file-preset-108",
             "source": "preset",
             "path": "~/appdata/local/pnpm/",
             "isDirectory": true,
@@ -983,7 +994,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-108",
+            "id": "file-preset-109",
             "source": "preset",
             "path": "~/appdata/local/yarn/",
             "isDirectory": true,
@@ -992,7 +1003,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-109",
+            "id": "file-preset-110",
             "source": "preset",
             "path": "~/appdata/local/fnm_multishells/",
             "isDirectory": true,
@@ -1001,7 +1012,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-110",
+            "id": "file-preset-111",
             "source": "preset",
             "path": "~/.yarn/",
             "isDirectory": true,
@@ -1010,7 +1021,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-111",
+            "id": "file-preset-112",
             "source": "preset",
             "path": "~/.nvm/",
             "isDirectory": true,
@@ -1019,7 +1030,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-112",
+            "id": "file-preset-113",
             "source": "preset",
             "path": "~/.fnm/",
             "isDirectory": true,
@@ -1028,7 +1039,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-113",
+            "id": "file-preset-114",
             "source": "preset",
             "path": "~/appdata/local/pip/",
             "isDirectory": true,
@@ -1037,7 +1048,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-114",
+            "id": "file-preset-115",
             "source": "preset",
             "path": "~/appdata/local/conda/",
             "isDirectory": true,
@@ -1046,7 +1057,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-115",
+            "id": "file-preset-116",
             "source": "preset",
             "path": "~/appdata/local/uv/",
             "isDirectory": true,
@@ -1055,7 +1066,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-116",
+            "id": "file-preset-117",
             "source": "preset",
             "path": "~/appdata/roaming/uv/",
             "isDirectory": true,
@@ -1064,7 +1075,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-117",
+            "id": "file-preset-118",
             "source": "preset",
             "path": "~/.conda/",
             "isDirectory": true,
@@ -1073,7 +1084,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-118",
+            "id": "file-preset-119",
             "source": "preset",
             "path": "~/miniconda3/",
             "isDirectory": true,
@@ -1082,7 +1093,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-119",
+            "id": "file-preset-120",
             "source": "preset",
             "path": "~/miniforge3/",
             "isDirectory": true,
@@ -1091,7 +1102,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-120",
+            "id": "file-preset-121",
             "source": "preset",
             "path": "~/appdata/local/go-build/",
             "isDirectory": true,
@@ -1100,7 +1111,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-121",
+            "id": "file-preset-122",
             "source": "preset",
             "path": "~/appdata/roaming/go/",
             "isDirectory": true,
@@ -1109,7 +1120,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-122",
+            "id": "file-preset-123",
             "source": "preset",
             "path": "~/.sdkman/",
             "isDirectory": true,
@@ -1118,7 +1129,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-123",
+            "id": "file-preset-124",
             "source": "preset",
             "path": "~/.dotnet/",
             "isDirectory": true,
@@ -1127,7 +1138,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-124",
+            "id": "file-preset-125",
             "source": "preset",
             "path": "~/appdata/local/nuget/",
             "isDirectory": true,
@@ -1136,7 +1147,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-125",
+            "id": "file-preset-126",
             "source": "preset",
             "path": "~/.docker/",
             "isDirectory": true,
@@ -1145,7 +1156,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-126",
+            "id": "file-preset-127",
             "source": "preset",
             "path": "~/.asdf/",
             "isDirectory": true,
@@ -1154,7 +1165,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-127",
+            "id": "file-preset-128",
             "source": "preset",
             "path": "~/appdata/roaming/npm/",
             "isDirectory": true,
@@ -1163,7 +1174,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-128",
+            "id": "file-preset-129",
             "source": "preset",
             "path": "~/appdata/local/microsoft/windowsapps/",
             "isDirectory": true,
@@ -1172,7 +1183,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-129",
+            "id": "file-preset-130",
             "source": "preset",
             "path": "~/appdata/roaming/code/",
             "isDirectory": true,
@@ -1181,7 +1192,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-130",
+            "id": "file-preset-131",
             "source": "preset",
             "path": "~/appdata/roaming/trae/",
             "isDirectory": true,
@@ -1190,7 +1201,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-131",
+            "id": "file-preset-132",
             "source": "preset",
             "path": "~/appdata/roaming/microsoft/windows/powershell/",
             "isDirectory": true,
@@ -1199,7 +1210,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-132",
+            "id": "file-preset-133",
             "source": "preset",
             "path": "~/appdata/local/microsoft/windows/powershell/",
             "isDirectory": true,
@@ -1208,7 +1219,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-133",
+            "id": "file-preset-134",
             "source": "preset",
             "path": "~/appdata/roaming/microsoft/windows/recent/",
             "isDirectory": true,
@@ -1217,7 +1228,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-134",
+            "id": "file-preset-135",
             "source": "preset",
             "path": "~/appdata/local/microsoft/windows/recent/",
             "isDirectory": true,
@@ -1226,7 +1237,7 @@
             "delete": "allow"
           },
           {
-            "id": "file-preset-135",
+            "id": "file-preset-136",
             "source": "preset",
             "path": "C:\\openclaw\\openclaw\\",
             "isDirectory": true,
@@ -1253,13 +1264,13 @@
     "weixinpay@workbuddy-builtin": true,
     "tencent-docs-plugin@workbuddy-builtin": true,
     "find-skills@codebuddy-plugins-official": true,
-    "ardot@workbuddy-builtin": true,
     "subscription-gate@workbuddy-builtin": true,
     "workbuddy-sheetagent@workbuddy-builtin": true,
     "workbuddy-pptx@workbuddy-builtin": true,
     "workbuddy-docx@workbuddy-builtin": true,
     "wecom-a2a-auth@workbuddy-builtin": true,
-    "wecom-unified@workbuddy-wecom-unified": false
+    "wecom-unified@workbuddy-wecom-unified": false,
+    "tencent-xmind@workbuddy-builtin": true
   },
   "claw": {
     "channels": {},
@@ -1292,7 +1303,7 @@
     "legacyOwnerUid": "176fb40b-ad53-4b53-93dd-c744cab86c43"
   },
   "autoLaunchDesired": true,
-  "officeFileAssociationsRepairMarker": "v9:win32:5.9.3:D:\\Software\\WorkBuddy\\WorkBuddy.exe:WorkBuddy:machine:1793093492000:aac,csv,doc,docm,docx,dot,dotm,dotx,html,jpeg,jpg,m4a,md,mp3,pdf,png,pot,potm,potx,ppt,pptm,pptx,txt,wav,webp,wps,wpt,xls,xlsm,xlsx,xlt,xltm,xltx",
+  "officeFileAssociationsRepairMarker": "v10:win32:5.11.3:D:\\Software\\WorkBuddy\\WorkBuddy.exe:WorkBuddy:machine:1794502650000:aac,csv,doc,docm,docx,dot,dotm,dotx,html,jpeg,jpg,m4a,md,mp3,pdf,png,pot,potm,potx,ppt,pptm,pptx,txt,wav,webp,wps,wpt,xls,xlsm,xlsx,xlt,xltm,xltx,xmind",
   "autoLaunchDefaultApplied": true,
   "officeMarkdownDefaultClaimAttempted": true,
   "pluginConfigs": {}

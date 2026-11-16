@@ -1,0 +1,13 @@
+{
+  "pid": 23572,
+  "lastHeartbeat": 1794799282459,
+  "sessionId": "3b58c903-67b3-4267-89c1-dac308865dcd",
+  "cwd": "C:\\Users\\62628\\.workbuddy-sync",
+  "startedAt": 1794799282410,
+  "kind": "interactive",
+  "processIdentity": {
+    "procStart": "2026-11-16T03:19:01.355Z",
+    "procStartFt": "134392727413560000"
+  },
+  "updatedAt": 1794799289388
+}

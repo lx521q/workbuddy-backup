@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "lastUpdated": 1794786639583,
+  "lastUpdated": 1794786671085,
   "artifacts": [
     {
       "name": "BOOTSTRAP.md",
@@ -9,7 +9,7 @@
       "contentType": "document",
       "size": 1892,
       "createdAt": 1786069170937,
-      "updatedAt": 1794786639449,
+      "updatedAt": 1794786669464,
       "type": "media",
       "uri": "file:///C:/Users/62628/.workbuddy-sync/BOOTSTRAP.md",
       "_meta": {
@@ -30,7 +30,7 @@
       "contentType": "document",
       "size": 385,
       "createdAt": 1786069170374,
-      "updatedAt": 1794786639351,
+      "updatedAt": 1794786669403,
       "type": "media",
       "uri": "file:///C:/Users/62628/.workbuddy-sync/IDENTITY.md",
       "_meta": {
@@ -51,7 +51,7 @@
       "contentType": "document",
       "size": 557,
       "createdAt": 1786069170659,
-      "updatedAt": 1794786639408,
+      "updatedAt": 1794786669432,
       "type": "media",
       "uri": "file:///C:/Users/62628/.workbuddy-sync/USER.md",
       "_meta": {
@@ -72,9 +72,135 @@
       "contentType": "document",
       "size": 1462,
       "createdAt": 1786069170098,
-      "updatedAt": 1794786639318,
+      "updatedAt": 1794786669376,
       "type": "media",
       "uri": "file:///C:/Users/62628/.workbuddy-sync/SOUL.md",
+      "_meta": {
+        "sourceTool": "WorkspaceWatcher",
+        "ownerConversationId": "b093b172-5300-4d44-ba68-f0fe8ac908ad",
+        "requestId": "01a1e19e834f75be97dc5dd7c302f42c",
+        "codebuddy.ai/requestId": "01a1e19e834f75be97dc5dd7c302f42c",
+        "createdByRequestId": "01a1e19e834f75be97dc5dd7c302f42c",
+        "touchedByRequestIds": [
+          "01a1e19e834f75be97dc5dd7c302f42c"
+        ]
+      }
+    },
+    {
+      "name": "2026-08-07.md",
+      "title": "2026-08-07.md",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 1056,
+      "createdAt": 1786151970327,
+      "updatedAt": 1794786670934,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/.workbuddy-sync/workspace-memory/2026-08-07.md",
+      "_meta": {
+        "sourceTool": "WorkspaceWatcher",
+        "ownerConversationId": "b093b172-5300-4d44-ba68-f0fe8ac908ad",
+        "requestId": "01a1e19e834f75be97dc5dd7c302f42c",
+        "codebuddy.ai/requestId": "01a1e19e834f75be97dc5dd7c302f42c",
+        "createdByRequestId": "01a1e19e834f75be97dc5dd7c302f42c",
+        "touchedByRequestIds": [
+          "01a1e19e834f75be97dc5dd7c302f42c"
+        ]
+      }
+    },
+    {
+      "name": "2026-08-08.md",
+      "title": "2026-08-08.md",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 929,
+      "createdAt": 1786177519781,
+      "updatedAt": 1794786670935,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/.workbuddy-sync/workspace-memory/2026-08-08.md",
+      "_meta": {
+        "sourceTool": "WorkspaceWatcher",
+        "ownerConversationId": "b093b172-5300-4d44-ba68-f0fe8ac908ad",
+        "requestId": "01a1e19e834f75be97dc5dd7c302f42c",
+        "codebuddy.ai/requestId": "01a1e19e834f75be97dc5dd7c302f42c",
+        "createdByRequestId": "01a1e19e834f75be97dc5dd7c302f42c",
+        "touchedByRequestIds": [
+          "01a1e19e834f75be97dc5dd7c302f42c"
+        ]
+      }
+    },
+    {
+      "name": "2026-10-19.md",
+      "title": "2026-10-19.md",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 1358,
+      "createdAt": 1792485032189,
+      "updatedAt": 1794786670937,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/.workbuddy-sync/workspace-memory/2026-10-19.md",
+      "_meta": {
+        "sourceTool": "WorkspaceWatcher",
+        "ownerConversationId": "b093b172-5300-4d44-ba68-f0fe8ac908ad",
+        "requestId": "01a1e19e834f75be97dc5dd7c302f42c",
+        "codebuddy.ai/requestId": "01a1e19e834f75be97dc5dd7c302f42c",
+        "createdByRequestId": "01a1e19e834f75be97dc5dd7c302f42c",
+        "touchedByRequestIds": [
+          "01a1e19e834f75be97dc5dd7c302f42c"
+        ]
+      }
+    },
+    {
+      "name": "2026-10-23.md",
+      "title": "2026-10-23.md",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 662,
+      "createdAt": 1792744233431,
+      "updatedAt": 1794786670939,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/.workbuddy-sync/workspace-memory/2026-10-23.md",
+      "_meta": {
+        "sourceTool": "WorkspaceWatcher",
+        "ownerConversationId": "b093b172-5300-4d44-ba68-f0fe8ac908ad",
+        "requestId": "01a1e19e834f75be97dc5dd7c302f42c",
+        "codebuddy.ai/requestId": "01a1e19e834f75be97dc5dd7c302f42c",
+        "createdByRequestId": "01a1e19e834f75be97dc5dd7c302f42c",
+        "touchedByRequestIds": [
+          "01a1e19e834f75be97dc5dd7c302f42c"
+        ]
+      }
+    },
+    {
+      "name": "2026-10-25.md",
+      "title": "2026-10-25.md",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 2612,
+      "createdAt": 1792912633324,
+      "updatedAt": 1794786670940,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/.workbuddy-sync/workspace-memory/2026-10-25.md",
+      "_meta": {
+        "sourceTool": "WorkspaceWatcher",
+        "ownerConversationId": "b093b172-5300-4d44-ba68-f0fe8ac908ad",
+        "requestId": "01a1e19e834f75be97dc5dd7c302f42c",
+        "codebuddy.ai/requestId": "01a1e19e834f75be97dc5dd7c302f42c",
+        "createdByRequestId": "01a1e19e834f75be97dc5dd7c302f42c",
+        "touchedByRequestIds": [
+          "01a1e19e834f75be97dc5dd7c302f42c"
+        ]
+      }
+    },
+    {
+      "name": "MEMORY.md",
+      "title": "MEMORY.md",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 1141,
+      "createdAt": 1786151970327,
+      "updatedAt": 1794786670941,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/.workbuddy-sync/workspace-memory/MEMORY.md",
       "_meta": {
         "sourceTool": "WorkspaceWatcher",
         "ownerConversationId": "b093b172-5300-4d44-ba68-f0fe8ac908ad",
