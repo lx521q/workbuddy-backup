@@ -1,5 +1,10 @@
 # 自动化执行记录 — WorkBuddy 配置同步推送（GitHub）
 
+## 2026-11-16 16:32 执行（双通道）
+- Git 通道：⚠️ 本地提交成功、远程推送失败。commit `5fd2084`（sync: 2026-11-16 16:30:46），18 文件变更（+2300/-102，新增 2 artifact-index、6 file-history、3 sessions/11708·23572·32404、fitness-plan-w1.html、fitness_progress.md）。push 报 `Recv failure: Connection was reset`，重试 1 次 `Failed to connect to github.com:443 after 21052 ms`；`main...origin/main [ahead 1]` 积压 1 个 commit，待下次网络恢复补推
+- 网盘通道：✅ 成功，未触发冲突保护（家里电脑昨夜无新修改）。OneDrive 镜像 222 目录（4 新建/218 已存）、863 文件（452 复制/411 跳过，9.73 MB，较今早 +11）；夸克镜像同量。.last-push 分别为 16:32:50 / 16:32:51
+- 备注：Git 通道为 11-14/11-10/11-06 等历史同款网络失败模式（非权限问题）；网盘主力通道已保全全部数据
+
 ## 2026-11-16 07:50 执行（双通道）
 - Git 通道：✅ 成功，commit `3844e32`（sync: 2026-11-16 07:50:45），8 文件变更（+710/-7，新增 1 artifact-index、1 file-history、2 sessions/15928·9328）。推上 GitHub `4c6b22a..3844e32`；11-14 网络失败遗留的 `fa0a932` 已随本次一并补推，`main...origin/main` 一致，积压清零
 - 网盘通道：✅ 成功，未触发冲突保护。OneDrive 镜像 218 目录（1 新建/217 已存），852 文件与中转站完全一致（较 11-14 +5，12 MB）；夸克镜像同量。.last-push 均为 07:51:12
