@@ -1,0 +1,20 @@
+{
+  "pid": 18596,
+  "lastHeartbeat": 1795305432057,
+  "sessionId": "94337827-b680-47b2-a6b8-e790950a91c7",
+  "cwd": "C:\\Users\\62628\\WorkBuddy\\2026-08-06-08-22-48",
+  "startedAt": 1795305432056,
+  "kind": "interactive",
+  "processIdentity": {
+    "procStart": "2026-11-21T23:57:09.063Z",
+    "procStartFt": "134397790290640000"
+  },
+  "url": "http://127.0.0.1:54823",
+  "endpoint": "http://127.0.0.1:54823",
+  "mode": "local",
+  "version": "2.176.0",
+  "os": "win32",
+  "arch": "x64",
+  "hostname": "Lx-3600",
+  "updatedAt": 1795305433125
+}
