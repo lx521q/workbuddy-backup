@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "lastUpdated": 1795305443140,
+  "lastUpdated": 1795305471535,
   "artifacts": [
     {
       "name": "SOUL.md",
@@ -9,7 +9,7 @@
       "contentType": "document",
       "size": 1462,
       "createdAt": 1786069170098,
-      "updatedAt": 1795305442916,
+      "updatedAt": 1795305470038,
       "type": "media",
       "uri": "file:///C:/Users/62628/.workbuddy-sync/SOUL.md",
       "_meta": {
@@ -30,7 +30,7 @@
       "contentType": "document",
       "size": 385,
       "createdAt": 1786069170374,
-      "updatedAt": 1795305442951,
+      "updatedAt": 1795305470067,
       "type": "media",
       "uri": "file:///C:/Users/62628/.workbuddy-sync/IDENTITY.md",
       "_meta": {
@@ -51,7 +51,7 @@
       "contentType": "document",
       "size": 557,
       "createdAt": 1786069170659,
-      "updatedAt": 1795305442982,
+      "updatedAt": 1795305470095,
       "type": "media",
       "uri": "file:///C:/Users/62628/.workbuddy-sync/USER.md",
       "_meta": {
@@ -72,9 +72,135 @@
       "contentType": "document",
       "size": 1892,
       "createdAt": 1786069170937,
-      "updatedAt": 1795305443016,
+      "updatedAt": 1795305470124,
       "type": "media",
       "uri": "file:///C:/Users/62628/.workbuddy-sync/BOOTSTRAP.md",
+      "_meta": {
+        "sourceTool": "WorkspaceWatcher",
+        "ownerConversationId": "37bbdad6-d968-44fd-b8f0-df530babd678",
+        "requestId": "01a2008acfbc79c6b7d1ed26c9026bff",
+        "codebuddy.ai/requestId": "01a2008acfbc79c6b7d1ed26c9026bff",
+        "createdByRequestId": "01a2008acfbc79c6b7d1ed26c9026bff",
+        "touchedByRequestIds": [
+          "01a2008acfbc79c6b7d1ed26c9026bff"
+        ]
+      }
+    },
+    {
+      "name": "2026-08-08.md",
+      "title": "2026-08-08.md",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 929,
+      "createdAt": 1786177519781,
+      "updatedAt": 1795305471382,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/.workbuddy-sync/workspace-memory/2026-08-08.md",
+      "_meta": {
+        "sourceTool": "WorkspaceWatcher",
+        "ownerConversationId": "37bbdad6-d968-44fd-b8f0-df530babd678",
+        "requestId": "01a2008acfbc79c6b7d1ed26c9026bff",
+        "codebuddy.ai/requestId": "01a2008acfbc79c6b7d1ed26c9026bff",
+        "createdByRequestId": "01a2008acfbc79c6b7d1ed26c9026bff",
+        "touchedByRequestIds": [
+          "01a2008acfbc79c6b7d1ed26c9026bff"
+        ]
+      }
+    },
+    {
+      "name": "2026-08-07.md",
+      "title": "2026-08-07.md",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 1056,
+      "createdAt": 1786151970327,
+      "updatedAt": 1795305471382,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/.workbuddy-sync/workspace-memory/2026-08-07.md",
+      "_meta": {
+        "sourceTool": "WorkspaceWatcher",
+        "ownerConversationId": "37bbdad6-d968-44fd-b8f0-df530babd678",
+        "requestId": "01a2008acfbc79c6b7d1ed26c9026bff",
+        "codebuddy.ai/requestId": "01a2008acfbc79c6b7d1ed26c9026bff",
+        "createdByRequestId": "01a2008acfbc79c6b7d1ed26c9026bff",
+        "touchedByRequestIds": [
+          "01a2008acfbc79c6b7d1ed26c9026bff"
+        ]
+      }
+    },
+    {
+      "name": "2026-10-19.md",
+      "title": "2026-10-19.md",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 1358,
+      "createdAt": 1792485032189,
+      "updatedAt": 1795305471385,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/.workbuddy-sync/workspace-memory/2026-10-19.md",
+      "_meta": {
+        "sourceTool": "WorkspaceWatcher",
+        "ownerConversationId": "37bbdad6-d968-44fd-b8f0-df530babd678",
+        "requestId": "01a2008acfbc79c6b7d1ed26c9026bff",
+        "codebuddy.ai/requestId": "01a2008acfbc79c6b7d1ed26c9026bff",
+        "createdByRequestId": "01a2008acfbc79c6b7d1ed26c9026bff",
+        "touchedByRequestIds": [
+          "01a2008acfbc79c6b7d1ed26c9026bff"
+        ]
+      }
+    },
+    {
+      "name": "2026-10-23.md",
+      "title": "2026-10-23.md",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 662,
+      "createdAt": 1792744233431,
+      "updatedAt": 1795305471386,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/.workbuddy-sync/workspace-memory/2026-10-23.md",
+      "_meta": {
+        "sourceTool": "WorkspaceWatcher",
+        "ownerConversationId": "37bbdad6-d968-44fd-b8f0-df530babd678",
+        "requestId": "01a2008acfbc79c6b7d1ed26c9026bff",
+        "codebuddy.ai/requestId": "01a2008acfbc79c6b7d1ed26c9026bff",
+        "createdByRequestId": "01a2008acfbc79c6b7d1ed26c9026bff",
+        "touchedByRequestIds": [
+          "01a2008acfbc79c6b7d1ed26c9026bff"
+        ]
+      }
+    },
+    {
+      "name": "2026-10-25.md",
+      "title": "2026-10-25.md",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 2612,
+      "createdAt": 1792912633324,
+      "updatedAt": 1795305471387,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/.workbuddy-sync/workspace-memory/2026-10-25.md",
+      "_meta": {
+        "sourceTool": "WorkspaceWatcher",
+        "ownerConversationId": "37bbdad6-d968-44fd-b8f0-df530babd678",
+        "requestId": "01a2008acfbc79c6b7d1ed26c9026bff",
+        "codebuddy.ai/requestId": "01a2008acfbc79c6b7d1ed26c9026bff",
+        "createdByRequestId": "01a2008acfbc79c6b7d1ed26c9026bff",
+        "touchedByRequestIds": [
+          "01a2008acfbc79c6b7d1ed26c9026bff"
+        ]
+      }
+    },
+    {
+      "name": "MEMORY.md",
+      "title": "MEMORY.md",
+      "mimeType": "application/octet-stream",
+      "contentType": "document",
+      "size": 1141,
+      "createdAt": 1786151970327,
+      "updatedAt": 1795305471389,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/.workbuddy-sync/workspace-memory/MEMORY.md",
       "_meta": {
         "sourceTool": "WorkspaceWatcher",
         "ownerConversationId": "37bbdad6-d968-44fd-b8f0-df530babd678",
