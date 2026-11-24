@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "lastUpdated": 1795493282527,
+  "artifacts": [
+    {
+      "name": "烟气处理流程图_去旁通分支.png",
+      "title": "烟气处理流程图_去旁通分支.png",
+      "mimeType": "image/png",
+      "contentType": "image",
+      "size": 268235,
+      "createdAt": 1795493099273,
+      "updatedAt": 1795493249879,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/WorkBuddy/2026-11-24-11-56-37/%E7%83%9F%E6%B0%94%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B%E5%9B%BE_%E5%8E%BB%E6%97%81%E9%80%9A%E5%88%86%E6%94%AF.png",
+      "_meta": {
+        "sourceTool": "PresentFiles",
+        "ownerConversationId": "e39b53f5-2c3a-488a-ba14-a1c84a2acf0e",
+        "requestId": "01a20bb2d323732c843205b224edcfda",
+        "codebuddy.ai/requestId": "01a20bb2d323732c843205b224edcfda",
+        "createdByRequestId": "01a20bb2d323732c843205b224edcfda",
+        "touchedByRequestIds": [
+          "01a20bb2d323732c843205b224edcfda"
+        ],
+        "codebuddy.ai/toolName": "present_files",
+        "toolCallId": "call_01a20bbd406473c79b274dfa"
+      }
+    },
+    {
+      "name": "烟气处理流程图_去旁通分支_2x.png",
+      "title": "烟气处理流程图_去旁通分支_2x.png",
+      "mimeType": "image/png",
+      "contentType": "image",
+      "size": 340894,
+      "createdAt": 1795493267019,
+      "updatedAt": 1795493267020,
+      "type": "media",
+      "uri": "file:///C:/Users/62628/WorkBuddy/2026-11-24-11-56-37/%E7%83%9F%E6%B0%94%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B%E5%9B%BE_%E5%8E%BB%E6%97%81%E9%80%9A%E5%88%86%E6%94%AF_2x.png",
+      "_meta": {
+        "sourceTool": "PresentFiles",
+        "ownerConversationId": "e39b53f5-2c3a-488a-ba14-a1c84a2acf0e",
+        "requestId": "01a20bb2d323732c843205b224edcfda",
+        "codebuddy.ai/requestId": "01a20bb2d323732c843205b224edcfda",
+        "createdByRequestId": "01a20bb2d323732c843205b224edcfda",
+        "touchedByRequestIds": [
+          "01a20bb2d323732c843205b224edcfda"
+        ],
+        "codebuddy.ai/toolName": "present_files",
+        "toolCallId": "call_01a20bbd406473c79b274dfa"
+      }
+    }
+  ]
+}

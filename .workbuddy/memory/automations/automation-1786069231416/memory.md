@@ -1,5 +1,10 @@
 # 自动化执行记录 — WorkBuddy 配置同步推送（GitHub）
 
+## 2026-11-22 17:19 执行（双通道）
+- Git 通道：⚠️ 本地提交成功、远程推送失败。commit `1f90c97`（sync: 2026-11-22 17:19:13），9 文件变更（+801/-9，新增 1 artifact-index `d9c2a1ba`、2 file-history、1 sessions/1848）。push 两次均报 `Recv failure: Connection was reset`（重试 1 次仍失败）；`main...origin/main [ahead 1]` 积压 1 个 commit，待下次网络恢复补推
+- 网盘通道：✅ 成功，未触发冲突保护（家里电脑无新修改）。OneDrive 镜像 232 目录（2 新建/230 已存）、885 文件（464 复制/421 跳过，10.46 MB，较今早 +4 文件/+0.17MB）；夸克镜像同量。.last-push 分别为 `17:20:07` / `17:20:08`
+- 备注：Git 通道为 11-14/11-16/11-17 等历史同款网络失败模式（非权限问题）；网盘主力通道已保全全部数据，无需 cloud-pull 合并
+
 ## 2026-11-22 07:57 执行（双通道）
 - Git 通道：✅ 成功，网络正常。commit `d14c8e8`（sync: 2026-11-22），9 文件变更（+828/-5，新增 1 artifact-index `37bbdad6`、2 file-history、3 sessions）。推上 `a4cf96b..d14c8e8`，`main...origin/main` 一致，无积压；push 后 artifact-index 与 sessions/1508 又有新变更，下次推送带走
 - 网盘通道：✅ 成功，未触发冲突保护（家里电脑无新修改）。OneDrive 镜像 230 目录（2 新建/228 已存）、881 文件（463 复制/418 跳过，10.29 MB，较 11-19 +6 文件/+0.08MB）；夸克镜像同量。.last-push 分别为 `2026-11-22 07:57:52` / `07:57:53`
