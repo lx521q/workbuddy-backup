@@ -1,5 +1,11 @@
 # 自动化执行记录 — WorkBuddy 配置同步推送（GitHub）
 
+## 2026-11-25 16:30 执行（双通道）
+- Git 通道：⚠️ 本地提交成功、远程推送失败。commit `4aa4595`（sync: 2026-11-25 16:30:32），6 文件变更（+317/-7，新增 1 artifact-index `97d1b84c`、1 file-history、1 sessions/25332）。push 首报 `Recv failure: Connection was reset`，重试报 `curl 28 Failed to connect to github.com:443 after 21083 ms`；`main...origin/main [ahead 3]`，积压 `4aa4595`(11-25)、`9c359af`(11-24)、`1f90c97`(11-22) 待网络恢复补推
+- 网盘通道：✅ 成功，未触发冲突保护（家里电脑无新修改）。OneDrive 镜像 236 目录（1 新建/235 已存）、894 文件（470 复制/424 跳过，10.66 MB，较 11-22 +9 文件/+0.20MB）；夸克镜像同量。.last-push 分别为 `2026-11-25 16:32:45` / `16:32:46`
+- 说明：11-23 无执行记录（当日未触发/电脑未运行），11-24 16:50 有提交 `9c359af` 但未成功推送；本期 Git 通道为历史同款 GitHub 入口网络失败模式（非权限问题）
+- 备注：无需 cloud-pull 合并；网盘主力通道已保全全部数据，家里电脑可 cloud-pull 取到今日内容
+
 ## 2026-11-22 17:19 执行（双通道）
 - Git 通道：⚠️ 本地提交成功、远程推送失败。commit `1f90c97`（sync: 2026-11-22 17:19:13），9 文件变更（+801/-9，新增 1 artifact-index `d9c2a1ba`、2 file-history、1 sessions/1848）。push 两次均报 `Recv failure: Connection was reset`（重试 1 次仍失败）；`main...origin/main [ahead 1]` 积压 1 个 commit，待下次网络恢复补推
 - 网盘通道：✅ 成功，未触发冲突保护（家里电脑无新修改）。OneDrive 镜像 232 目录（2 新建/230 已存）、885 文件（464 复制/421 跳过，10.46 MB，较今早 +4 文件/+0.17MB）；夸克镜像同量。.last-push 分别为 `17:20:07` / `17:20:08`
